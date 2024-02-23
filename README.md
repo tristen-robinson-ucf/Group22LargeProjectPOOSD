@@ -9,10 +9,16 @@ Check out our website:<br>
 I'll add to this later.
 ### Project Manager
 - [Tristen Robinson](https://github.com/tristen-robinson-ucf)
-### API
+### A
 - [Batman Yousuf](https://github.com/shinobi-404)
-
-
+### A
+- [Asher Watkins](https://github.com/asher12353)
+### A
+- [Daniela Cadena](https://github.com/danicadena)
+### A
+- [Katelyn Grimes](https://github.com/kegrimes)
+### A
+- [Matias Riosa](https://github.com/m-riosa)
 
 ## For Team members
 This information was directly taken from the small project git's README.md as that is what I am modeling this repository off of.
