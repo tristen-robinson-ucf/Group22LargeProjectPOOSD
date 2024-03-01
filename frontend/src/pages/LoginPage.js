@@ -13,5 +13,5 @@ const LoginPage = () =>
       </div>
     );
 };
-//this is a comment, I'll add to it
+//this is a comment
 export default LoginPage;
