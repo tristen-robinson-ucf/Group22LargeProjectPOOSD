@@ -32,4 +32,4 @@ This information was directly taken from the small project git's README.md as th
 - dev to main has to be approved by a team member other than the one who made the Pull Request
 
 ## Api Documentation
-See [this file](API.md) (I'll add this later if this isn't here rn)
+See [this file](API.md)
