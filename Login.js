@@ -1,7 +1,8 @@
-const url = 'mongodb+srv://asher12353:COP4331-19thGroup@cluster0.vwkhdxi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+//Katelyn - this is for testing it locally
+/*const url = 'mongodb+srv://asher12353:COP4331-19thGroup@cluster0.vwkhdxi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
-client.connect(console.log("mongodb connected"));
+client.connect(console.log("mongodb connected"));*/
 
 //LOGIN API
 app.post('/api/login', async (req, res, next) =>
