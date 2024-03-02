@@ -12,27 +12,27 @@ function Login()
     {
         event.preventDefault();
 
-        var obj = {login:loginName.value,password:loginPassword.value};
+        var obj = {username:loginName.value,password:loginPassword.value};
         var js = JSON.stringify(obj);
 
         try
         {    
             const response = await fetch(buildPath('api/login'),
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-
+            console.log(response)
             var res = JSON.parse(await response.text());
-
+            console.log(res)
             if( res.id <= 0 )
             {
                 setMessage('User/Password combination incorrect');
             }
             else
             {
-                var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
+                var user = {firstname:res.firstname,lastname:res.lastname,id:res.id}
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                window.location.href = '/cards';
+                //window.location.href = '/cards'; //we'll change this to what we want to redirect when we make the page
             }
         }
         catch(e)
@@ -42,7 +42,7 @@ function Login()
         }    
     };
 
-    const app_name = 'cop4331-4'
+    const app_name = 'group-22'
     function buildPath(route)
     {
         if (process.env.NODE_ENV === 'production') 
@@ -62,13 +62,9 @@ function Login()
       <div id="loginDiv">
         <form onSubmit={doLogin}>
         <span id="inner-title">PLEASE LOG IN</span><br />
-        <input type="text" id="loginName" placeholder="Username" 
-  ref={(c) => loginName = c} /><br />
-<input type="password" id="loginPassword" placeholder="Password" 
-  ref={(c) => loginPassword = c} /><br />
-
-        <input type="submit" id="loginButton" class="buttons" value = "Do It"
-          onClick={doLogin} />
+        <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} /><br />
+        <input type="password" id="loginPassword" placeholder="Password" ref={(c) => loginPassword = c} /><br />
+        <input type="submit" id="loginButton" class="buttons" value = "Do It" onClick={doLogin} />
         </form>
         <span id="loginResult">{message}</span>
     </div>
