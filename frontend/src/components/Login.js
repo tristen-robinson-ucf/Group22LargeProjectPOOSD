@@ -19,20 +19,22 @@ function Login()
         {    
             const response = await fetch(buildPath('api/login'),
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-
+            console.log(response)
             var res = JSON.parse(await response.text());
-
+            console.log(res)
             if( res.id <= 0 )
             {
                 setMessage('User/Password combination incorrect');
             }
             else
             {
-                var user = {firstName:res.firstName,lastName:res.lastName,id:res.id}
+                var user = {firstname:res.firstname,lastname:res.lastname,id:res.id}
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
+
                 window.location.href = '/register';
+
             }
         }
         catch(e)
@@ -42,7 +44,7 @@ function Login()
         }    
     };
 
-    const app_name = 'cop4331-4'
+    const app_name = 'group-22'
     function buildPath(route)
     {
         if (process.env.NODE_ENV === 'production') 
