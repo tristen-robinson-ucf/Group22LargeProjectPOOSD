@@ -3,7 +3,7 @@ The Git for Group 22's Large project for COP4331C (a.k.a. POOSD)<br>
 
 A full-stack project made for class.<br>
 Check out our website:<br>
-[Theme Park Time Tracker]
+[Theme Park Time Tracker](https://group-22-0b4387ea5ed6.herokuapp.com/)
 
 ## Contributors
 ### Project Manager / Mobile
