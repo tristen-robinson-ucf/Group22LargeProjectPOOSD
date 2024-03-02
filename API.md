@@ -22,7 +22,7 @@ login - Username of the user logging in \
 pass - Password of the user logging in
 ```json 
 {
-	"login": string,
+	"username": string,
 	"password": string
 }
 
@@ -36,8 +36,8 @@ error should usually be empty
 ```json 
 {
 	"id": int,
-	"firstName": string,
-	"lastName": string,
+	"firstname": string,
+	"lastname": string,
 	"error": string
 }
 
