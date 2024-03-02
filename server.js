@@ -62,14 +62,18 @@ app.post('/api/login', async (req, res, next) =>
 //REGISTER API
 app.post('/api/register', async (req, res, next) =>
 {
-	// incoming: username, password, firstname, lastname
-	// outgoing: username, password, firstname, lastname, id, saved_parks
+
+	// incoming: username, password, firstname, lastname, email, phonenumber
+	// outgoing: username, password, firstname, lastname, email, phonenumber, id, saved_parks
+
     // note: saved parks are start empty, later on when we have a multipage sign-up process we can send in the user's saved parks when registering.
 
 	var error = '';
     var saved_parks = [];
 
-	const { username,password,firstname,lastname } = req.body;
+
+	const { username,password,firstname,lastname, email, phonenumber } = req.body;
+
 
 	const db = client.db("COP4331_Group22");
 
@@ -78,7 +82,9 @@ app.post('/api/register', async (req, res, next) =>
         id++;
 	    //check if user exists
         try{
-            db.collection('Users').insertOne( { id:id,username:username,password:password,firstname:firstname,lastname:lastname, saved_parks:saved_parks });
+
+            db.collection('Users').insertOne( { id:id,username:username,password:password,firstname:firstname,lastname:lastname,email:email,phonenumber:phonenumber,saved_parks:saved_parks });
+
         }
         catch(e)
         {
