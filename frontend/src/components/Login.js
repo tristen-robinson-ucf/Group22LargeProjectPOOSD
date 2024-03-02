@@ -32,7 +32,9 @@ function Login()
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                //window.location.href = '/cards'; //we'll change this to what we want to redirect when we make the page
+
+                window.location.href = '/register';
+
             }
         }
         catch(e)
