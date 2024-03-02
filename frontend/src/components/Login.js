@@ -44,7 +44,7 @@ function Login()
         }    
     };
 
-    const app_name = 'group-22'
+    const app_name = 'group-22-0b4387ea5ed6'
     function buildPath(route)
     {
         if (process.env.NODE_ENV === 'production') 
