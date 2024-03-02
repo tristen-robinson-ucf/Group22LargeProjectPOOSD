@@ -29,6 +29,10 @@ class _LoginPage extends State<MyHomePage>{
   String user = "";
   String password = "";
 
+  bool _validateUser = false;
+  bool _validatePass = false;
+
+
   @override
   Widget build(BuildContext context) {
     const String appTitle = 'Theme Park Time Tracker';
@@ -49,7 +53,7 @@ class _LoginPage extends State<MyHomePage>{
 
           ),
           // Make buttons for inputs, aligned in the center
-          body: Padding(
+          body: SingleChildScrollView(
               padding: EdgeInsets.all(20.0),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -60,12 +64,14 @@ class _LoginPage extends State<MyHomePage>{
                         decoration: InputDecoration(
                             hintText: "Username",
                             border: OutlineInputBorder(),
+                            errorText: _validateUser ? "Please enter a Username" : null,
                             suffixIcon: IconButton(
                               onPressed: (){
                                 username_controller.clear();
                               },
                               icon: const Icon(Icons.clear),
                             )
+
                         )
                     ),
                     SizedBox(height: 30),
@@ -76,6 +82,7 @@ class _LoginPage extends State<MyHomePage>{
                       decoration: InputDecoration(
                         hintText: "Password",
                         border: OutlineInputBorder(),
+                        errorText: _validatePass ? "Please enter a Password" : null,
                         suffixIcon: IconButton(
                           onPressed: (){
                             password_controller.clear();
@@ -90,11 +97,22 @@ class _LoginPage extends State<MyHomePage>{
                       onPressed: () {
                         user = username_controller.text;
                         password = password_controller.text;
-                        Fluttertoast.showToast(msg: 'Logging in...');
+
+                        // change validate vars to reflect the completeness of the fields
+                        // if any are empty turn on the error text
+                        setState(() {
+                          _validateUser = user.isEmpty;
+                          _validatePass = password.isEmpty;
+                        });
+
+                        if (!_validatePass && !_validateUser){
+                          Fluttertoast.showToast(msg: "Logging in...");
+                        }
 
                       },
                       color: Colors.blueAccent,
                       child: const Text('Login', style: TextStyle(color: Colors.white)),
+
                     ),
                     // prompt the user to register if they do not have an account, move them to the register page
                     SizedBox(height: 60),
@@ -107,7 +125,7 @@ class _LoginPage extends State<MyHomePage>{
                                 text: 'Register here.',
                                 style: linkStyle,
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => _registerPage())),
+                                  ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => _registerLauncher())),
                               )
                             ]
                         )
@@ -123,8 +141,25 @@ class _LoginPage extends State<MyHomePage>{
   }
 }
 
+class _registerLauncher extends StatelessWidget{
+  const _registerLauncher ({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyRegPage(),
+    );
+  }
+}
+
+class MyRegPage extends StatefulWidget {
+
+  @override
+  _registerPage createState() => _registerPage();
+}
+
 // page to handle registration
-class _registerPage extends StatelessWidget{
+class _registerPage extends State<MyRegPage>{
   final firstName_controller = TextEditingController();
   final lastName_controller = TextEditingController();
   final username_controller = TextEditingController();
@@ -138,6 +173,13 @@ class _registerPage extends StatelessWidget{
   String lastName = "";
   String phone = "";
   String email = "";
+
+  bool _validateFirst = false;
+  bool _validateLast = false;
+  bool _validateEmail = false;
+  bool _validatePhone = false;
+  bool _validateUser = false;
+  bool _validatePass = false;
 
 
   @override
@@ -170,6 +212,7 @@ class _registerPage extends StatelessWidget{
                         controller: firstName_controller,
                         decoration: InputDecoration(
                             hintText: "First Name",
+                            errorText: _validateFirst ? "Please enter a First Name" : null,
                             border: OutlineInputBorder(),
                             suffixIcon: IconButton(
                               onPressed: (){
@@ -185,6 +228,7 @@ class _registerPage extends StatelessWidget{
                         decoration: InputDecoration(
                             hintText: "Last Name",
                             border: OutlineInputBorder(),
+                            errorText: _validateLast ? "Please enter a Last Name" : null,
                             suffixIcon: IconButton(
                               onPressed: (){
                                 lastName_controller.clear();
@@ -199,6 +243,7 @@ class _registerPage extends StatelessWidget{
                       decoration: InputDecoration(
                         hintText: "Phone Number",
                         border: OutlineInputBorder(),
+                        errorText: _validatePhone ? "Please enter a Phone Number" : null,
                         suffixIcon: IconButton(
                           onPressed: (){
                             phone_controller.clear();
@@ -213,6 +258,7 @@ class _registerPage extends StatelessWidget{
                       decoration: InputDecoration(
                         hintText: "Email",
                         border: OutlineInputBorder(),
+                        errorText: _validateEmail ? "Please enter an Email" : null,
                         suffixIcon: IconButton(
                           onPressed: (){
                             email_controller.clear();
@@ -227,6 +273,8 @@ class _registerPage extends StatelessWidget{
                         decoration: InputDecoration(
                             hintText: "Username",
                             border: OutlineInputBorder(),
+                            errorText: _validateUser ? "Please enter a Username" : null,
+
                             suffixIcon: IconButton(
                               onPressed: (){
                                 username_controller.clear();
@@ -253,6 +301,7 @@ class _registerPage extends StatelessWidget{
                       decoration: InputDecoration(
                         hintText: "Password",
                         border: OutlineInputBorder(),
+                        errorText: _validatePass ? "Please enter a Password" : null,
                         suffixIcon: IconButton(
                           onPressed: (){
                             password_controller.clear();
@@ -271,7 +320,22 @@ class _registerPage extends StatelessWidget{
                         email = email_controller.text;
                         phone = phone_controller.text;
 
-                        Fluttertoast.showToast(msg: 'Registering...');
+                        // update validate vars to reflect copleteness of the fields,
+                        // turn on error text if any are empty, if not go through with registration
+                        setState(() {
+                          _validateUser = user.isEmpty;
+                          _validatePass = password.isEmpty;
+                          _validateEmail = email.isEmpty;
+                          _validatePhone = phone.isEmpty;
+                          _validateFirst = firstName.isEmpty;
+                          _validateLast = lastName.isEmpty;
+                        });
+
+
+                        if (!_validateLast && !_validateFirst && !_validatePhone && !_validateEmail && !_validateUser && !_validatePass){
+                          Fluttertoast.showToast(msg: 'Registering...');
+                        }
+
 
                       },
                       color: Colors.blueAccent,
@@ -284,7 +348,6 @@ class _registerPage extends StatelessWidget{
     );
   }
 }
-
 
 // class HomePageState extends State<HomePage>{
 //   @override
