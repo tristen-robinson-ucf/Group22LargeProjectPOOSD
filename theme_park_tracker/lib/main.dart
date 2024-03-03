@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
+
 
 void main() => runApp( MyApp());
 
@@ -32,6 +36,12 @@ class _LoginPage extends State<MyHomePage>{
   bool _validateUser = false;
   bool _validatePass = false;
 
+  void initState() {
+    super.initState();
+    authenticateUser(user, password);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,81 +68,94 @@ class _LoginPage extends State<MyHomePage>{
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(height: 30),
-                    TextField(
-                        controller: username_controller,
-                        decoration: InputDecoration(
-                            hintText: "Username",
-                            border: OutlineInputBorder(),
-                            errorText: _validateUser ? "Please enter a Username" : null,
-                            suffixIcon: IconButton(
-                              onPressed: (){
-                                username_controller.clear();
-                              },
-                              icon: const Icon(Icons.clear),
-                            )
-
-                        )
-                    ),
-                    SizedBox(height: 30),
-                    TextField(
-                      controller: password_controller,
-                      // obscure the text so User can only see the current letter being input and not the whole string
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: "Password",
-                        border: OutlineInputBorder(),
-                        errorText: _validatePass ? "Please enter a Password" : null,
-                        suffixIcon: IconButton(
-                          onPressed: (){
-                            password_controller.clear();
-                          },
-                          icon: const Icon(Icons.clear),
-                        ),
+                    const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Login",
+                        style: TextStyle(fontSize: 30),
                       ),
                     ),
                     SizedBox(height: 30),
-                    // store input and prompt user that they are being logged in
-                    MaterialButton(
-                      onPressed: () {
-                        user = username_controller.text;
-                        password = password_controller.text;
+                    Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                            TextField(
+                            controller: username_controller,
+                            decoration: InputDecoration(
+                                hintText: "Username",
+                                border: OutlineInputBorder(),
+                                errorText: _validateUser ? "Please enter a Username" : null,
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    username_controller.clear();
+                                  },
+                                  icon: const Icon(Icons.clear),
+                                )
 
-                        // change validate vars to reflect the completeness of the fields
-                        // if any are empty turn on the error text
-                        setState(() {
-                          _validateUser = user.isEmpty;
-                          _validatePass = password.isEmpty;
-                        });
+                            )
+                        ),
+                         SizedBox(height: 30),
+                         TextField(
+                          controller: password_controller,
+                          // obscure the text so User can only see the current letter being input and not the whole string
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: "Password",
+                            border: OutlineInputBorder(),
+                            errorText: _validatePass ? "Please enter a Password" : null,
+                            suffixIcon: IconButton(
+                              onPressed: (){
+                                password_controller.clear();
+                              },
+                              icon: const Icon(Icons.clear),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        // store input and prompt user that they are being logged in
+                        MaterialButton(
+                          onPressed: () {
+                            user = username_controller.text;
+                            password = password_controller.text;
 
-                        if (!_validatePass && !_validateUser){
-                          Fluttertoast.showToast(msg: "Logging in...");
-                        }
+                            // change validate vars to reflect the completeness of the fields
+                            // if any are empty turn on the error text
+                            setState(() {
+                              _validateUser = user.isEmpty;
+                              _validatePass = password.isEmpty;
+                            });
 
-                      },
-                      color: Colors.blueAccent,
-                      child: const Text('Login', style: TextStyle(color: Colors.white)),
+                            if (!_validatePass && !_validateUser){
+                              Future<http.Response> response = authenticateUser(user, password);
 
-                    ),
-                    // prompt the user to register if they do not have an account, move them to the register page
-                    SizedBox(height: 60),
-                    RichText(
-                        text: TextSpan(
-                            style: defaultStyle,
-                            children: <TextSpan>[
-                              TextSpan(text: "Don't have an account? "),
-                              TextSpan (
-                                text: 'Register here.',
-                                style: linkStyle,
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => _registerLauncher())),
-                              )
-                            ]
+                            }
+
+                          },
+                          color: Colors.blueAccent,
+                          child: const Text('Login', style: TextStyle(color: Colors.white)),
+
+                        ),
+                        // prompt the user to register if they do not have an account, move them to the register page
+                        SizedBox(height: 60),
+                        RichText(
+                            text: TextSpan(
+                                style: defaultStyle,
+                                children: <TextSpan>[
+                                  TextSpan(text: "Don't have an account? "),
+                                  TextSpan (
+                                    text: 'Register here.',
+                                    style: linkStyle,
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => _registerLauncher())),
+                                  )
+                                ]
+                            )
                         )
+                        ]
+                      )
                     )
-
-
-
                   ]
               )
           )
@@ -207,6 +230,13 @@ class _registerPage extends State<MyRegPage>{
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const FittedBox(
+                    fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Register",
+                        style: TextStyle(fontSize: 30),
+                      ),
+                    ),
                     SizedBox(height: 30),
                     TextField(
                         controller: firstName_controller,
@@ -348,6 +378,93 @@ class _registerPage extends State<MyRegPage>{
     );
   }
 }
+
+class User {
+  final int id;
+  final String firstname;
+  final String lastname;
+  final String error;
+
+  const User({
+    required this.id,
+    required this.firstname,
+    required this.lastname,
+    required this.error,
+
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {
+      'id': int id,
+      'firstname': String firstname,
+      'Last Name': String lastname,
+      'error' : String error,
+      } =>
+          User(
+            id: id,
+            firstname: firstname,
+            lastname: lastname,
+            error: error,
+          ),
+      _ => throw const FormatException('Failed to load User.'),
+    };
+  }
+}
+
+Future<http.Response> authenticateUser(String username, String password) async {
+  http.Response response = await http.post(
+      Uri.parse('/'),
+      headers: <String,String> {
+      'Content-Type': 'application/json',
+      },
+      body: jsonEncode(<String, String> {
+        "username": username.trim(),
+        "password": password.trim(),
+      }),
+  );
+
+  if (response.statusCode == 200){
+    print(response.body + " This one here" );
+    var responseBody = json.decode(response.body);
+    print(responseBody['firstname']);
+
+  }
+  else {
+    print("FAILED REQUEST");
+  }
+    return response;
+}
+
+
+
+
+class Parks {
+  final int ID;
+  final String Name;
+
+  const Parks({
+    required this.ID,
+    required this.Name,
+
+  });
+
+  factory Parks.fromJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {
+      'ID': int ID,
+      'Name': String Name,
+      } =>
+          Parks(
+            ID: ID,
+            Name: Name,
+          ),
+      _ => throw const FormatException('Failed to load album.'),
+    };
+  }
+}
+
+
 
 // class HomePageState extends State<HomePage>{
 //   @override
