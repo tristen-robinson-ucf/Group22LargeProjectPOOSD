@@ -102,6 +102,7 @@ app.post('/api/login', async (req, res, next) =>
 });
 
 //DELETE USER API - if we wanted to have the ability for a user to cancel their account
+// need to be tested
 app.post('/api/deleteUser', async (req, res, next) =>
 {
 	// incoming: username
@@ -123,10 +124,35 @@ app.post('/api/deleteUser', async (req, res, next) =>
 
 	var ret = { error:error };
 	res.status(200).json(ret);
-}
+});
+
+//UPDATE USER API - might not need but just in case
+// need to be tested
+app.post('/api/updateUser', async (req, res, next) =>
+{
+	// incoming: id, username, password, firstname, lastname - using this for now (not sure how we will do it)
+	// outgoing: username, password, firstname, lastname
+
+	var error = '';
+
+	const { username, password, firstname, lastname } = req.body;
+
+	const db = client.db("COP4331_Group22");
+
+	// searches by id and updates every field in Users
+	try{
+		db.collection('Users').updateOne({id:id}, $set: { username:username, password:password, firstname:firstname, lastname:lastname }};
+	catch(e){
+		error = e.toString();
+	}
+
+	var ret = { error:error };
+	res.status(200).json(ret);
+});
 
 
 // SEARCH API - Searches for users 
+// need to be tested
 app.post('/api/search', async (req, res, next) => 
 {
   // incoming: userId, search
