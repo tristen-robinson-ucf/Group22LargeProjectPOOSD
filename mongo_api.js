@@ -101,6 +101,30 @@ app.post('/api/login', async (req, res, next) =>
 	
 });
 
+//DELETE USER API - if we wanted to have the ability for a user to cancel their account
+app.post('/api/deleteUser', async (req, res, next) =>
+{
+	// incoming: username
+	// outgoing: error
+
+	var error = '';
+
+	//deletes with username - should have different usernames (change register if needed later)
+	const { username } = req.body;
+
+	const db = client.db("COP4331_Group22");
+
+	try{
+		db.collection('Users').deleteOne({ username:username });
+	}
+	catch(e){
+		error = e.toString();
+	}
+
+	var ret = { error:error };
+	res.status(200).json(ret);
+}
+
 
 // SEARCH API - Searches for users 
 app.post('/api/search', async (req, res, next) => 
