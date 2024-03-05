@@ -107,9 +107,10 @@ app.post('/api/login', async (req, res, next) =>
 app.post('/api/deleteUser', async (req, res, next) =>
 {
 	// incoming: username
-	// outgoing: error
+	// outgoing: message, error
 
 	var error = '';
+	var message = 'User has been deleted';
 
 	//deletes with username - should have different usernames (change register if needed later)
 	const { username } = req.body;
@@ -123,7 +124,7 @@ app.post('/api/deleteUser', async (req, res, next) =>
 		error = e.toString();
 	}
 
-	var ret = { error:error };
+	var ret = { message:message, error:error };
 	res.status(200).json(ret);
 });
 
@@ -132,9 +133,10 @@ app.post('/api/deleteUser', async (req, res, next) =>
 app.post('/api/updateUser', async (req, res, next) =>
 {
 	// incoming: id, username, password, firstname, lastname, email, phone - using this for now (not sure how we will do it)
-	// outgoing: username, password, firstname, lastname, email, phone
+	// outgoing: message, error
 
 	var error = '';
+	var message = 'User has been updated';
 
 	const { username, password, firstname, lastname } = req.body;
 
@@ -147,7 +149,7 @@ app.post('/api/updateUser', async (req, res, next) =>
 		error = e.toString();
 	}
 
-	var ret = { error:error };
+	var ret = { message:message,error:error };
 	res.status(200).json(ret);
 });
 
