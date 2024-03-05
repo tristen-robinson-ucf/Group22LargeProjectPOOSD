@@ -39,15 +39,16 @@ client.connect(console.log("mongodb connected"));
 app.listen(5000); // start Node + Express server on port 5000
 
 
-//REGISTER API
+//REGISTER API - waiting for database to be updated
 app.post('/api/register', async (req, res, next) =>
 {
-	// incoming: username, password, firstname, lastname
-	// outgoing: username, password, firstname, lastname
+	// incoming: username, password, firstname, lastname, email, phone
+	// outgoing: username, password, firstname, lastname, email, phone
 
 	var error = '';
+	var saved_parks = [];
 
-	const { username,password,firstname,lastname } = req.body;
+	const { username,password,firstname,lastname,email,phone } = req.body;
 
 	const db = client.db("COP4331_Group22");
 
@@ -56,7 +57,7 @@ app.post('/api/register', async (req, res, next) =>
             id++;
             //check if user exists
 	        try{
-		        db.collection('Users').insertOne( { id:id,username:username,password:password,firstname:firstname,lastname:lastname });
+		        db.collection('Users').insertOne( { id:id,username:username,password:password,firstname:firstname,lastname:lastname,email:email,phone:phone,saved_parks:saved_parks });
 	        }
 	        catch(e)
 	        {
@@ -126,12 +127,12 @@ app.post('/api/deleteUser', async (req, res, next) =>
 	res.status(200).json(ret);
 });
 
-//UPDATE USER API - might not need but just in case
+//UPDATE USER API - might not need but just in case (not including saved_parks)
 // need to be tested
 app.post('/api/updateUser', async (req, res, next) =>
 {
-	// incoming: id, username, password, firstname, lastname - using this for now (not sure how we will do it)
-	// outgoing: username, password, firstname, lastname
+	// incoming: id, username, password, firstname, lastname, email, phone - using this for now (not sure how we will do it)
+	// outgoing: username, password, firstname, lastname, email, phone
 
 	var error = '';
 
@@ -141,7 +142,7 @@ app.post('/api/updateUser', async (req, res, next) =>
 
 	// searches by id and updates every field in Users
 	try{
-		db.collection('Users').updateOne({id:id}, $set: { username:username, password:password, firstname:firstname, lastname:lastname }};
+		db.collection('Users').updateOne({id:id}, $set: { username:username, password:password, firstname:firstname, lastname:lastname, email:email, phone:phone }};
 	catch(e){
 		error = e.toString();
 	}
