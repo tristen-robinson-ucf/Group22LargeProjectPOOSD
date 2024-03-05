@@ -156,7 +156,7 @@ app.post('/api/updateUser', async (req, res, next) =>
 
 // SEARCH API - Searches for users 
 // need to be tested
-app.post('/api/search', async (req, res, next) => 
+app.post('/api/searchUser', async (req, res, next) => 
 {
   // incoming: userId, search
   // outgoing: results[], error
