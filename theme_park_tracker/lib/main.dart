@@ -1,168 +1,288 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 
-void main() => runApp( MyApp());
+Future<User> authenticateUser(String username, String password) async {
+  final response = await http.post(
+    Uri.parse('https://group-22-0b4387ea5ed6.herokuapp.com/api/login'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode(<String, String>{
+      'username': username.trim(),
+      'password': password.trim(),
+    }),
+  );
 
-class MyApp extends StatelessWidget {
-  const MyApp ({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
-    );
+  if (response.statusCode == 200) {
+    return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+  }
+  else {
+    throw Exception('Failed to create user.');
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class User {
+  final int id;
+  final String firstname;
+  final String lastname;
+  final String error;
 
-  @override
-  _LoginPage createState() => _LoginPage();
+  const User({
+    required this.id,
+    required this.firstname,
+    required this.lastname,
+    required this.error,
+
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {
+      'id': int id,
+      'firstname': String firstname,
+      'lastname': String lastname,
+      'error' : String error,
+      } =>
+          User(
+            id: id,
+            firstname: firstname,
+            lastname: lastname,
+            error: error,
+          ),
+      _ => throw const FormatException('Failed to load User.'),
+    };
+  }
 }
 
-class _LoginPage extends State<MyHomePage>{
-  final username_controller = TextEditingController();
-  final password_controller = TextEditingController();
+void main() {
+  runApp(const MaterialApp(
+    home: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() {
+    return _MyAppState();
+  }
+}
+
+class _MyAppState extends State<MyApp> {
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
   String user = "";
   String password = "";
 
   bool _validateUser = false;
   bool _validatePass = false;
 
-  void initState() {
-    super.initState();
-    authenticateUser(user, password);
-  }
-
+  Future<User>? _futureUser;
 
 
   @override
   Widget build(BuildContext context) {
-    const String appTitle = 'Theme Park Time Tracker';
-    TextStyle defaultStyle = TextStyle(color: Colors.grey, fontSize: 20.0);
-    TextStyle linkStyle = TextStyle(color: Colors.blue);
     return MaterialApp(
+      title: 'Theme Park Time Tracker',
       theme: ThemeData(
-          primarySwatch: Colors.blue,
-          appBarTheme: AppBarTheme(
-            color: Colors.indigo,
-          )
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        appBarTheme: const AppBarTheme(color: Colors.indigo),
       ),
       home: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text('Theme Park Time Tracker'),
-            titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('ThemeParkTimeTracker'),
+          titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(8),
 
+            child: (_futureUser == null) ? buildColumn() : buildFutureBuilder(),
           ),
-          // Make buttons for inputs, aligned in the center
-          body: SingleChildScrollView(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        "Login",
-                        style: TextStyle(fontSize: 30),
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Container(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                            TextField(
-                            controller: username_controller,
-                            decoration: InputDecoration(
-                                hintText: "Username",
-                                border: OutlineInputBorder(),
-                                errorText: _validateUser ? "Please enter a Username" : null,
-                                suffixIcon: IconButton(
-                                  onPressed: (){
-                                    username_controller.clear();
-                                  },
-                                  icon: const Icon(Icons.clear),
-                                )
+        )
 
-                            )
-                        ),
-                         SizedBox(height: 30),
-                         TextField(
-                          controller: password_controller,
-                          // obscure the text so User can only see the current letter being input and not the whole string
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            hintText: "Password",
-                            border: OutlineInputBorder(),
-                            errorText: _validatePass ? "Please enter a Password" : null,
-                            suffixIcon: IconButton(
-                              onPressed: (){
-                                password_controller.clear();
-                              },
-                              icon: const Icon(Icons.clear),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        // store input and prompt user that they are being logged in
-                        MaterialButton(
-                          onPressed: () {
-                            user = username_controller.text;
-                            password = password_controller.text;
-
-                            // change validate vars to reflect the completeness of the fields
-                            // if any are empty turn on the error text
-                            setState(() {
-                              _validateUser = user.isEmpty;
-                              _validatePass = password.isEmpty;
-                            });
-
-                            if (!_validatePass && !_validateUser){
-                              Future<http.Response> response = authenticateUser(user, password);
-
-                            }
-
-                          },
-                          color: Colors.blueAccent,
-                          child: const Text('Login', style: TextStyle(color: Colors.white)),
-
-                        ),
-                        // prompt the user to register if they do not have an account, move them to the register page
-                        SizedBox(height: 60),
-                        RichText(
-                            text: TextSpan(
-                                style: defaultStyle,
-                                children: <TextSpan>[
-                                  TextSpan(text: "Don't have an account? "),
-                                  TextSpan (
-                                    text: 'Register here.',
-                                    style: linkStyle,
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => _registerLauncher())),
-                                  )
-                                ]
-                            )
-                        )
-                        ]
-                      )
-                    )
-                  ]
-              )
-          )
       ),
     );
   }
+  Column buildColumn() {
+    TextStyle defaultStyle = TextStyle(color: Colors.grey, fontSize: 20.0);
+    TextStyle linkStyle = TextStyle(color: Colors.blue);
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "Login",
+              style: TextStyle(fontSize: 30),
+            ),
+          ),
+          SizedBox(height: 30),
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                          hintText: "Username",
+                          border: OutlineInputBorder(),
+                          errorText: _validateUser ? "Please enter a Username" : null,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              _usernameController.clear();
+                            },
+                            icon: const Icon(Icons.clear),
+                          )
+                      )
+                  ),
+                  SizedBox(height: 30),
+                  TextField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                          hintText: "Password",
+                          border: OutlineInputBorder(),
+                          errorText: _validatePass ? "Please enter a Password" : null,
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              _passwordController.clear();
+                            },
+                            icon: const Icon(Icons.clear),
+                          )
+                      )
+                  ),
+                  SizedBox(height: 30),
+                  MaterialButton(
+                    onPressed: () {
+                      user = _usernameController.text;
+                      password = _passwordController.text;
+
+
+                      setState(() {
+                        _validateUser = user.isEmpty;
+                        _validatePass = password.isEmpty;
+
+                        if (!_validatePass && !_validateUser) {
+                          _futureUser = authenticateUser(
+                              _usernameController.text,
+                              _passwordController.text);
+                        };
+                      });
+                    },
+                    color: Colors.blueAccent,
+                    child: const Text('Login', style: TextStyle(color: Colors.white)),
+                  ),
+                  SizedBox(height: 60),
+                  RichText(
+                      text: TextSpan(
+                        style: defaultStyle,
+                        children: <TextSpan>[
+                          TextSpan(text: "Don't have an account? "),
+                          TextSpan(
+                            text: 'Register here.',
+                            style: linkStyle,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => const _registerLauncher())),
+                          )
+                        ]
+                      ))
+                ]
+            ),
+          )
+        ]
+    );
+  }
+
+  FutureBuilder<User> buildFutureBuilder() {
+    return FutureBuilder<User>(
+      future: _futureUser,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.id != -1) {
+          Fluttertoast.showToast(msg: 'Welcome ${snapshot.data!.firstname}, logging you in.');
+          final user = snapshot.data;
+          if (user?.id != -1){
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              Navigator.push(context, MaterialPageRoute( builder: (context) => _landingPage(firstName: snapshot.data!.firstname, lastName: snapshot.data!.lastname, id: snapshot.data!.id)));
+            });
+            return Container();
+
+            //Navigator.push( context, MaterialPageRoute( builder: (context) => _landingPage(firstName: user!.firstname, lastName: user!.lastname, id: user!.id)));
+          }
+          else {
+            return Text('Cannot login right now.');
+          }
+          return Container();
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        } else if (snapshot.hasData && snapshot.data!.id == -1){
+          Fluttertoast.showToast(msg: "Username/Password combination incorrect");
+          return buildColumn();
+        }
+
+        return const CircularProgressIndicator();
+      },
+    );
+  }
 }
+
+class _landingPage extends StatelessWidget {
+  String firstName, lastName;
+  int id;
+
+  _landingPage({required this.firstName, required this.lastName, required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
+        title: 'Landing Page',
+        theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Landing Page'),
+          titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+        ),
+        body: const SingleChildScrollView(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text('Landing Page', style: TextStyle(fontSize: 30)),
+              )
+            ],
+          )
+        )
+      )
+    );
+  }
+
+}
+
+
 
 class _registerLauncher extends StatelessWidget{
   const _registerLauncher ({super.key});
@@ -379,66 +499,6 @@ class _registerPage extends State<MyRegPage>{
   }
 }
 
-class User {
-  final int id;
-  final String firstname;
-  final String lastname;
-  final String error;
-
-  const User({
-    required this.id,
-    required this.firstname,
-    required this.lastname,
-    required this.error,
-
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-      'id': int id,
-      'firstname': String firstname,
-      'Last Name': String lastname,
-      'error' : String error,
-      } =>
-          User(
-            id: id,
-            firstname: firstname,
-            lastname: lastname,
-            error: error,
-          ),
-      _ => throw const FormatException('Failed to load User.'),
-    };
-  }
-}
-
-Future<http.Response> authenticateUser(String username, String password) async {
-  http.Response response = await http.post(
-      Uri.parse('/'),
-      headers: <String,String> {
-      'Content-Type': 'application/json',
-      },
-      body: jsonEncode(<String, String> {
-        "username": username.trim(),
-        "password": password.trim(),
-      }),
-  );
-
-  if (response.statusCode == 200){
-    print(response.body + " This one here" );
-    var responseBody = json.decode(response.body);
-    print(responseBody['firstname']);
-
-  }
-  else {
-    print("FAILED REQUEST");
-  }
-    return response;
-}
-
-
-
-
 class Parks {
   final int ID;
   final String Name;
@@ -463,6 +523,8 @@ class Parks {
     };
   }
 }
+
+
 
 
 
