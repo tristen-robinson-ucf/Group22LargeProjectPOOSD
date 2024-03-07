@@ -39,11 +39,11 @@ client.connect(console.log("mongodb connected"));
 app.listen(5000); // start Node + Express server on port 5000
 
 
-//REGISTER API - waiting for database to be updated
+//REGISTER API
 app.post('/api/register', async (req, res, next) =>
 {
 	// incoming: username, password, firstname, lastname, email, phone
-	// outgoing: username, password, firstname, lastname, email, phone
+	// outgoing: error
 
 	var error = '';
 	var saved_parks = [];
@@ -138,7 +138,7 @@ app.post('/api/updateUser', async (req, res, next) =>
 	var error = '';
 	var message = 'User has been updated';
 
-	const { username, password, firstname, lastname } = req.body;
+	const { username, password, firstname, lastname, email, phone } = req.body;
 
 	const db = client.db("COP4331_Group22");
 
@@ -154,30 +154,136 @@ app.post('/api/updateUser', async (req, res, next) =>
 });
 
 
-// SEARCH API - Searches for users 
+// SEARCH USER API - Searches for users 
 // need to be tested
 app.post('/api/searchUser', async (req, res, next) => 
 {
-  // incoming: userId, search
-  // outgoing: results[], error
+	// incoming: userId, search
+	// outgoing: results[], error
 
-  var error = '';
+	var error = '';
 
-  const { userId, search } = req.body;
+	const { userId, search } = req.body;
 
-  var _search = search.trim();
+	var _search = search.trim();
   
-  const db = client.db('COP4331_Group22');
-  const results = await db.collection('Users').find({"username":{$regex:_search+'.*', $options:'i'}}).toArray();
+	const db = client.db('COP4331_Group22');
+	const results = await db.collection('Users').find({"username":{$regex:_search+'.*', $options:'i'}}).toArray();
   
-  var _ret = [];
-  for( var i=0; i<results.length; i++ )
-  {
-    _ret.push( results[i].username );
-  }
+	var _ret = [];
+	for( var i=0; i<results.length; i++ )
+	{
+		_ret.push( results[i].username );
+	}
   
-  var ret = {results:_ret, error:error};
-  res.status(200).json(ret);
+  	var ret = {results:_ret, error:error};
+  	res.status(200).json(ret);
 });
 
+// ADD TRIP API
+// need to test
+app.post('/api/addTrip', async (req, res, next) =>
+{
+	// incoming: name, startDate, endDate, userID
+	// outgoing: error
 
+	var error = '';
+
+	const { name,startDate,endDate,userID } = req.body;
+
+	const db = client.db('COP4331_Group22');
+
+	db.collection('Trips').countDocuments().then(id =>
+        {
+            id++;
+            //check if trip exists
+	        try{
+		        db.collection('Trips').insertOne( { id:id,name:name,startDate:startDate,endDate:endDate,userID:userID });
+	        }
+	        catch(e)
+	        {
+			// trip already exists
+			error = e.toString();
+	        }
+        });
+	
+	var ret = { error:error };
+	res.status(200).json(ret);
+});
+
+// DELETE TRIP API
+// need to test
+app.post('/api/deleteTrip', async (req, res, next) =>
+{
+	// incoming: name
+	// outgoing: message, error
+
+	var error = '';
+	var message = 'Trip has been deleted';
+
+	//deletes with name - should have different trip names
+	const { name } = req.body;
+
+	const db = client.db("COP4331_Group22");
+
+	try{
+		db.collection('Trips').deleteOne({ name:name });
+	}
+	catch(e){
+		error = e.toString();
+	}
+
+	var ret = { message:message, error:error };
+	res.status(200).json(ret);
+});
+
+// SEARCH TRIP API
+// need to test
+app.post('/api/searchTrip', async (req, res, next) =>
+{
+	// incoming: userID, search
+	// outgoing: results[], error
+
+	var error = '';
+
+	const { userID, search } = req.body;
+	
+	var _search = search.trim();
+	  
+	const db = client.db('COP4331_Group22');
+	const results = await db.collection('Trips').find({"name":{$regex:_search+'.*', $options:'i'}}).toArray();
+	  
+	var _ret = [];
+	for( var i=0; i<results.length; i++ )
+	{
+		_ret.push( results[i].name );
+	}
+	  
+	var ret = {results:_ret, error:error};
+	res.status(200).json(ret);
+});
+
+// UPDATE TRIP API
+// need to test
+app.post('/api/updateTrip', async (req, res, next) =>
+{
+	// incoming: id, name, startDate, endDate - using this for now (not sure how we will do it)
+	// outgoing: message, error
+
+	var error = '';
+	var message = 'Trip has been updated';
+
+	const { name,startDate,endDate } = req.body;
+
+	const db = client.db("COP4331_Group22");
+
+	// searches by id and updates every field in Trips
+	try{
+		db.collection('Trips').updateOne({id:id}, $set: { name:name, startDate:startDate, endDate:endDate }};
+	catch(e){
+		error = e.toString();
+	}
+
+	var ret = { message:message,error:error };
+	res.status(200).json(ret);
+});
