@@ -144,7 +144,8 @@ app.post('/api/updateUser', async (req, res, next) =>
 
 	// searches by id and updates every field in Users
 	try{
-		db.collection('Users').updateOne({id:id}, $set: { username:username, password:password, firstname:firstname, lastname:lastname, email:email, phone:phone }};
+		db.collection('Users').updateOne({id:id}, {$set: { username:username, password:password, firstname:firstname, lastname:lastname, email:email, phone:phone }});
+	}
 	catch(e){
 		error = e.toString();
 	}
@@ -280,7 +281,8 @@ app.post('/api/updateTrip', async (req, res, next) =>
 
 	// searches by id and updates every field in Trips
 	try{
-		db.collection('Trips').updateOne({id:id}, $set: { name:name, startDate:startDate, endDate:endDate }};
+		db.collection('Trips').updateOne({id:id}, {$set: { name:name, startDate:startDate, endDate:endDate }});
+	}
 	catch(e){
 		error = e.toString();
 	}
