@@ -1,14 +1,14 @@
 import React from 'react';
 
 import PageTitle from '../components/PageTitle';
-import Landing from '../components/Landing';
+import FavoriteParks from '../components/FavoriteParks';
 
 const LandingPage = () =>
 {
 
     return(
       <div>
-       <Landing/>
+       <FavoriteParks/>
       </div>
     );
 };
