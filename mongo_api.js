@@ -180,7 +180,7 @@ app.post('/api/searchUser', async (req, res, next) =>
   	res.status(200).json(ret);
 });
 
-// ADD TRIP API
+// ADD TRIP API - Adds a trip
 // need to test
 app.post('/api/addTrip', async (req, res, next) =>
 {
@@ -211,7 +211,7 @@ app.post('/api/addTrip', async (req, res, next) =>
 	res.status(200).json(ret);
 });
 
-// DELETE TRIP API
+// DELETE TRIP API - deletes a trip
 // need to test
 app.post('/api/deleteTrip', async (req, res, next) =>
 {
@@ -237,7 +237,7 @@ app.post('/api/deleteTrip', async (req, res, next) =>
 	res.status(200).json(ret);
 });
 
-// SEARCH TRIP API
+// SEARCH TRIP API - searches for a trip by name
 // need to test
 app.post('/api/searchTrip', async (req, res, next) =>
 {
@@ -263,7 +263,7 @@ app.post('/api/searchTrip', async (req, res, next) =>
 	res.status(200).json(ret);
 });
 
-// UPDATE TRIP API
+// UPDATE TRIP API - updates a trip
 // need to test
 app.post('/api/updateTrip', async (req, res, next) =>
 {
