@@ -188,6 +188,7 @@ app.post('/api/addTrip', async (req, res, next) =>
 	// outgoing: error
 
 	var error = '';
+	var rides = [];
 
 	const { name,startDate,endDate,userID } = req.body;
 
@@ -198,7 +199,7 @@ app.post('/api/addTrip', async (req, res, next) =>
             id++;
             //check if trip exists
 	        try{
-		        db.collection('Trips').insertOne( { id:id,name:name,startDate:startDate,endDate:endDate,userID:userID });
+		        db.collection('Trips').insertOne( { id:id,name:name,startDate:startDate,endDate:endDate,userID:userID,rides:rides });
 	        }
 	        catch(e)
 	        {
