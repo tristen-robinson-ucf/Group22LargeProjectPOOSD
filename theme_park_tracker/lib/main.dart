@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -11,6 +12,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:theme_park_tracker/tabs/PlannedTrips.dart';
+import 'package:theme_park_tracker/tabs/SavedParks.dart';
 
 
 Future<User> authenticateUser(String username, String password) async {
@@ -246,8 +249,11 @@ class _MyAppState extends State<MyApp> {
 class _landingPage extends StatelessWidget {
   String firstName, lastName;
   int id;
+  List<int> parkArr = [64, 6];
+
 
   _landingPage({required this.firstName, required this.lastName, required this.id});
+
 
   @override
   Widget build(BuildContext context) {
@@ -255,28 +261,61 @@ class _landingPage extends StatelessWidget {
     return MaterialApp(
         title: 'Landing Page',
         theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Landing Page'),
-          titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
-        ),
-        body: const SingleChildScrollView(
-          padding: EdgeInsets.all(8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          appBarTheme: const AppBarTheme(color: Colors.indigo),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          tabBarTheme: const TabBarTheme(dividerColor: Colors.black, indicatorColor: Colors.indigo, labelColor: Colors.indigo, unselectedLabelColor: Colors.grey),
+    ),
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+              centerTitle: true,
+              title: Text("Welcome " + firstName),
+              titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+          ),
+          body: Column(
             children: [
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text('Landing Page', style: TextStyle(fontSize: 30)),
-              )
+              const TabBar(
+                  tabs: [
+                    Tab(text: "Saved Parks"),
+                    Tab(text: "Planned Trips"),
+                  ],
+              ),
+              Expanded(
+                child: TabBarView(children: [
+
+                  SavedParks(parkArr: parkArr),
+                  PlannedTrips(),
+                ])
+              ),
             ],
-          )
-        )
+
+          ),
+        ),
+        // appBar: AppBar(
+        //   centerTitle: true,
+        //   title: const Text('Landing Page'),
+        //   titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+        // ),
+        // body: const SingleChildScrollView(
+        //   padding: EdgeInsets.all(8),
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       FittedBox(
+        //         fit: BoxFit.scaleDown,
+        //         child: Text('Landing Page', style: TextStyle(fontSize: 30)),
+        //       )
+        //     ],
+        //   )
+        // )
       )
+    );
+  }
+
+  Column savedParks(){
+    return Column(
+
     );
   }
 
@@ -499,30 +538,6 @@ class _registerPage extends State<MyRegPage>{
   }
 }
 
-class Parks {
-  final int ID;
-  final String Name;
-
-  const Parks({
-    required this.ID,
-    required this.Name,
-
-  });
-
-  factory Parks.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-      'ID': int ID,
-      'Name': String Name,
-      } =>
-          Parks(
-            ID: ID,
-            Name: Name,
-          ),
-      _ => throw const FormatException('Failed to load album.'),
-    };
-  }
-}
 
 
 
