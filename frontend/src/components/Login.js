@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import RegisterPage from '../pages/RegisterPage';
-import {Link} from 'react-router-dom';
 
 function Login()
 {
@@ -35,7 +33,7 @@ function Login()
 
                 setMessage('');
 
-                window.location.href = '/landing';
+                window.location.href = '/register';
 
             }
         }
@@ -68,10 +66,7 @@ function Login()
         <span id="inner-title">PLEASE LOG IN</span><br />
         <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} /><br />
         <input type="password" id="loginPassword" placeholder="Password" ref={(c) => loginPassword = c} /><br />
-        <input type="submit" id="loginButton" class="buttons" value = "Log In" onClick={doLogin} />
-        <Link to="/register">
-            <input type="submit" id="registerDiv" class="buttons" value="Register" />
-        </Link>
+        <input type="submit" id="loginButton" class="buttons" value = "Do It" onClick={doLogin} />
         </form>
         <span id="loginResult">{message}</span>
     </div>
