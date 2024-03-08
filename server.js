@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -22,21 +20,14 @@ app.use((req, res, next) =>
   next();
 });
 
+app.listen(5000); // start Node + Express server on port 5000
 
-// Ashers Database - main one 
+
+// Database
 const url = 'mongodb+srv://asher12353:COP4331-19thGroup@cluster0.vwkhdxi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
-
-// Batmans Testing 
-// const url = 'mongodb+srv://batman:0MYnNRWKo0Mchv9N@cluster0.r8ymchg.mongodb.net/';
-// const MongoClient = require("mongodb").MongoClient;
-// const client = new MongoClient(url);
-// client.connect(console.log("mongodb connected"));
-
-
-app.listen(3000); // start Node + Express server on port 5000
 
 
 //REGISTER API
@@ -103,7 +94,6 @@ app.post('/api/login', async (req, res, next) =>
 });
 
 //DELETE USER API - if we wanted to have the ability for a user to cancel their account
-// need to be tested
 app.post('/api/deleteUser', async (req, res, next) =>
 {
 	// incoming: username
@@ -129,22 +119,21 @@ app.post('/api/deleteUser', async (req, res, next) =>
 });
 
 //UPDATE USER API - might not need but just in case (not including saved_parks)
-// need to be tested
 app.post('/api/updateUser', async (req, res, next) =>
 {
-	// incoming: id, username, password, firstname, lastname, email, phone - using this for now (not sure how we will do it)
+	// incoming: username, password, firstname, lastname, email, phone
 	// outgoing: message, error
 
 	var error = '';
 	var message = 'User has been updated';
 
-	const { id, username, password, firstname, lastname, email, phone } = req.body;
+	const { username, password, firstname, lastname, email, phone } = req.body;
 
 	const db = client.db("COP4331_Group22");
 
-	// searches by id and updates every field in Users
+	// searches by username (every user should have different usernames) and updates every field in Users
 	try{
-		db.collection('Users').updateOne({id:id}, {$set: { username:username, password:password, firstname:firstname, lastname:lastname, email:email, phone:phone }});
+		db.collection('Users').updateOne({username:username}, {$set: { password:password, firstname:firstname, lastname:lastname, email:email, phone:phone }});
 	}
 	catch(e){
 		error = e.toString();
@@ -156,7 +145,7 @@ app.post('/api/updateUser', async (req, res, next) =>
 
 
 // SEARCH USER API - Searches for users 
-// need to be tested
+// need to be tested - error with .trim()
 app.post('/api/searchUser', async (req, res, next) => 
 {
 	// incoming: userId, search
@@ -191,7 +180,7 @@ app.post('/api/addTrip', async (req, res, next) =>
 	var error = '';
 	var rides = [];
 
-	const { name,startDate,endDate,userID } = req.body;
+	const { name,startDate,endDate,userID,parkID } = req.body;
 
 	const db = client.db('COP4331_Group22');
 
@@ -200,7 +189,7 @@ app.post('/api/addTrip', async (req, res, next) =>
             id++;
             //check if trip exists
 	        try{
-		        db.collection('Trips').insertOne( { id:id,name:name,startDate:startDate,endDate:endDate,userID:userID,rides:rides });
+		        db.collection('Trips').insertOne( { id:id,name:name,startDate:startDate,endDate:endDate,userID:userID,parkID:parkID,rides:rides });
 	        }
 	        catch(e)
 	        {
