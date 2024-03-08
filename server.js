@@ -36,7 +36,7 @@ client.connect(console.log("mongodb connected"));
 // client.connect(console.log("mongodb connected"));
 
 
-app.listen(5000); // start Node + Express server on port 5000
+app.listen(3000); // start Node + Express server on port 5000
 
 
 //REGISTER API
@@ -138,7 +138,7 @@ app.post('/api/updateUser', async (req, res, next) =>
 	var error = '';
 	var message = 'User has been updated';
 
-	const { username, password, firstname, lastname, email, phone } = req.body;
+	const { id, username, password, firstname, lastname, email, phone } = req.body;
 
 	const db = client.db("COP4331_Group22");
 
