@@ -159,6 +159,7 @@ class _MyAppState extends State<MyApp> {
                   ),
                   SizedBox(height: 30),
                   TextField(
+                    obscureText: true,
                       controller: _passwordController,
                       decoration: InputDecoration(
                           hintText: "Password",

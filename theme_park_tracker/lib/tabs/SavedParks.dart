@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_park_tracker/tabs/listItems.dart';
 import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 
 class SavedParks extends StatefulWidget{
   List<int> parkArr;
@@ -104,7 +105,7 @@ class _WaitTimes extends State<WaitTimes>{
     try{
       var response = await Dio().get('https://queue-times.com/parks/$parkNum/queue_times.json');
       if (response.statusCode == 200){
-        setState(() {
+        setState(() async {
          Map<String, dynamic> json = jsonDecode(response.toString());
          List<Land> lands = (json['lands'] as List).map((landJson) {
            return Land(
@@ -134,18 +135,65 @@ class _WaitTimes extends State<WaitTimes>{
          for (Land land in lands){
            for (Ride ride in land.rides){
              List<int> curr = [];
-             curr.add(ride.waitTime);
-             getAvgData(ride.id);
-             curr.add(avgWaits[ride.id]!);
-             print(curr);
+             if (ride.isOpen == false){
+               curr.add(-1);
+             }
+             else{
+               curr.add(ride.waitTime);
+             }
+
+             curr.add(ride.id);
+             // getAvgData(ride.id);
+             // curr.add(avgWaits[ride.id]!);
+             // print(curr);
              rideWaits.putIfAbsent(ride.name, () => curr);
+
+             try{
+               var rideNum = ride.id;
+               var response2 = await Dio().get(
+                   'https://queue-times.com/en-US/parks/$parkNum/rides/$rideNum/average_histogram.json');
+               if (response2.statusCode == 200){
+                 setState(() {
+                   String respString2 = response2.toString();
+
+                   // parse the string into map , dynamic to be able to handle it
+                   Map<String, dynamic> jsonMap = jsonDecode(respString2);
+
+                   // map the string dynamics into new entries of string and double
+                   // this way we have a string with range of values and the double reflecting their occurence rate on the histogram
+                   Map<String, double> avgMap = jsonMap.map((key, value) {
+                     return MapEntry(key, value.toDouble());
+                   });
+
+                   double max = 0;
+                   String maxKey = "";
+
+                   avgMap.forEach((key, value) {
+                     if (value > max) {
+                       max = value;
+                       maxKey = key;
+                     }
+                   });
+
+                   // only do splits if wait exists
+                   if (avgMap.length > 0) {
+                     // split by the - to get second number and then remove whitespace after
+                     List<String> split = maxKey.split("-");
+                     List<String> nextSplit = split[1].split(" ");
+                     avgWaits.putIfAbsent(rideNum, () => int.parse(nextSplit[0]));
+                   } else{
+                     avgWaits.putIfAbsent(rideNum, () => 0);
+                   }
+                 });
+               } else{
+                 print(response.statusCode);
+               }
+             } catch(e){
+               print(e);
+             }
            }
          }
-
-
         });
-
-
       } else{
         print(response.statusCode);
       }
@@ -154,49 +202,18 @@ class _WaitTimes extends State<WaitTimes>{
     }
   }
 
-  void getAvgData(rideNum) async {
-    try{
-      var response = await Dio().get('https://queue-times.com/en-US/parks/$parkNum/rides/$rideNum/average_histogram.json');
-      if (response.statusCode == 200) {
-        setState(() {
-            String respString = response.toString();
-
-            // parse the string into map , dynamic to be able to handle it
-            Map<String, dynamic> jsonMap = jsonDecode(respString);
-
-            // map the string dynamics into new entries of string and double
-            // this way we have a string with range of values and the double reflecting their occurence rate on the histogram
-            Map<String, double> avgMap = jsonMap.map((key, value) {
-              return MapEntry(key, value.toDouble());
-            });
-
-            double max = 0;
-            String maxKey = "";
-
-            avgMap.forEach((key, value) {
-              if (value > max){
-                max = value;
-                maxKey = key;
-              }
-            });
-
-            // only do splits if wait exists
-            if (avgMap.length > 0){
-              // split by the - to get second number and then remove whitespace after
-              List<String> split = maxKey.split("-");
-              List<String> nextSplit = split[1].split(" ");
-              avgWaits.putIfAbsent(rideNum, () => int.parse(nextSplit[0]));
-              print("entered");
-            }
-            else {
-              avgWaits.putIfAbsent(rideNum, () => 0);
-            }
-
-
-
-        });
-      };
-    } catch(e){
+  Future<dynamic> fetchData(String url) async{
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200){
+        return jsonDecode(response.body);
+      }
+      else {
+        print(response.statusCode);
+        return null;
+      }
+    }
+    catch (e){
       print(e);
     }
   }
@@ -210,14 +227,18 @@ class _WaitTimes extends State<WaitTimes>{
           title: Text(parkName),
           titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
         ),
-        body: Column(
+        body: avgWaits.length != rideWaits.length
+      ? Center(child: CircularProgressIndicator())
+        : Column(
           children: [
             Expanded(
               flex: 1,
+
               child: ListView.builder(
-                itemCount: 1,
+                itemCount: rideWaits.length,
                 itemBuilder: (context, index){
-                  return waitTimeItem(currWaitTime: 45, avgWaitTime: 30, rideName: "Hagrids Harry potter bike ride thing");
+                  String key = rideWaits.keys.elementAt(index);
+                  return waitTimeItem(currWaitTime: rideWaits.values.elementAt(index)[0], avgWaitTime: avgWaits.values.elementAt(index), rideName: key);
                 }
               ),
 
@@ -227,6 +248,23 @@ class _WaitTimes extends State<WaitTimes>{
 
   }
 
+
+
+  int displayAverages(avgWaits, rideWaits){
+    print(avgWaits);
+    print(rideWaits);
+    rideWaits.forEach((key, value) {
+      if (avgWaits.containsKey(value[1])){
+        return avgWaits[value[1]];
+      }
+      else {
+        return 0;
+      }
+    });
+    return 0;
+  }
+
+  void fetchAvgs(int elementAt) {}
 }
 
 
@@ -267,67 +305,3 @@ class Root{
     required this.rides,
   });
 }
-// class Park {
-//   final int id;
-//   final String name;
-//   final String country;
-//   final String continent;
-//   final String latitude;
-//   final String longitude;
-//   final String timezone;
-//
-//
-//   const Park({
-//     required this.id,
-//     required this.name,
-//     required this.country,
-//     required this.continent,
-//     required this.latitude,
-//     required this.longitude,
-//     required this.timezone,
-//   });
-//
-//   Park.fromJson(Map<String, dynamic> json)
-//       : name = json['name'] as String,
-//         id = json['id'] as int,
-//         country = json['country'] as String,
-//         continent = json['continent'] as String,
-//         latitude = json['latitude'] as String,
-//         longitude = json['longitude'] as String,
-//         timezone = json['timezone'] as String;
-//
-//   Map<String, dynamic> toJson() => {
-//     'name': name,
-//     'id' : id,
-//     'country' : country,
-//     'continent' : continent,
-//     'latitude' : latitude,
-//     'longitude' : longitude,
-//     'timezone' : timezone,
-//
-//   };
-
-  // factory Park.fromJson(Map<String, dynamic> json) {
-  //   return switch (json) {
-  //     {
-  //     'id': int id,
-  //     'name': String name,
-  //     'country': String country,
-  //     'continent': String continent,
-  //     'latitude': String latitude,
-  //     'longitude': String longitude,
-  //     'timezone': String timezone,
-  //     } =>
-  //         Park(
-  //           id: id,
-  //           name: name,
-  //           country: country,
-  //           continent: continent,
-  //           latitude: latitude,
-  //           longitude: longitude,
-  //           timezone: timezone,
-  //         ),
-  //     _ => throw const FormatException('Failed to load Park.'),
-  //   };
-  // }
-

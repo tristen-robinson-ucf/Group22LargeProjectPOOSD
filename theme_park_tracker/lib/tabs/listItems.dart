@@ -60,7 +60,6 @@ class waitTimeItem extends StatelessWidget{
 
   waitTimeItem({required this.currWaitTime, required this.avgWaitTime, required this.rideName});
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -110,7 +109,7 @@ class waitTimeItem extends StatelessWidget{
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [Text(currWaitTime.toString(), style: TextStyle(color: Colors.black, fontSize: 17), textAlign: TextAlign.center)],
+                      children: [Text(printCurr(currWaitTime), style: TextStyle(color: Colors.black, fontSize: 17), textAlign: TextAlign.center)],
                     )
                   )
                 ]),
@@ -143,11 +142,23 @@ class waitTimeItem extends StatelessWidget{
   }
 
   Color chooseColor(avgWaitTime, currWaitTime){
+    if (currWaitTime == -1){
+      return Colors.white;
+    }
     double diff = currWaitTime / avgWaitTime;
 
     if (diff < .9) return Colors.green;
     else if (diff >= .9 && diff <= 1.1) return Colors.yellow;
     else return Colors.redAccent;
+  }
+
+  String printCurr(int currWaitTime) {
+    if (currWaitTime == -1){
+      return "N/A";
+    }
+    else {
+      return currWaitTime.toString();
+    }
   }
 
 }
