@@ -20,7 +20,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(5000); // start Node + Express server on port 5000
+app.listen(3000); // start Node + Express server on port 5000
 
 
 // Database
@@ -34,9 +34,10 @@ client.connect(console.log("mongodb connected"));
 app.post('/api/register', async (req, res, next) =>
 {
 	// incoming: username, password, firstname, lastname, email, phone
-	// outgoing: error
+	// outgoing: message, error
 
 	var error = '';
+	var message = 'User has been registered';
 	var saved_parks = [];
 
 	const { username,password,firstname,lastname,email,phone } = req.body;
@@ -58,7 +59,7 @@ app.post('/api/register', async (req, res, next) =>
         });
 	
 
-	var ret = { error:error };
+	var ret = { message:message,error:error };
 	res.status(200).json(ret);
 
 });
@@ -145,7 +146,6 @@ app.post('/api/updateUser', async (req, res, next) =>
 
 
 // SEARCH USER API - Searches for users 
-// need to be tested - error with .trim()
 app.post('/api/searchUser', async (req, res, next) => 
 {
 	// incoming: userId, search
@@ -171,25 +171,28 @@ app.post('/api/searchUser', async (req, res, next) =>
 });
 
 // ADD TRIP API - Adds a trip
-// need to test
 app.post('/api/addTrip', async (req, res, next) =>
 {
 	// incoming: name, startDate, endDate, userID
-	// outgoing: error
+	// outgoing: message, error
 
 	var error = '';
+	var message = 'Trip has been added';
 	var rides = [];
 
 	const { name,startDate,endDate,userID,parkID } = req.body;
 
 	const db = client.db('COP4331_Group22');
 
-	db.collection('Trips').countDocuments().then(id =>
+	db.collection('Trips').countDocuments().then(tripID =>
         {
-            id++;
+            tripID++;
             //check if trip exists
 	        try{
-		        db.collection('Trips').insertOne( { id:id,name:name,startDate:startDate,endDate:endDate,userID:userID,parkID:parkID,rides:rides });
+				var sdate = new Date(startDate);
+				var edate = new Date(endDate);
+
+		        db.collection('Trips').insertOne( { tripID:tripID,name:name,startDate:sdate,endDate:edate,userID:userID,parkID:parkID,rides:rides });
 	        }
 	        catch(e)
 	        {
@@ -198,12 +201,11 @@ app.post('/api/addTrip', async (req, res, next) =>
 	        }
         });
 	
-	var ret = { error:error };
+	var ret = { message:message,error:error };
 	res.status(200).json(ret);
 });
 
 // DELETE TRIP API - deletes a trip
-// need to test
 app.post('/api/deleteTrip', async (req, res, next) =>
 {
 	// incoming: name
@@ -229,7 +231,6 @@ app.post('/api/deleteTrip', async (req, res, next) =>
 });
 
 // SEARCH TRIP API - searches for a trip by name
-// need to test
 app.post('/api/searchTrip', async (req, res, next) =>
 {
 	// incoming: userID, search
@@ -255,22 +256,25 @@ app.post('/api/searchTrip', async (req, res, next) =>
 });
 
 // UPDATE TRIP API - updates a trip
-// need to test
 app.post('/api/updateTrip', async (req, res, next) =>
 {
-	// incoming: id, name, startDate, endDate - using this for now (not sure how we will do it)
+	// incoming: tripID, name, startDate, endDate
 	// outgoing: message, error
 
 	var error = '';
 	var message = 'Trip has been updated';
 
-	const { name,startDate,endDate } = req.body;
+	const { tripID, name, startDate, endDate } = req.body;
 
 	const db = client.db("COP4331_Group22");
 
 	// searches by id and updates every field in Trips
-	try{
-		db.collection('Trips').updateOne({id:id}, {$set: { name:name, startDate:startDate, endDate:endDate }});
+	try
+	{
+		var sdate = new Date(startDate);
+		var edate = new Date(endDate);
+
+		db.collection('Trips').updateOne({tripID:tripID}, {$set: { name:name, startDate:sdate, endDate:edate }});
 	}
 	catch(e){
 		error = e.toString();
