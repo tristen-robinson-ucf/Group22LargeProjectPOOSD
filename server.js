@@ -185,15 +185,15 @@ app.post('/api/addTrip', async (req, res, next) =>
 
 	const db = client.db('COP4331_Group22');
 
-	db.collection('Trips').countDocuments().then(id =>
+	db.collection('Trips').countDocuments().then(tripID =>
         {
-            id++;
+            tripID++;
             //check if trip exists
 	        try{
 				var sdate = new Date(startDate);
 				var edate = new Date(endDate);
 
-		        db.collection('Trips').insertOne( { id:id,name:name,startDate:sdate,endDate:edate,userID:userID,parkID:parkID,rides:rides });
+		        db.collection('Trips').insertOne( { tripID:tripID,name:name,startDate:sdate,endDate:edate,userID:userID,parkID:parkID,rides:rides });
 	        }
 	        catch(e)
 	        {
@@ -261,13 +261,13 @@ app.post('/api/searchTrip', async (req, res, next) =>
 // need to test
 app.post('/api/updateTrip', async (req, res, next) =>
 {
-	// incoming: id, name, startDate, endDate
+	// incoming: tripID, name, startDate, endDate
 	// outgoing: message, error
 
 	var error = '';
 	var message = 'Trip has been updated';
 
-	const { id, name, startDate, endDate } = req.body;
+	const { tripID, name, startDate, endDate } = req.body;
 
 	const db = client.db("COP4331_Group22");
 
@@ -277,7 +277,7 @@ app.post('/api/updateTrip', async (req, res, next) =>
 		var sdate = new Date(startDate);
 		var edate = new Date(endDate);
 
-		db.collection('Trips').updateOne({id:id}, {$set: { name:name, startDate:sdate, endDate:edate }});
+		db.collection('Trips').updateOne({tripID:tripID}, {$set: { name:name, startDate:sdate, endDate:edate }});
 	}
 	catch(e){
 		error = e.toString();
