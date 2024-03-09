@@ -20,7 +20,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(5000); // start Node + Express server on port 5000
+app.listen(3000); // start Node + Express server on port 5000
 
 
 // Database
@@ -146,7 +146,6 @@ app.post('/api/updateUser', async (req, res, next) =>
 
 
 // SEARCH USER API - Searches for users 
-// need to be tested - error with .trim()
 app.post('/api/searchUser', async (req, res, next) => 
 {
 	// incoming: userId, search
@@ -232,7 +231,6 @@ app.post('/api/deleteTrip', async (req, res, next) =>
 });
 
 // SEARCH TRIP API - searches for a trip by name
-// need to test
 app.post('/api/searchTrip', async (req, res, next) =>
 {
 	// incoming: userID, search
@@ -258,7 +256,6 @@ app.post('/api/searchTrip', async (req, res, next) =>
 });
 
 // UPDATE TRIP API - updates a trip
-// need to test
 app.post('/api/updateTrip', async (req, res, next) =>
 {
 	// incoming: tripID, name, startDate, endDate
