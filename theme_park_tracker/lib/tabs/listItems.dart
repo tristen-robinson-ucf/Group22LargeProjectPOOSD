@@ -12,7 +12,6 @@ class listItem extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
    return Padding(
        padding: const EdgeInsets.symmetric(vertical: 8.0),
        child: Container(
@@ -50,6 +49,72 @@ class listItem extends StatelessWidget {
        ),
    );
   }
+}
+
+class addParkItem extends StatelessWidget{
+  final String parkName;
+
+  addParkItem({required this.parkName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(
+              width: 2,
+              color: Colors.black38,
+            )
+        ),
+        child:  Container(
+          color: Colors.indigo,
+          height: 150,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 7,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(7),
+                          child: Text(parkName, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 17, color: Colors.white)),
+                        )
+                      ],
+                    ),
+
+                  ),
+                  IconButton(
+                    iconSize: 50,
+                    color: Colors.white,
+                    icon: const Icon(
+                      Icons.add,
+                    ),
+                    onPressed: () {  },
+                   
+                  )
+                ],
+              )
+              //
+              // // add the name of the park that is passed in
+              // child: Text(parkName, style: TextStyle(fontSize: 20, color: Colors.white)),
+              //
+              // // add a button that will allow the user to see the wait times for this park number
+              // // calls function wait times in SavedParks file
+              // SizedBox(height: 15),
+              // MaterialButton(
+              //   onPressed: (){
+              //   },
+              //   color: Colors.white,
+              //   child: Text('Add Park', style: TextStyle(color: Colors.black) ),
+              // )
+        ),
+      ),
+    );
+  }
+
 }
 
 class waitTimeItem extends StatelessWidget{

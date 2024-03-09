@@ -250,7 +250,7 @@ class _MyAppState extends State<MyApp> {
 class _landingPage extends StatelessWidget {
   String firstName, lastName;
   int id;
-  List<int> parkArr = [64, 6];
+  List<int> parkArr = [64, 6, 65, 8];
 
 
   _landingPage({required this.firstName, required this.lastName, required this.id});

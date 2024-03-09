@@ -65,6 +65,13 @@ class _SavedParks extends State<SavedParks>{
                 itemBuilder: (context, index){
                   return listItem(parkName: savedParkArr[index], parkNum: parkArr[index]);
                 })),
+            MaterialButton(onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddParks(parkArr: parkArr)));
+            },
+              color: Colors.lightBlue,
+              child: Text('Add more Parks', style: TextStyle(color: Colors.black) ),
+
+          )
         ],
       )
 
@@ -72,6 +79,106 @@ class _SavedParks extends State<SavedParks>{
   }
 
 }
+class AddParks extends StatefulWidget{
+  List<int> parkArr;
+  AddParks({super.key, required this.parkArr});
+
+  @override
+  State<AddParks> createState() => _AddParks();
+
+}
+
+class _AddParks extends State<AddParks>{
+  List<int> parkArr = [];
+  List<String> toDisplay = [];
+  Map<String, int> nameId = {};
+  var parkList;
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    parkArr = widget.parkArr;
+    super.initState();
+    getData();
+  }
+
+  void getData() async{
+    try{
+      var response = await Dio().get('https://queue-times.com/parks.json');
+      if (response.statusCode == 200){
+        setState(() {
+          parkList = response.data as List;
+          for (int i = 0; i < parkList.length; i++){
+            for (int j = 0; j < parkList[i]['parks'].length; j++){
+              if (!parkArr.contains(parkList[i]['parks'][j]['id'])){
+                nameId.putIfAbsent(parkList[i]['parks'][j]['name'], () =>parkList[i]['parks'][j]['id']);
+              }
+            }
+          }
+        });
+
+
+      } else{
+        print(response.statusCode);
+      }
+    } catch(e){
+      print(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar:  AppBar(
+          centerTitle: true,
+          title: Text("Save Parks"),
+          titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+        ),
+        body: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(14),
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: "Park Name",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(color: Colors.blue),
+                  ),
+                ),
+                // onChanged: nameId = filterParks(controller.text),
+              ),
+            ),
+            Expanded(
+                flex: 1,
+                child: ListView.builder(
+                    itemCount:nameId.length,
+                    itemBuilder: (context, index){
+                      return addParkItem(parkName: nameId.keys.elementAt(index));
+                    })),
+          ],
+        )
+
+    );
+  }
+
+  Map<String, int> filterParks(String query){
+    query.trim();
+    Map<String, int> filteredParks = {};
+
+    nameId.forEach((key, value) {
+      if (key.contains(query)){
+        filteredParks.putIfAbsent(key, () => value);
+      }
+    });
+    return filteredParks;
+  }
+
+}
+
+
 
 class WaitTimes extends StatefulWidget{
   int parkNum;
