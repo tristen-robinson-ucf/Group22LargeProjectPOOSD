@@ -285,8 +285,8 @@ app.post('/api/updateTrip', async (req, res, next) =>
 });
 // edits
 
-// Searches trough the Park
-app.post('/api/searchParks', async (req, res, next) => 
+// SEARCH PARK API - searches for a park by name
+app.post('/api/searchPark', async (req, res, next) => 
 {
 	// incoming: userId, search
 	// outgoing: results[], error
@@ -310,7 +310,9 @@ app.post('/api/searchParks', async (req, res, next) =>
   	res.status(200).json(ret);
 });
 
-// ADD TRIP PARK - Adds a Park
+//KG: I think addPark needs to be adding to the saved_parks array in Users
+
+// ADD PARK API - adds a park
 // need to test
 app.post('/api/addPark', async (req, res, next) =>
 {
@@ -342,6 +344,8 @@ app.post('/api/addPark', async (req, res, next) =>
 	res.status(200).json(ret);
 });
 
+// KG: I think deletePark needs to be removed from the saved_parks array in Users
+
 // DELETE Park API - deletes a park
 // need to test
 app.post('/api/deletePark', async (req, res, next) =>
@@ -368,6 +372,7 @@ app.post('/api/deletePark', async (req, res, next) =>
 	res.status(200).json(ret);
 });
 
+/* KG: we don't need this
 
 // May not use this 
 // app.post('/api/updatePark', async (req, res, next) =>
@@ -392,14 +397,12 @@ app.post('/api/deletePark', async (req, res, next) =>
 
 // 	var ret = { message:message,error:error };
 // 	res.status(200).json(ret);
-// });
+// });*/
 
 
 
-
-
-// SEARCH Rides API - searches for a Rides by name
-app.post('/api/searchRides', async (req, res, next) =>
+// SEARCH RIDES API - searches for a ride by name
+app.post('/api/searchRide', async (req, res, next) =>
 {
 	// incoming: userID, search
 	// outgoing: results[], error
@@ -422,6 +425,8 @@ app.post('/api/searchRides', async (req, res, next) =>
 	var ret = {results:_ret, error:error};
 	res.status(200).json(ret);
 });
+
+//KG: We don't need this
 
 //May not use this
 // UPDATE RIDE API - updates a ride
@@ -450,7 +455,9 @@ app.post('/api/searchRides', async (req, res, next) =>
 // 	res.status(200).json(ret);
 // });
 
-// ADD Rides to Rides component in the dataabse - Adds a Ride to the Rides database
+//KG: I think addRide needs to be added to the rides array in Trips
+
+// ADD Rides to Rides component in the database - Adds a Ride to the Rides database
 app.post('/api/addRide', async (req, res, next) =>
 {
 	// incoming: name, startDate, endDate, userID
@@ -480,6 +487,8 @@ app.post('/api/addRide', async (req, res, next) =>
 	var ret = { error:error };
 	res.status(200).json(ret);
 });
+
+//KG: I think deleteRide needs to be deleted from rides array in Trips
 
 // DELETE RIDE API - deletes a ride from the ride database
 app.post('/api/deleteRide', async (req, res, next) =>
