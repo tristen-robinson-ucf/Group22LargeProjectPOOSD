@@ -20,7 +20,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(3000); // start Node + Express server on port 5000
+app.listen(6000); // start Node + Express server on port 5000
 
 
 // Database
@@ -283,7 +283,58 @@ app.post('/api/updateTrip', async (req, res, next) =>
 	var ret = { message:message,error:error };
 	res.status(200).json(ret);
 });
-// edits
+
+// ADD PARK API - adds a park to Users saved_parks array
+app.post('/api/addPark', async (req, res, next) =>
+{
+	// incoming: userID, parkID
+	// outgoing: message, error
+
+	var error = '';
+	var message = "Park has been added to user's saved_parks";
+
+	const { userID,parkID } = req.body;
+
+	const db = client.db('COP4331_Group22');
+
+	try
+	{
+		db.collection('Users').updateOne({id:userID}, {$push: {saved_parks:parkID}});
+	}
+	catch(e)
+	{
+		error = e.toString();
+	}
+
+	var ret = { message:message,error:error };
+	res.status(200).json(ret);
+});
+
+//DELETE PARK API - deletes a park from User's saved_parks array
+app.post('/api/deletePark', async (req, res, next) =>
+{
+	// incoming: userID, parkID
+	// outgoing: message, error
+
+	var error = '';
+	var message = "Park has been deleted from user's saved_parks";
+
+	const { userID,parkID } = req.body;
+
+	const db = client.db('COP4331_Group22');
+
+	try
+	{
+		db.collection('Users').updateOne({id:userID}, {$pull: {saved_parks:parkID}});
+	}
+	catch(e)
+	{
+		error = e.toString();
+	}
+
+	var ret = { message:message,error:error };
+	res.status(200).json(ret);
+});
 
 // SEARCH PARK API - searches for a park by name
 app.post('/api/searchPark', async (req, res, next) => 
@@ -310,98 +361,60 @@ app.post('/api/searchPark', async (req, res, next) =>
   	res.status(200).json(ret);
 });
 
-//KG: I think addPark needs to be adding to the saved_parks array in Users
-
-// ADD PARK API - adds a park
-// need to test
-app.post('/api/addPark', async (req, res, next) =>
+// ADD RIDE API - adds a ride to a trip's rides array
+app.post('/api/addRide', async (req, res, next) =>
 {
-	// incoming: name, startDate, endDate, userID
-	// outgoing: error
-
-	var error = '';
-	var rides = [];
-
-	const { name,startDate,endDate,userID,parkID } = req.body;
-
-	const db = client.db('COP4331_Group22');
-
-	db.collection('Parks').countDocuments().then(id =>
-        {
-            id++;
-            //check if trip exists
-	        try{
-		        db.collection('Parks').insertOne( { id:id,name:name });
-	        }
-	        catch(e)
-	        {
-			// trip already exists
-			error = e.toString();
-	        }
-        });
-	
-	var ret = { error:error };
-	res.status(200).json(ret);
-});
-
-// KG: I think deletePark needs to be removed from the saved_parks array in Users
-
-// DELETE Park API - deletes a park
-// need to test
-app.post('/api/deletePark', async (req, res, next) =>
-{
-	// incoming: name
+	// incoming: tripID, rideID
 	// outgoing: message, error
 
 	var error = '';
-	var message = 'Park has been deleted';
+	var message = "Ride has been added to trip's rides[]";
 
-	//deletes with name - should have different park names
-	const { name } = req.body;
+	const { tripID,rideID } = req.body;
 
-	const db = client.db("COP4331_Group22");
+	const db = client.db('COP4331_Group22');
 
-	try{
-		db.collection('Park').deleteOne({ name:name });
+	try
+	{
+		db.collection('Trips').updateOne({tripID:tripID}, {$push: {rides:rideID}});
 	}
-	catch(e){
+	catch(e)
+	{
 		error = e.toString();
 	}
 
-	var ret = { message:message, error:error };
+	var ret = { message:message,error:error };
 	res.status(200).json(ret);
 });
 
-/* KG: we don't need this
+// DELETE RIDE API - deletes ride from a trip's rides array
+app.post('/api/deleteRide', async (req, res, next) =>
+{
+	// incoming: tripID, rideID
+	// outgoing: message, error
 
-// May not use this 
-// app.post('/api/updatePark', async (req, res, next) =>
-// {
-// 	// incoming: id, name, startDate, endDate - using this for now (not sure how we will do it)
-// 	// outgoing: message, error
+	var error = '';
+	var message = "Ride has been deleted from trip's rides[]";
 
-// 	var error = '';
-// 	var message = 'Parks has been updated';
+	const { tripID,rideID } = req.body;
 
-// 	const { name,startDate,endDate } = req.body;
+	const db = client.db('COP4331_Group22');
 
-// 	const db = client.db("COP4331_Group22");
+	try
+	{
+		db.collection('Trips').updateOne({tripID:tripID}, {$pull: {rides:rideID}});
+	}
+	catch(e)
+	{
+		error = e.toString();
+	}
 
-// 	// searches by id and updates every field in Trips
-// 	try{
-// 		db.collection('Parks').updateOne({id:id}, {$set: { name:name }});
-// 	}
-// 	catch(e){
-// 		error = e.toString();
-// 	}
-
-// 	var ret = { message:message,error:error };
-// 	res.status(200).json(ret);
-// });*/
-
+	var ret = { message:message,error:error };
+	res.status(200).json(ret);
+});
 
 
-// SEARCH RIDES API - searches for a ride by name
+// SEARCH RIDE API - searches for a ride by name
 app.post('/api/searchRide', async (req, res, next) =>
 {
 	// incoming: userID, search
@@ -423,94 +436,5 @@ app.post('/api/searchRide', async (req, res, next) =>
 	}
 	  
 	var ret = {results:_ret, error:error};
-	res.status(200).json(ret);
-});
-
-//KG: We don't need this
-
-//May not use this
-// UPDATE RIDE API - updates a ride
-// need to test
-// app.post('/api/updateRide', async (req, res, next) =>
-// {
-// 	// incoming: id, name, startDate, endDate - using this for now (not sure how we will do it)
-// 	// outgoing: message, error
-
-// 	var error = '';
-// 	var message = 'Rides has been updated';
-
-// 	const { name } = req.body;
-
-// 	const db = client.db("COP4331_Group22");
-
-// 	// searches by id and updates every field in Trips
-// 	try{
-// 		db.collection('Rides').updateOne({id:id}, {$set: { name:name }});
-// 	}
-// 	catch(e){
-// 		error = e.toString();
-// 	}
-
-// 	var ret = { message:message,error:error };
-// 	res.status(200).json(ret);
-// });
-
-//KG: I think addRide needs to be added to the rides array in Trips
-
-// ADD Rides to Rides component in the database - Adds a Ride to the Rides database
-app.post('/api/addRide', async (req, res, next) =>
-{
-	// incoming: name, startDate, endDate, userID
-	// outgoing: error
-
-	var error = '';
-	var rides = [];
-
-	const { name,startDate,endDate,userID,parkID } = req.body;
-
-	const db = client.db('COP4331_Group22');
-
-	db.collection('Rides').countDocuments().then(id =>
-        {
-            id++;
-            //check if trip exists
-	        try{
-		        db.collection('Rides').insertOne( { id:id,name:name });
-	        }
-	        catch(e)
-	        {
-			// trip already exists
-			error = e.toString();
-	        }
-        });
-	
-	var ret = { error:error };
-	res.status(200).json(ret);
-});
-
-//KG: I think deleteRide needs to be deleted from rides array in Trips
-
-// DELETE RIDE API - deletes a ride from the ride database
-app.post('/api/deleteRide', async (req, res, next) =>
-{
-	// incoming: name
-	// outgoing: message, error
-
-	var error = '';
-	var message = 'Ride has been deleted';
-
-	//deletes with name - should have different trip names
-	const { name } = req.body;
-
-	const db = client.db("COP4331_Group22");
-
-	try{
-		db.collection('Rides').deleteOne({ name:name });
-	}
-	catch(e){
-		error = e.toString();
-	}
-
-	var ret = { message:message, error:error };
 	res.status(200).json(ret);
 });
