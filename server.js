@@ -22,7 +22,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(14000); // start Node + Express server on port 5000
+app.listen(3000); // start Node + Express server on port 5000
 
 
 // Database
@@ -55,7 +55,7 @@ app.post('/api/register', async (req, res, next) =>
 		const id = await db.collection('Users').countDocuments() + 1;
   
 		// inserts the new user
-		db.collection('Users').insertOne({id: id, username: username, password: password, firstname: firstname, lastname: lastname, email: email, phone: phone, saved_parks: saved_parks });
+		await db.collection('Users').insertOne({id: id, username: username, password: password, firstname: firstname, lastname: lastname, email: email, phone: phone, saved_parks: saved_parks });
 	  }
 	}catch(e){
 	  // Handle other errors
@@ -63,7 +63,7 @@ app.post('/api/register', async (req, res, next) =>
 	}
   
 	var ret = { message: message, error: error };
-	res
+	res.status(200).json(ret);
 });
 
 //LOGIN API
