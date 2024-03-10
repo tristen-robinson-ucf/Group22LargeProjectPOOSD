@@ -3,21 +3,20 @@ The Git for Group 22's Large project for COP4331C (a.k.a. POOSD)<br>
 
 A full-stack project made for class.<br>
 Check out our website:<br>
-[website to be added here later]
+[Theme Park Time Tracker](https://group-22-0b4387ea5ed6.herokuapp.com/)
 
 ## Contributors
-I'll add to this later.
-### Project Manager
+### Project Manager / Mobile
 - [Tristen Robinson](https://github.com/tristen-robinson-ucf)
-### A
+### API
 - [Batman Yousuf](https://github.com/shinobi-404)
-### A
+### Database
 - [Asher Watkins](https://github.com/asher12353)
-### A
+### Front End
 - [Daniela Cadena](https://github.com/danicadena)
-### A
+### API
 - [Katelyn Grimes](https://github.com/kegrimes)
-### A
+### Front End / Mobile
 - [Matias Riosa](https://github.com/m-riosa)
 
 ## For Team members
@@ -32,4 +31,4 @@ This information was directly taken from the small project git's README.md as th
 - dev to main has to be approved by a team member other than the one who made the Pull Request
 
 ## Api Documentation
-See [this file](API.md) (I'll add this later if this isn't here rn)
+See [this file](API.md)
