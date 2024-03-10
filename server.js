@@ -32,36 +32,38 @@ const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
 
 
-//REGISTER API
-app.post('/api/register', async (req, res, next) =>
+// REGISTER API
+app.post('/api/register', async (req, res, next) => 
 {
 	// incoming: username, password, firstname, lastname, email, phone
 	// outgoing: message, error
-
+  
 	var error = '';
 	var message = 'User has been registered';
 	var saved_parks = [];
-
-	const { username,password,firstname,lastname,email,phone } = req.body;
-
+  
+	const { username, password, firstname, lastname, email, phone } = req.body;
+  
 	const db = client.db("COP4331_Group22");
-
-	db.collection('Users').countDocuments().then(id =>
-	{
-		id++;
-		//check if user exists
-		try{
-			db.collection('Users').insertOne( { id:id,username:username,password:password,firstname:firstname,lastname:lastname,email:email,phone:phone,saved_parks:saved_parks });
-		}
-		catch(e)
-		{
-			error = e.toString();
-		}
-	});
-
-	var ret = { message:message,error:error };
-	res.status(200).json(ret);
-
+  
+	try{
+	  // Check if user exists
+	  const userExists = await db.collection('Users').findOne({ username: username });
+	  if (userExists) {
+		error = 'Username already exists';
+	  }else{
+		const id = await db.collection('Users').countDocuments() + 1;
+  
+		// inserts the new user
+		db.collection('Users').insertOne({id: id, username: username, password: password, firstname: firstname, lastname: lastname, email: email, phone: phone, saved_parks: saved_parks });
+	  }
+	}catch(e){
+	  // Handle other errors
+	  error = e.toString();
+	}
+  
+	var ret = { message: message, error: error };
+	res
 });
 
 //LOGIN API
