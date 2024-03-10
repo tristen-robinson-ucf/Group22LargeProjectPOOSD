@@ -22,7 +22,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(6000); // start Node + Express server on port 5000
+app.listen(14000); // start Node + Express server on port 5000
 
 
 // Database
@@ -47,19 +47,17 @@ app.post('/api/register', async (req, res, next) =>
 	const db = client.db("COP4331_Group22");
 
 	db.collection('Users').countDocuments().then(id =>
-        {
-            id++;
-            //check if user exists
-	        try{
-		        db.collection('Users').insertOne( { id:id,username:username,password:password,firstname:firstname,lastname:lastname,email:email,phone:phone,saved_parks:saved_parks });
-	        }
-	        catch(e)
-	        {
-		        //User already exists
-		        error = e.toString();
-	        }
-        });
-	
+		{
+			id++;
+			//check if user exists
+			try{
+				db.collection('Users').insertOne( { id:id,username:username,password:password,firstname:firstname,lastname:lastname,email:email,phone:phone,saved_parks:saved_parks });
+			}
+			catch(e)
+			{
+				error = e.toString();
+			}
+		});
 
 	var ret = { message:message,error:error };
 	res.status(200).json(ret);
