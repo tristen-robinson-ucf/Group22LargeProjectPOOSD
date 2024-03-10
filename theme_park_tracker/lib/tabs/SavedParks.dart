@@ -92,6 +92,7 @@ class _AddParks extends State<AddParks>{
   List<int> parkArr = [];
   List<String> toDisplay = [];
   Map<String, int> nameId = {};
+  Map<String, int> filteredParks = {};
   var parkList;
   TextEditingController controller = TextEditingController();
 
@@ -100,6 +101,7 @@ class _AddParks extends State<AddParks>{
     parkArr = widget.parkArr;
     super.initState();
     getData();
+    filteredParks = nameId;
   }
 
   void getData() async{
@@ -116,8 +118,6 @@ class _AddParks extends State<AddParks>{
             }
           }
         });
-
-
       } else{
         print(response.statusCode);
       }
@@ -134,46 +134,88 @@ class _AddParks extends State<AddParks>{
           title: Text("Save Parks"),
           titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
         ),
-        body: Column(
-          children: [
+        body: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Column(children: [
+            SizedBox(height: 20),
             Container(
-              margin: const EdgeInsets.all(14),
-              child: TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: "Park Name",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: const BorderSide(color: Colors.blue),
+                  margin: const EdgeInsets.all(14),
+                  // create a search bar where the parks available are filtered whenever something is typed
+                  child: TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search),
+                      hintText: "Park Name",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        borderSide: const BorderSide(color: Colors.blue),
+                      ),
+                    ),
+                    onChanged: (value) => runFilter(controller.text),
                   ),
                 ),
-                // onChanged: nameId = filterParks(controller.text),
-              ),
-            ),
+            SizedBox(height: 20),
             Expanded(
-                flex: 1,
-                child: ListView.builder(
-                    itemCount:nameId.length,
-                    itemBuilder: (context, index){
-                      return addParkItem(parkName: nameId.keys.elementAt(index));
-                    })),
-          ],
+              // create the list of parks with name of park and a + icon to add to saved array
+              flex: 1,
+              child: ListView.builder(
+                itemCount:filteredParks.length,
+                itemBuilder: (context, index) => Card(
+                  color: Colors.indigo,
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 7,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(7),
+                              child: Text(filteredParks.keys.elementAt(index), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 17, color: Colors.white)),
+                            )
+                          ],
+                        ),
+
+                      ),
+                      IconButton(
+                        iconSize: 50,
+                        color: Colors.white,
+                        icon: const Icon(
+                          Icons.add,
+                        ),
+                        onPressed: () {  },
+
+                      )
+                    ],
+                  ),
+
+              )
+            )
+            )])
         )
 
     );
   }
+  // update the list of parks based on the search input by the user,
+  // override filtered parks rather than nameId map to keep the whole list from API stored
+  void runFilter(String text) {
+    Map<String, int> results = {};
+    if (text.isEmpty){
+      results = nameId;
+    } else {
+      nameId.forEach((key, value) {
+        if (key.toLowerCase().contains(text.toLowerCase())){
+          results.putIfAbsent(key, () => value);
+        }
+      });
+    }
 
-  Map<String, int> filterParks(String query){
-    query.trim();
-    Map<String, int> filteredParks = {};
-
-    nameId.forEach((key, value) {
-      if (key.contains(query)){
-        filteredParks.putIfAbsent(key, () => value);
-      }
+    setState(() {
+      filteredParks = results;
     });
-    return filteredParks;
   }
 
 }
