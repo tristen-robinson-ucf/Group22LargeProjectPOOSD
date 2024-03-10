@@ -2,9 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
 
 app.use((req, res, next) => 
 {
@@ -63,7 +65,6 @@ app.post('/api/register', async (req, res, next) =>
 	res.status(200).json(ret);
 
 });
-
 
 //LOGIN API
 app.post('/api/login', async (req, res, next) =>
