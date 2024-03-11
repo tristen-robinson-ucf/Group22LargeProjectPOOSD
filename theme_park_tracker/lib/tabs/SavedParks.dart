@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_park_tracker/tabs/listItems.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
 class SavedParks extends StatefulWidget{
   List<int> parkArr;
-  SavedParks({super.key, required this.parkArr});
+  int id;
+  SavedParks({super.key, required this.id, required this.parkArr});
 
   @override
   State<SavedParks> createState() => _SavedParks();
@@ -17,6 +19,7 @@ class SavedParks extends StatefulWidget{
 class _SavedParks extends State<SavedParks>{
   var parkList;
   late List<int> parkArr;
+  int id = 0;
   List<String> savedParkArr = [];
 
 
@@ -24,6 +27,7 @@ class _SavedParks extends State<SavedParks>{
   @override
   void initState() {
     parkArr = widget.parkArr;
+    id = widget.id;
     super.initState();
     getData();
   }
@@ -66,7 +70,7 @@ class _SavedParks extends State<SavedParks>{
                   return listItem(parkName: savedParkArr[index], parkNum: parkArr[index]);
                 })),
             MaterialButton(onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AddParks(parkArr: parkArr)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddParks(parkArr: parkArr, id: id)));
             },
               color: Colors.lightBlue,
               child: Text('Add more Parks', style: TextStyle(color: Colors.black) ),
@@ -81,7 +85,8 @@ class _SavedParks extends State<SavedParks>{
 }
 class AddParks extends StatefulWidget{
   List<int> parkArr;
-  AddParks({super.key, required this.parkArr});
+  int id;
+  AddParks({super.key, required this.parkArr, required this.id});
 
   @override
   State<AddParks> createState() => _AddParks();
@@ -93,12 +98,14 @@ class _AddParks extends State<AddParks>{
   List<String> toDisplay = [];
   Map<String, int> nameId = {};
   Map<String, int> filteredParks = {};
+  int id = 0;
   var parkList;
   TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
     parkArr = widget.parkArr;
+    id = widget.id;
     super.initState();
     getData();
     filteredParks = nameId;
@@ -186,7 +193,7 @@ class _AddParks extends State<AddParks>{
                         icon: const Icon(
                           Icons.add,
                         ),
-                        onPressed: () {  },
+                        onPressed: () { addPark(filteredParks.values.elementAt(index), id); },
 
                       )
                     ],
@@ -216,6 +223,26 @@ class _AddParks extends State<AddParks>{
     setState(() {
       filteredParks = results;
     });
+  }
+
+}
+
+Future<void> addPark(int parkNum, int id) async {
+  final response = await http.post(
+      Uri.parse('https://group-22-0b4387ea5ed6.herokuapp.com/api/addPark'),
+    headers: <String, String>{
+        'Content-Type': 'application/json',
+    },
+    body: jsonEncode(<String, int>{
+      'userID' : id,
+      'parkID': parkNum,
+    })
+  );
+  if (response.statusCode == 201){
+    Fluttertoast.showToast(msg: "Added Park");
+  }
+  else {
+    Fluttertoast.showToast(msg: response.statusCode.toString());
   }
 
 }
