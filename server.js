@@ -209,19 +209,19 @@ app.post('/api/addTrip', async (req, res, next) =>
 // DELETE TRIP API - deletes a trip
 app.post('/api/deleteTrip', async (req, res, next) =>
 {
-	// incoming: name
+	// incoming: userId, name
 	// outgoing: message, error
 
 	var error = '';
 	var message = 'Trip has been deleted';
 
 	//deletes with name - should have different trip names
-	const { name } = req.body;
+	const { userID, name } = req.body;
 
 	const db = client.db("COP4331_Group22");
 
 	try{
-		db.collection('Trips').deleteOne({ name:name });
+		db.collection('Trips').deleteOne({ userID:userID, name:name });
 	}
 	catch(e){
 		error = e.toString();
