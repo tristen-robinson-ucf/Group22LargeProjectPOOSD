@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -12,9 +13,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:theme_park_tracker/register.dart';
 import 'package:theme_park_tracker/tabs/PlannedTrips.dart';
 import 'package:theme_park_tracker/tabs/SavedParks.dart';
-
 
 Future<User> authenticateUser(String username, String password) async {
   final response = await http.post(
@@ -69,7 +70,9 @@ class User {
   }
 }
 
-void main() {
+void main() async {
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
   runApp(const MaterialApp(
     home: MyApp(),
     ),
@@ -304,8 +307,6 @@ class _landingPage extends StatelessWidget {
 
 }
 
-
-
 class MyRegPage extends StatefulWidget {
   const MyRegPage({super.key});
 
@@ -395,7 +396,7 @@ class _registerPage extends State<MyRegPage> {
 
               child: (_futureUser == null)
                   ? buildColumn()
-                  : buildFutureBuilder(),
+                  : buildFutureBuilder(email),
             ),
           )
 
@@ -407,176 +408,177 @@ class _registerPage extends State<MyRegPage> {
     TextStyle defaultStyle = TextStyle(color: Colors.grey, fontSize: 20.0);
     TextStyle linkStyle = TextStyle(color: Colors.blue);
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const FittedBox(
-        fit: BoxFit.scaleDown,
-          child: Text(
-            "Register",
-            style: TextStyle(fontSize: 30),
-          ),
-        ),
-        SizedBox(height: 30),
-        TextField(
-            controller: _firstnameController,
-            decoration: InputDecoration(
-                hintText: "First Name",
-                errorText: _validateFirst ? "Please enter a First Name" : null,
-                border: OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  onPressed: (){
-                    _firstnameController.clear();
-                  },
-                  icon: const Icon(Icons.clear),
-                )
-            )
-        ),
-        SizedBox(height: 30),
-        TextField(
-            controller: _lastnameController,
-            decoration: InputDecoration(
-                hintText: "Last Name",
-                border: OutlineInputBorder(),
-                errorText: _validateLast ? "Please enter a Last Name" : null,
-                suffixIcon: IconButton(
-                  onPressed: (){
-                    _lastnameController.clear();
-                  },
-                  icon: const Icon(Icons.clear),
-                )
-            )
-        ),
-        SizedBox(height: 30),
-        TextField(
-          controller: _phoneController,
-          decoration: InputDecoration(
-            hintText: "Phone Number",
-            border: OutlineInputBorder(),
-            errorText: _validatePhone ? "Please enter a Phone Number" : null,
-            suffixIcon: IconButton(
-              onPressed: (){
-                _phoneController.clear();
-              },
-              icon: const Icon(Icons.clear),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "Register",
+              style: TextStyle(fontSize: 30),
             ),
           ),
-        ),
-        SizedBox(height: 30),
-        TextField(
-          controller: _emailController,
-          decoration: InputDecoration(
-            hintText: "Email",
-            border: OutlineInputBorder(),
-            errorText: _validateEmail ? "Please enter an Email" : null,
-            suffixIcon: IconButton(
-              onPressed: (){
-               _emailController.clear();
-              },
-              icon: const Icon(Icons.clear),
+          SizedBox(height: 30),
+          TextField(
+              controller: _firstnameController,
+              decoration: InputDecoration(
+                  hintText: "First Name",
+                  errorText: _validateFirst ? "Please enter a First Name" : null,
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    onPressed: (){
+                      _firstnameController.clear();
+                    },
+                    icon: const Icon(Icons.clear),
+                  )
+              )
+          ),
+          SizedBox(height: 30),
+          TextField(
+              controller: _lastnameController,
+              decoration: InputDecoration(
+                  hintText: "Last Name",
+                  border: OutlineInputBorder(),
+                  errorText: _validateLast ? "Please enter a Last Name" : null,
+                  suffixIcon: IconButton(
+                    onPressed: (){
+                      _lastnameController.clear();
+                    },
+                    icon: const Icon(Icons.clear),
+                  )
+              )
+          ),
+          SizedBox(height: 30),
+          TextField(
+            controller: _phoneController,
+            decoration: InputDecoration(
+              hintText: "Phone Number",
+              border: OutlineInputBorder(),
+              errorText: _validatePhone ? "Please enter a Phone Number" : null,
+              suffixIcon: IconButton(
+                onPressed: (){
+                  _phoneController.clear();
+                },
+                icon: const Icon(Icons.clear),
+              ),
             ),
           ),
-        ),
-        SizedBox(height: 30),
-        TextField(
-            controller: _usernameController,
+          SizedBox(height: 30),
+          TextField(
+            controller: _emailController,
             decoration: InputDecoration(
-                hintText: "Username",
-                border: OutlineInputBorder(),
-                errorText: _validateUser ? "Please enter a Username" : null,
+              hintText: "Email",
+              border: OutlineInputBorder(),
+              errorText: _validateEmail ? "Please enter an Email" : null,
+              suffixIcon: IconButton(
+                onPressed: (){
+                  _emailController.clear();
+                },
+                icon: const Icon(Icons.clear),
+              ),
+            ),
+          ),
+          SizedBox(height: 30),
+          TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                  hintText: "Username",
+                  border: OutlineInputBorder(),
+                  errorText: _validateUser ? "Please enter a Username" : null,
 
-                suffixIcon: IconButton(
-                  onPressed: (){
-                    _usernameController.clear();
-                  },
-                  icon: const Icon(Icons.clear),
-                )
-            )
-        ),
-        // if the user selects the button, populate the username with that users email
-        MaterialButton(
+                  suffixIcon: IconButton(
+                    onPressed: (){
+                      _usernameController.clear();
+                    },
+                    icon: const Icon(Icons.clear),
+                  )
+              )
+          ),
+          // if the user selects the button, populate the username with that users email
+          MaterialButton(
+              onPressed: () {
+                _usernameController.text = _emailController.text;
+              },
+              color: Colors.grey,
+              child: const Align(
+                child: Text('Use Email', style: TextStyle(color: Colors.white)),
+                alignment: Alignment.topLeft,
+              )
+          ),
+          SizedBox(height: 30),
+          TextField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              hintText: "Password",
+              border: OutlineInputBorder(),
+              errorText: _validatePass ? "Please enter a Password" : null,
+              suffixIcon: IconButton(
+                onPressed: (){
+                  _passwordController.clear();
+                },
+                icon: const Icon(Icons.clear),
+              ),
+            ),
+          ),
+          SizedBox(height: 30),
+          MaterialButton(
             onPressed: () {
-              _usernameController.text = _emailController.text;
-            },
-            color: Colors.grey,
-            child: const Align(
-              child: Text('Use Email', style: TextStyle(color: Colors.white)),
-              alignment: Alignment.topLeft,
-            )
-        ),
-        SizedBox(height: 30),
-        TextField(
-          controller: _passwordController,
-          obscureText: true,
-          decoration: InputDecoration(
-            hintText: "Password",
-            border: OutlineInputBorder(),
-            errorText: _validatePass ? "Please enter a Password" : null,
-            suffixIcon: IconButton(
-              onPressed: (){
-                _passwordController.clear();
-              },
-              icon: const Icon(Icons.clear),
-            ),
-          ),
-        ),
-        SizedBox(height: 30),
-        MaterialButton(
-          onPressed: () {
-            user = _usernameController.text;
-            password = _passwordController.text;
-            firstName = _firstnameController.text;
-            lastName = _lastnameController.text;
-            email = _emailController.text;
-            phone = _phoneController.text;
+              user = _usernameController.text;
+              password = _passwordController.text;
+              firstName = _firstnameController.text;
+              lastName = _lastnameController.text;
+              email = _emailController.text;
+              phone = _phoneController.text;
 
-            // update validate vars to reflect completeness of the fields,
-            // turn on error text if any are empty, if not go through with registration
-            setState(() {
-              _validateUser = user.isEmpty;
-              _validatePass = password.isEmpty;
-              _validateEmail = email.isEmpty;
-              _validatePhone = phone.isEmpty;
-              _validateFirst = firstName.isEmpty;
-              _validateLast = lastName.isEmpty;
+              // update validate vars to reflect completeness of the fields,
+              // turn on error text if any are empty, if not go through with registration
+              setState(() {
+                _validateUser = user.isEmpty;
+                _validatePass = password.isEmpty;
+                _validateEmail = email.isEmpty;
+                _validatePhone = phone.isEmpty;
+                _validateFirst = firstName.isEmpty;
+                _validateLast = lastName.isEmpty;
 
                 if (!_validatePass && !_validateUser) {
                   _futureUser = registerUser(
-                      firstName,
-                      lastName,
-                      email,
-                      phone,
-                      user,
-                      password,);
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    user,
+                    password,);
                 };
-            });
+              });
 
 
-            if (!_validateLast && !_validateFirst && !_validatePhone && !_validateEmail && !_validateUser && !_validatePass){
-              Fluttertoast.showToast(msg: 'Registering...');
-            }
+              if (!_validateLast && !_validateFirst && !_validatePhone && !_validateEmail && !_validateUser && !_validatePass){
+                Fluttertoast.showToast(msg: 'Registering...');
+              }
 
 
-          },
-          color: Colors.blueAccent,
-          child: const Text('Register', style: TextStyle(color: Colors.white)),
+            },
+            color: Colors.blueAccent,
+            child: const Text('Register', style: TextStyle(color: Colors.white)),
 
-        )
-      ]
+          )
+        ]
     );
   }
 
-  FutureBuilder<User> buildFutureBuilder() {
+  FutureBuilder<User> buildFutureBuilder(String email) {
     return FutureBuilder<User>(
       future: _futureUser,
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.id != -1) {
           Fluttertoast.showToast(
-              msg: 'Welcome ${snapshot.data!.firstname}, logging you in.');
+              msg: 'Welcome ${snapshot.data!.firstname}, registering you now.');
           final user = snapshot.data;
           if (user?.id != -1) {
             SchedulerBinding.instance.addPostFrameCallback((_) {
               Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                  _landingPage(firstName: snapshot.data!.firstname,
+                  verifyEmailScreen(firstName: snapshot.data!.firstname,
+                      email: email,
                       lastName: snapshot.data!.lastname,
                       id: snapshot.data!.id)));
             });
@@ -601,3 +603,146 @@ class _registerPage extends State<MyRegPage> {
     );
   }
 }
+
+class verifyEmailScreen extends StatefulWidget {
+  String firstName;
+  String lastName;
+  String email;
+  int id;
+  verifyEmailScreen({super.key, required this.firstName, required this.lastName, required this.email, required this.id});
+
+  @override
+  State<verifyEmailScreen> createState() => _VerifyEmailScreen();
+
+}
+
+// screen to verify the email the user used to register
+class _VerifyEmailScreen extends State<verifyEmailScreen>{
+  late String firstName;
+  late String lastName;
+  late String email;
+  late int id;
+
+  TextEditingController _codeController = TextEditingController();
+
+  Random random = Random();
+  int testVal = 0;
+
+
+
+  @override
+  void initState(){
+    super.initState();
+    firstName = widget.firstName;
+    lastName = widget.lastName;
+    email = widget.email;
+    id = widget.id;
+    testVal = random.nextInt(90000) + 10000;
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Theme Park Time Tracker',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        appBarTheme: const AppBarTheme(color: Colors.indigo),
+      ),
+      home: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text('Verify your email'),
+            titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+          ),
+          body: Column(
+              children:[
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(8),
+                  // request code to email
+                  child: MaterialButton(
+                    onPressed: () {
+                      sendEmail(firstName, email, "Confirm your email for Theme Park Time Tracker", "Your one time code is $testVal");
+                    },
+                    color: Colors.blueAccent,
+                    child: const Text('Send verification email', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+
+                SizedBox(height: 70),
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextField(
+                        controller: _codeController,
+                        decoration: const InputDecoration(
+                          hintText: "Enter one time code",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      // button for user to test if their code matches OTP
+                      MaterialButton(
+                          onPressed: (){
+                            int code = int.parse(_codeController.text);
+
+                            if (code == testVal){
+                              Navigator.push( context, MaterialPageRoute( builder: (context) => _landingPage(firstName: firstName, lastName: lastName, id: id))
+                              );
+                            } else{
+                              Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
+                            }
+                          },
+                        color: Colors.blueAccent,
+                        child: const Text('Register', style: TextStyle(color: Colors.white)),
+
+                      )
+                    ],
+                  ),
+                )
+              ]
+
+          )
+
+      ),
+    );
+  }
+}
+
+// utilize API to send an email containing code to the email the user input
+Future<void> sendEmail(String firstName, String email, String subject, String message) async {
+
+  Map<String, dynamic> jsonData = {
+    'service_id': 'service_tzia2it',
+    'template_id': 'template_ftem2gf',
+    'user_id' : 'JPEruMpPDs6QC1-DJ',
+    'template_params': {
+      'user_name': firstName,
+      'user_email': email,
+      'sender_email': 'mriosa7@gmail.com',
+      'user_subject': subject,
+      'user_message': message,
+    },
+  };
+
+  final response = await http.post(
+    Uri.parse('https://api.emailjs.com/api/v1.0/email/send'),
+    headers: <String, String>{
+      'origin': 'http://localhost',
+      'Content-Type': 'application/json',
+    },
+    body: json.encode(jsonData),
+  );
+
+  if(response.statusCode == 200){
+    Fluttertoast.showToast(msg: "Success");
+  }
+  else{
+    Fluttertoast.showToast(msg: "Could not verify");
+  }
+}
+
+
