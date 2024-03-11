@@ -22,7 +22,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(3000); // start Node + Express server on port 5000
+app.listen(4000); // start Node + Express server on port 5000
 
 
 // Database
@@ -244,7 +244,7 @@ app.post('/api/searchTrip', async (req, res, next) =>
 	var _search = search.trim();
 	  
 	const db = client.db('COP4331_Group22');
-	const results = await db.collection('Trips').find({"name":{$regex:_search+'.*', $options:'i'}}).toArray();
+	const results = await db.collection('Trips').find({"name":{$regex:_search+'.*', $options:'i'}, "userID":userID}).toArray();
 	  
 	var _ret = [];
 	for( var i=0; i<results.length; i++ )
