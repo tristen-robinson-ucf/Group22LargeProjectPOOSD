@@ -70,7 +70,7 @@ app.post('/api/register', async (req, res, next) =>
 app.post('/api/login', async (req, res, next) =>
 {
 	// incoming: username, password
-	// outgoing: id, firstname, lastname, error
+	// outgoing: id, firstname, lastname, saved_parks, error
 
 	var error = '';
 
@@ -82,15 +82,17 @@ app.post('/api/login', async (req, res, next) =>
 	var id = -1;
 	var fname = '';
 	var lname = '';
+	var parks = [];
 
 	if(results.length > 0)
 	{
 		id = results[0].id
 		fname = results[0].firstname
 		lname = results[0].lastname
+		parks = results[0].saved_parks
 	}
 
-	var ret = { id:id, firstname:fname, lastname:lname, error:error };
+	var ret = { id:id, firstname:fname, lastname:lname, saved_parks:parks, error:error };
 	res.status(200).json(ret);
 	
 });
