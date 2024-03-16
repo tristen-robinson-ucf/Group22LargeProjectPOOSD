@@ -22,7 +22,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(7000); // start Node + Express server on port 5000
+app.listen(5000); // start Node + Express server on port 5000
 
 
 // Database
@@ -30,6 +30,19 @@ const url = 'mongodb+srv://asher12353:COP4331-19thGroup@cluster0.vwkhdxi.mongodb
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
+
+
+exports = async function(changeEvent) {
+    var docId = changeEvent.fullDocument._id;
+    
+    const counterdb = context.services.get("Cluster0").db(changeEvent.ns.db).collection("counters");
+    const usersdb = context.services.get("Cluster0").db(changeEvent.ns.db).collection(changeEvent.ns.coll);
+    
+    var counter = await counterdb.findOneAndUpdate({_id: changeEvent.ns },{ $inc: { seq_value: 1 }}, { returnNewDocument: true, upsert : true});
+    var updateRes = await usersdb.updateOne({_id : docId},{ $set : {id : counter.seq_value}});
+    
+    console.log(`Updated ${JSON.stringify(changeEvent.ns)} with counter ${counter.seq_value} result : ${JSON.stringify(updateRes)}`);
+};
 
 
 // REGISTER API
