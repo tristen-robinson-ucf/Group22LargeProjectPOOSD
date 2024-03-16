@@ -1,13 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:mongo_dart/mongo_dart.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mongo_dart/mongo_dart.dart';
+import 'package:http/http.dart' as http;
+
+import '../main.dart';
 import 'SavedParks.dart';
+import 'WaitList.dart';
 
 class listItem extends StatelessWidget {
   final String parkName;
   final int parkNum;
+  final int userId;
+  final String firstname, lastname;
+  final List<int> parkArr;
 
-  listItem({required this.parkName, required this.parkNum});
+  listItem({required this.parkName, required this.parkNum, required this.firstname, required this.lastname, required this.parkArr, required this.userId});
 
   
   @override
@@ -29,15 +38,44 @@ class listItem extends StatelessWidget {
                  // alignment: Alignment.centerLeft,
                  // padding: EdgeInsets.all(15.0),
                  children: [
-                   // add the name of the park that is passed in
-                   Text(parkName, style: TextStyle(fontSize: 20, color: Colors.white)),
+                   Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                     children: [
+                       Expanded(
+                         flex: 7,
+                         child: Column(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           children: [
+                             Container(
+                               padding: const EdgeInsets.all(7),
+                                // add the name of the park that is passed in
+                              child: Text(parkName, style: TextStyle(fontSize: 20, color: Colors.white)),
+                             ),
+                           ],
+                         ),
+
+                       ),
+                       IconButton(
+                           iconSize: 50,
+                           color: Colors.white,
+                           icon: const Icon(
+                             Icons.remove,
+                           ),
+                           onPressed: () {
+                             removePark(parkNum, userId);
+                             Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage(id: userId, parkArr: parkArr, firstname: firstname, lastname: lastname)));
+                             },
+                       ),
+                     ]
+                   ),
+
 
                    // add a button that will allow the user to see the wait times for this park number
                    // calls function wait times in SavedParks file
                    SizedBox(height: 15),
                     MaterialButton(
                        onPressed: (){
-                         Navigator.push(context, MaterialPageRoute(builder: (context) => WaitTimes(parkNum: parkNum, parkName: parkName)));
+                         Navigator.push(context, MaterialPageRoute(builder: (context) => WaitTimes(parkNum: parkNum, parkName: parkName, firstname: firstname, lastname: lastname, parkArr: parkArr, id: userId)));
                        },
                       color: Colors.white,
                      child: Text('See Wait Times', style: TextStyle(color: Colors.black) ),
@@ -49,6 +87,27 @@ class listItem extends StatelessWidget {
        ),
    );
   }
+  Future<void> removePark(int parkNum, int id) async {
+    final response = await http.post(
+        Uri.parse('https://group-22-0b4387ea5ed6.herokuapp.com/api/deletePark'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, int>{
+          'userID' : id,
+          'parkID': parkNum,
+        })
+    );
+    if (response.statusCode == 200){
+      parkArr.remove(parkNum);
+      Fluttertoast.showToast(msg: "Removed Park");
+    }
+    else {
+      Fluttertoast.showToast(msg: response.statusCode.toString());
+    }
+
+  }
+
 }
 
 class waitTimeItem extends StatelessWidget{
@@ -146,7 +205,7 @@ class waitTimeItem extends StatelessWidget{
     }
     double diff = currWaitTime / avgWaitTime;
 
-    if (diff < .9) return Colors.green;
+    if (diff < .9 || (avgWaitTime == 0 && currWaitTime == 0)) return Colors.green;
     else if (diff >= .9 && diff <= 1.1) return Colors.yellow;
     else return Colors.redAccent;
   }
@@ -159,6 +218,7 @@ class waitTimeItem extends StatelessWidget{
       return currWaitTime.toString();
     }
   }
-
 }
+
+
 

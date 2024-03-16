@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ Future<User> authenticateUser(String username, String password) async {
   );
 
   if (response.statusCode == 200) {
+    print(response.body);
     return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
   }
   else {
@@ -41,32 +43,33 @@ class User {
   final int id;
   final String firstname;
   final String lastname;
+  final List<int> saved_parks;
   final String error;
 
   const User({
     required this.id,
     required this.firstname,
     required this.lastname,
+    required this.saved_parks,
     required this.error,
-
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-      'id': int id,
-      'firstname': String firstname,
-      'lastname': String lastname,
-      'error' : String error,
-      } =>
-          User(
-            id: id,
-            firstname: firstname,
-            lastname: lastname,
-            error: error,
-          ),
-      _ => throw const FormatException('Failed to load User.'),
-    };
+    if (json.containsKey('id') &&
+        json.containsKey('firstname') &&
+        json.containsKey('lastname') &&
+        json.containsKey('saved_parks') &&
+        json.containsKey('error')) {
+      return User(
+        id: json['id'],
+        firstname: json['firstname'],
+        lastname: json['lastname'],
+        saved_parks: List<int>.from(json['saved_parks']),
+        error: json['error'],
+      );
+    } else {
+      throw FormatException('Failed to load User.');
+    }
   }
 }
 
@@ -227,7 +230,7 @@ class _MyAppState extends State<MyApp> {
           final user = snapshot.data;
           if (user?.id != -1){
             SchedulerBinding.instance.addPostFrameCallback((_) {
-              Navigator.push(context, MaterialPageRoute( builder: (context) => _landingPage(firstName: snapshot.data!.firstname, lastName: snapshot.data!.lastname, id: snapshot.data!.id)));
+              Navigator.push(context, MaterialPageRoute( builder: (context) => LandingPage(firstname: snapshot.data!.firstname, lastname: snapshot.data!.lastname, id: snapshot.data!.id, parkArr: snapshot.data!.saved_parks)));
             });
             return Container();
 
@@ -249,14 +252,30 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-class _landingPage extends StatelessWidget {
-  String firstName, lastName;
+class LandingPage extends StatefulWidget{
+  String firstname, lastname;
   int id;
-  List<int> parkArr = [64, 6, 65, 8];
+  List<int> parkArr;
+  LandingPage({super.key, required this.id, required this.parkArr, required this.firstname, required this.lastname});
 
+  @override
+  State<LandingPage> createState() => _landingPage();
+}
 
-  _landingPage({required this.firstName, required this.lastName, required this.id});
+class _landingPage extends State<LandingPage> {
+  late String firstname, lastname;
+  late int id;
+  late List<int> parkArr;
+
+  @override
+  void initState() {
+    parkArr = widget.parkArr;
+    id = widget.id;
+    firstname = widget.firstname;
+    lastname = widget.lastname;
+    super.initState();
+
+  }
 
 
   @override
@@ -273,7 +292,7 @@ class _landingPage extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
               centerTitle: true,
-              title: Text("Welcome " + firstName),
+              title: Text("Welcome " + firstname),
               titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
           ),
           body: Column(
@@ -287,8 +306,8 @@ class _landingPage extends StatelessWidget {
               Expanded(
                 child: TabBarView(children: [
 
-                  SavedParks(parkArr: parkArr, id: id),
-                  PlannedTrips(),
+                  SavedParks(parkArr: parkArr, id: id, firstname: firstname, lastname: lastname),
+                  PlannedTrips(id: id),
                 ])
               ),
             ],
@@ -358,6 +377,7 @@ class _registerPage extends State<MyRegPage> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
 
+  String _emailErrorText = "";
   String user = "";
   String password = "";
   String firstName = "";
@@ -468,7 +488,7 @@ class _registerPage extends State<MyRegPage> {
             decoration: InputDecoration(
               hintText: "Email",
               border: OutlineInputBorder(),
-              errorText: _validateEmail ? "Please enter an Email" : null,
+              errorText: (_emailErrorText == "") ? null : _emailErrorText,
               suffixIcon: IconButton(
                 onPressed: (){
                   _emailController.clear();
@@ -476,6 +496,8 @@ class _registerPage extends State<MyRegPage> {
                 icon: const Icon(Icons.clear),
               ),
             ),
+            onChanged: (value) => checkEmail(_emailController.text),
+
           ),
           SizedBox(height: 30),
           TextField(
@@ -540,7 +562,7 @@ class _registerPage extends State<MyRegPage> {
                 _validateFirst = firstName.isEmpty;
                 _validateLast = lastName.isEmpty;
 
-                if (!_validatePass && !_validateUser) {
+                if (!_validatePass && !_validateUser && !_validateEmail && !_validatePhone && !_validateFirst && !_validateLast) {
                   _futureUser = registerUser(
                     firstName,
                     lastName,
@@ -580,7 +602,8 @@ class _registerPage extends State<MyRegPage> {
                   verifyEmailScreen(firstName: snapshot.data!.firstname,
                       email: email,
                       lastName: snapshot.data!.lastname,
-                      id: snapshot.data!.id)));
+                      id: snapshot.data!.id,
+                      parkArr: snapshot.data!.saved_parks)));
             });
             return Container();
 
@@ -602,6 +625,25 @@ class _registerPage extends State<MyRegPage> {
       },
     );
   }
+
+  void checkEmail(String email) {
+    if (email.isEmpty){
+      setState(() {
+        _validateEmail = true;
+        _emailErrorText = 'Email is required';
+      });
+    } else if (!EmailValidator.validate(email)) {
+      setState(() {
+        _validateEmail = true;
+        _emailErrorText = 'Enter a valid email address';
+      });
+    } else {
+      setState(() {
+        _validateEmail = false;
+        _emailErrorText = "";
+      });
+    }
+  }
 }
 
 class verifyEmailScreen extends StatefulWidget {
@@ -609,7 +651,8 @@ class verifyEmailScreen extends StatefulWidget {
   String lastName;
   String email;
   int id;
-  verifyEmailScreen({super.key, required this.firstName, required this.lastName, required this.email, required this.id});
+  List<int> parkArr;
+  verifyEmailScreen({super.key, required this.firstName, required this.lastName, required this.email, required this.id, required this.parkArr});
 
   @override
   State<verifyEmailScreen> createState() => _VerifyEmailScreen();
@@ -622,6 +665,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
   late String lastName;
   late String email;
   late int id;
+  late List<int> parkArr;
 
   TextEditingController _codeController = TextEditingController();
 
@@ -637,6 +681,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
     lastName = widget.lastName;
     email = widget.email;
     id = widget.id;
+    parkArr = widget.parkArr;
     testVal = random.nextInt(90000) + 10000;
 
   }
@@ -663,7 +708,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
                   // request code to email
                   child: MaterialButton(
                     onPressed: () {
-                      sendEmail(firstName, email, "Confirm your email for Theme Park Time Tracker", "Your one time code is $testVal");
+                      sendEmail(firstName, email, "Confirm your email for Park Pal", "Your one time code is $testVal");
                     },
                     color: Colors.blueAccent,
                     child: const Text('Send verification email', style: TextStyle(color: Colors.white)),
@@ -690,7 +735,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
                             int code = int.parse(_codeController.text);
 
                             if (code == testVal){
-                              Navigator.push( context, MaterialPageRoute( builder: (context) => _landingPage(firstName: firstName, lastName: lastName, id: id))
+                              Navigator.push( context, MaterialPageRoute( builder: (context) => LandingPage(firstname: firstName, lastname: lastName, id: id, parkArr: parkArr))
                               );
                             } else{
                               Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
@@ -738,7 +783,7 @@ Future<void> sendEmail(String firstName, String email, String subject, String me
   );
 
   if(response.statusCode == 200){
-    Fluttertoast.showToast(msg: "Success");
+    Fluttertoast.showToast(msg: "Email sent");
   }
   else{
     Fluttertoast.showToast(msg: "Could not verify");
