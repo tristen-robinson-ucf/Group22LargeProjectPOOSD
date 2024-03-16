@@ -25,10 +25,27 @@ app.use((req, res, next) =>
 
 
 // Database
-const url = 'mongodb+srv://asher12353:COP4331-19thGroup@cluster0.vwkhdxi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+require('dotenv').config();
+const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
+
+
+///////////////////////////////////////////////////
+// For Heroku deployment
+
+// Server static assets if in production
+if (process.env.NODE_ENV === 'production') 
+{
+  // Set static folder
+  app.use(express.static('frontend/build'));
+
+  app.get('*', (req, res) => 
+ {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+  });
+}
 
 
 // REGISTER API
