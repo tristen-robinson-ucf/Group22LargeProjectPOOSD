@@ -22,7 +22,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(6000); // start Node + Express server on port 5000
+app.listen(7000); // start Node + Express server on port 5000
 
 
 // Database
@@ -279,6 +279,8 @@ app.post('/api/searchTrip', async (req, res, next) =>
 	for( var i=0; i<results.length; i++ )
 	{
 		_ret.push( results[i].name );
+		_ret.push( results[i].tripID );
+		_ret.push( results[i].rides );
 	}
 	  
 	var ret = {results:_ret, error:error};
