@@ -1,12 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const path = require('path')
+const PORT = process.env.PORT || 5000
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
+app.set('port', (process.env.PORT || 5000));
 
 app.use((req, res, next) => 
 {
@@ -21,8 +22,6 @@ app.use((req, res, next) =>
   );
   next();
 });
-
-app.listen(7000); // start Node + Express server on port 5000
 
 
 // Database
@@ -469,4 +468,8 @@ app.post('/api/searchRide', async (req, res, next) =>
 	  
 	var ret = {results:_ret, error:error};
 	res.status(200).json(ret);
+});
+
+app.listen(PORT, () =>{
+	console.log('Server is running on port ' + PORT);
 });
