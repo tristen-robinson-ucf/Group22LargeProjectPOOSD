@@ -22,7 +22,7 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(4000); // start Node + Express server on port 5000
+app.listen(6000); // start Node + Express server on port 5000
 
 
 // Database
@@ -171,6 +171,33 @@ app.post('/api/searchUser', async (req, res, next) =>
   
   	var ret = {results:_ret, error:error};
   	res.status(200).json(ret);
+});
+
+// UPDATE USER PASSWORD API - returns username, password, and email
+app.post('/api/password', async (req, res, next) => 
+{
+	// incoming: username
+	// outgoing: username, password, email
+
+	var error = '';
+	
+	const { username } = req.body;
+
+	const db = client.db("COP4331_Group22");
+	const results = await db.collection('Users').find({username:username}).toArray();
+  
+	var password = '';
+	var email = '';
+
+	if(results.length > 0)
+	{
+		password = results[0].password
+		email = results[0].email
+	}
+  
+  	var ret = { username:username,password:password,email:email,error:error};
+  	res.status(200).json(ret);
+	
 });
 
 // ADD TRIP API - Adds a trip
