@@ -293,6 +293,7 @@ app.post('/api/searchTrip', async (req, res, next) =>
 	{
 		_ret.push( results[i].name );
 		_ret.push( results[i].tripID );
+		_ret.push( results[i].parkID );
 		_ret.push( results[i].rides );
 	}
 	  
