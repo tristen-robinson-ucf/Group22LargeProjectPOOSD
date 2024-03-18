@@ -186,7 +186,7 @@ app.post('/api/searchUser', async (req, res, next) =>
   	res.status(200).json(ret);
 });
 
-// UPDATE USER PASSWORD API - returns username, password, and email
+// GET PASSWORD API - returns username, password, and email
 app.post('/api/password', async (req, res, next) => 
 {
 	// incoming: username
@@ -211,6 +211,31 @@ app.post('/api/password', async (req, res, next) =>
   	var ret = { username:username,password:password,email:email,error:error};
   	res.status(200).json(ret);
 	
+});
+
+//UPDATE PASSWORD API
+app.post('/api/updatePassword', async (req, res, next) =>
+{
+	// incoming: username, password
+	// outgoing: message, error
+
+	var error = '';
+	var message = 'Password has been updated';
+
+	const { username, password } = req.body;
+
+	const db = client.db("COP4331_Group22");
+
+	// searches by username (every user should have different usernames) and updates every field in Users
+	try{
+		db.collection('Users').updateOne({username:username}, {$set: { password:password }});
+	}
+	catch(e){
+		error = e.toString();
+	}
+
+	var ret = { message:message,error:error };
+	res.status(200).json(ret);
 });
 
 // ADD TRIP API - Adds a trip
