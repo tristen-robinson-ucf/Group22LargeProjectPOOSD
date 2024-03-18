@@ -31,7 +31,6 @@ Future<User> authenticateUser(String username, String password) async {
   );
 
   if (response.statusCode == 200) {
-    print(response.body);
     return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
   }
   else {
@@ -307,7 +306,7 @@ class _landingPage extends State<LandingPage> {
                 child: TabBarView(children: [
 
                   SavedParks(parkArr: parkArr, id: id, firstname: firstname, lastname: lastname),
-                  PlannedTrips(id: id),
+                  PlannedTrips(parkArr: parkArr, id: id, firstname: firstname, lastname: lastname),
                 ])
               ),
             ],
