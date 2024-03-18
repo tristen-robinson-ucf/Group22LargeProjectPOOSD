@@ -116,7 +116,23 @@ class _PlannedTrips extends State<PlannedTrips>{
                                   color: Colors.white,
                                   child: const Text("Edit trip", style: TextStyle(color: Colors.black)),
 
-                                )
+                                ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: IconButton(
+                                iconSize: 30,
+                                color: Colors.white,
+                                icon: const Icon(
+                                  Icons.remove,
+                                ),
+                                onPressed: () {
+                                  removeTrip(id, resultArr[index][0]);
+                                  resultArr.remove(index);
+
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
+                                },
+                              ),
                             )
 
                           ],
@@ -136,6 +152,27 @@ class _PlannedTrips extends State<PlannedTrips>{
           ),
         )
     );
+  }
+
+  // endpoint to remove a ride from a trips plan
+  void removeTrip(int id, String tripName) async {
+    final response = await http.post(
+        Uri.parse('https://group-22-0b4387ea5ed6.herokuapp.com/api/deleteTrip'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'userID' : id,
+          'name' : tripName,
+        })
+    );
+    if (response.statusCode == 200){
+      Fluttertoast.showToast(msg: "Removed Trip");
+    }
+    else {
+      Fluttertoast.showToast(msg: response.statusCode.toString());
+    }
+
   }
 
 }

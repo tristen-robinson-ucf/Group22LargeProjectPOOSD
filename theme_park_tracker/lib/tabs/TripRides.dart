@@ -11,6 +11,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:theme_park_tracker/main.dart';
 import 'package:theme_park_tracker/tabs/SavedParks.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:theme_park_tracker/tabs/PlannedTrips.dart';
@@ -37,6 +38,7 @@ class _TripRides extends State<TripRides>{
   late List<dynamic> rides;
   late String firstname, lastname;
   late List<int> parkArr;
+  int currDayTime = 0;
 
 
   String selectedRide = '';
@@ -75,7 +77,7 @@ class _TripRides extends State<TripRides>{
     }
   }
 
-  int currDayTime = 0;
+
 
   void getData() async{
     try{
@@ -188,11 +190,8 @@ class _TripRides extends State<TripRides>{
 
   void getAvgs(){
     for (int i in plannedRides){
-
-
       avgWaits.forEach((key, value) {
         if (key == i){
-
           savedRidesAvgWaits.add(value);
           savedRidesAvgWaitsString.add(value.toString());
         }
@@ -200,10 +199,19 @@ class _TripRides extends State<TripRides>{
     }
   }
 
-  void calculateTime(){
-    for (int i in savedRidesAvgWaits){
-      currDayTime += i;
-    }
+  int calculateTime(){
+    int time = 0;
+    avgWaits.forEach((key, value) {
+      if (plannedRides.contains(key)){
+
+        setState(() {
+          time += value;
+        });
+
+      }
+    });
+    return time;
+
   }
 
   @override
@@ -212,72 +220,109 @@ class _TripRides extends State<TripRides>{
       appBar: AppBar(
         centerTitle: true,
         title: Text("Make a trip"),
-        titleTextStyle: const TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+        titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: (){
+            Navigator.push((context), MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
-      body: Padding(
+      body: ((avgWaits.length != rideWaits.length) && plannedRides.isNotEmpty) || avgWaits.isEmpty
+      ? Center(child: CircularProgressIndicator())
+      : Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 70),
+            SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.all(10.0),
-              child: Text("Current Time: $currDayTime minutes", style: TextStyle(fontSize: 20, color: Colors.black)),
+              child: Text("Current Time: ${calculateTime().toString()} minutes", style: TextStyle(fontSize: 25, color: Colors.black)),
             ),
+            SizedBox(height: 10),
+
             Expanded(
               flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Current rides planned for the day."),
-                  Container(
+                  child:
+                    Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Current rides planned for the day."),
 
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child:  ListView.builder(
-                      itemCount: rideIdName.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) => Card(
-                        color: Colors.indigo,
-                        elevation: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              flex: 7,
-                              child:  Container(
-                                padding: const EdgeInsets.all(7),
-                                child: Text(rideIdName.keys.elementAt(index), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 17, color: Colors.white)),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(4.0),
-                              child: Column(
-                                  children: [
-                                    Text("Average", style: TextStyle(color: Colors.white)),
-                                    Container(
-                                        height: 30,
-                                        width: 30,
-                                        color: Colors.white,
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [Text(avgWaits[rideIdName.values.elementAt(index)].toString() , style: TextStyle(color: Colors.black, fontSize: 17), textAlign: TextAlign.center)],
+                      // create a container to hold all the current rides, it is going to be a scrollable sub-section of the page to allow space for adding more rides at the bottom of the page
+                      Container(
+                        height: 350,
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child:  ListView.builder(
+                          itemCount: rideIdName.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) => Card(
+                            color: Colors.indigo,
+                            elevation: 2,
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: SingleChildScrollView(
+                              child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex: 7,
+                                  child:  Container(
+                                    padding: const EdgeInsets.all(7),
+                                    child: Text(rideIdName.keys.elementAt(index), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 17, color: Colors.white)),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(4.0),
+                                  child: Column(
+                                      children: [
+                                        Text("Average", style: TextStyle(color: Colors.white)),
+                                        Container(
+                                            height: 30,
+                                            width: 30,
+                                            color: Colors.white,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [Text(avgWaits[rideIdName.values.elementAt(index)].toString() , style: TextStyle(color: Colors.black, fontSize: 17), textAlign: TextAlign.center)],
+                                            )
                                         )
-                                    )
-                                  ]
-                              ),
+                                      ]
+                                  ),
+                                ),
+                                // this is the button to remove a ride from the current trip plan
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: IconButton(
+                                    iconSize: 30,
+                                    color: Colors.white,
+                                    icon: const Icon(
+                                      Icons.remove,
+                                    ),
+                                    onPressed: () {
+                                      removeRide(rideIdName.values.elementAt(index), tripId);
+                                      for (dynamic it in rides){
+                                        if (int.parse(it.toString()) == rideIdName.values.elementAt(index)){
+                                          rides.remove(it);
+                                          break;
+                                        }
+                                      }
+                                      calculateTime();
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => TripRides(parkId: parkId, id: id, tripId: tripId, rides: rides, firstname: firstname, lastname: lastname, parkArr: parkArr)));
+                                    },
+                                  ),
+                                )
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    )
-                  )
-                ],
-              ),
+                            ),
+                          ),
+                        )
+                      )
+                    ],
+                ),
             ),
-
+            SizedBox(height: 20),
             // add functionality to add more rides to the current plan
             DropdownSearch<dynamic>(
               items: dropdownNames,
@@ -300,8 +345,11 @@ class _TripRides extends State<TripRides>{
                   rideWaits.forEach((key, value) {
                     if (key == selectedRide){
                       rides.add(value[1]);
+                      addRide(value[1], tripId);
                     }
                   });
+                  calculateTime();
+
                   Navigator.push(context, MaterialPageRoute(builder: (context) => TripRides(parkId: parkId, id: id, tripId: tripId, rides: rides, firstname: firstname, lastname: lastname, parkArr: parkArr)));
 
                 });
@@ -315,4 +363,48 @@ class _TripRides extends State<TripRides>{
       ),
     );
   }
+
+  // endpoint to remove a ride from a trips plan
+  void removeRide(int rideId, int tripId) async {
+    final response = await http.post(
+        Uri.parse('https://group-22-0b4387ea5ed6.herokuapp.com/api/deleteRide'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, int>{
+          'tripID' : tripId,
+          'rideID' : rideId,
+        })
+    );
+    if (response.statusCode == 200){
+      Fluttertoast.showToast(msg: "Removed ride");
+    }
+    else {
+      Fluttertoast.showToast(msg: response.statusCode.toString());
+    }
+
+  }
+
+  // endpoint to add a ride to a trip
+  void addRide(int rideId, int tripId) async {
+    final response = await http.post(
+        Uri.parse('https://group-22-0b4387ea5ed6.herokuapp.com/api/addRide'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, int>{
+          'tripID' : tripId,
+          'rideID' : rideId,
+        })
+    );
+    if (response.statusCode == 200){
+      Fluttertoast.showToast(msg: "Added ride");
+    }
+    else {
+      Fluttertoast.showToast(msg: response.statusCode.toString());
+    }
+  }
+
+
+
 }
