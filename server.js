@@ -32,6 +32,17 @@ const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
 
 
+exports = async function(changeEvent) {
+    var docId = changeEvent.fullDocument._id;
+    
+    const counterdb = context.services.get("Cluster0").db(changeEvent.ns.db).collection("counters");
+    const usersdb = context.services.get("Cluster0").db(changeEvent.ns.db).collection(changeEvent.ns.coll);
+    
+    var counter = await counterdb.findOneAndUpdate({_id: changeEvent.ns },{ $inc: { seq_value: 1 }}, { returnNewDocument: true, upsert : true});
+    var updateRes = await usersdb.updateOne({_id : docId},{ $set : {id : counter.seq_value}});
+    
+    console.log(`Updated ${JSON.stringify(changeEvent.ns)} with counter ${counter.seq_value} result : ${JSON.stringify(updateRes)}`);
+};
 ///////////////////////////////////////////////////
 // For Heroku deployment
 
@@ -189,7 +200,7 @@ app.post('/api/searchUser', async (req, res, next) =>
   	res.status(200).json(ret);
 });
 
-// UPDATE USER PASSWORD API - returns username, password, and email
+// GET PASSWORD API - returns username, password, and email
 app.post('/api/password', async (req, res, next) => 
 {
 	// incoming: username
@@ -214,6 +225,31 @@ app.post('/api/password', async (req, res, next) =>
   	var ret = { username:username,password:password,email:email,error:error};
   	res.status(200).json(ret);
 	
+});
+
+//UPDATE PASSWORD API
+app.post('/api/updatePassword', async (req, res, next) =>
+{
+	// incoming: username, password
+	// outgoing: message, error
+
+	var error = '';
+	var message = 'Password has been updated';
+
+	const { username, password } = req.body;
+
+	const db = client.db("COP4331_Group22");
+
+	// searches by username (every user should have different usernames) and updates every field in Users
+	try{
+		db.collection('Users').updateOne({username:username}, {$set: { password:password }});
+	}
+	catch(e){
+		error = e.toString();
+	}
+
+	var ret = { message:message,error:error };
+	res.status(200).json(ret);
 });
 
 // ADD TRIP API - Adds a trip
@@ -296,6 +332,7 @@ app.post('/api/searchTrip', async (req, res, next) =>
 	{
 		_ret.push( results[i].name );
 		_ret.push( results[i].tripID );
+		_ret.push( results[i].parkID );
 		_ret.push( results[i].rides );
 	}
 	  
