@@ -11,9 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:theme_park_tracker/PasswordReset.dart';
 import 'package:theme_park_tracker/register.dart';
 import 'package:theme_park_tracker/tabs/PlannedTrips.dart';
 import 'package:theme_park_tracker/tabs/SavedParks.dart';
@@ -106,28 +108,27 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Theme Park Time Tracker',
+      title: 'Park Pal',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         appBarTheme: const AppBarTheme(color: Colors.indigo),
       ),
       home: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('ThemeParkTimeTracker'),
-          titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
+
+        body:  Container(
+            decoration: BoxDecoration(
+              color: HexColor("#99dbFF")
+            ),
             alignment: Alignment.center,
             padding: const EdgeInsets.all(8),
 
-            child: (_futureUser == null) ? buildColumn() : buildFutureBuilder(),
+            child: SingleChildScrollView(
+              child:  (_futureUser == null) ? buildColumn() : buildFutureBuilder(),
+            ),
           ),
-        )
+        ),
 
-      ),
-    );
+   );
   }
   Column buildColumn() {
     TextStyle defaultStyle = TextStyle(color: Colors.grey, fontSize: 20.0);
@@ -135,86 +136,121 @@ class _MyAppState extends State<MyApp> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              "Login",
-              style: TextStyle(fontSize: 30),
+          SizedBox(height: 20),
+          Container(
+            height: 230,
+            child: const Image(
+              image: AssetImage('assets/ParkPal.png'),
             ),
           ),
-          SizedBox(height: 30),
+
           Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                          hintText: "Username",
-                          border: OutlineInputBorder(),
-                          errorText: _validateUser ? "Please enter a Username" : null,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              _usernameController.clear();
-                            },
-                            icon: const Icon(Icons.clear),
-                          )
-                      )
-                  ),
-                  SizedBox(height: 30),
-                  TextField(
-                    obscureText: true,
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                          hintText: "Password",
-                          border: OutlineInputBorder(),
-                          errorText: _validatePass ? "Please enter a Password" : null,
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              _passwordController.clear();
-                            },
-                            icon: const Icon(Icons.clear),
-                          )
-                      )
-                  ),
-                  SizedBox(height: 30),
-                  MaterialButton(
-                    onPressed: () {
-                      user = _usernameController.text;
-                      password = _passwordController.text;
-
-
-                      setState(() {
-                        _validateUser = user.isEmpty;
-                        _validatePass = password.isEmpty;
-
-                        if (!_validatePass && !_validateUser) {
-                          _futureUser = authenticateUser(
-                              _usernameController.text,
-                              _passwordController.text);
-                        };
-                      });
-                    },
-                    color: Colors.blueAccent,
-                    child: const Text('Login', style: TextStyle(color: Colors.white)),
-                  ),
-                  SizedBox(height: 60),
-                  RichText(
-                      text: TextSpan(
-                        style: defaultStyle,
-                        children: <TextSpan>[
-                          TextSpan(text: "Don't have an account? "),
-                          TextSpan(
-                            text: 'Register here.',
-                            style: linkStyle,
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MyRegPage())),
-                          )
-                        ]
-                      ))
-                ]
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(width: 6, color: Colors.black),
             ),
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 15),
+                const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "Login",
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ),
+                SizedBox(height: 30),
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextField(
+                            controller: _usernameController,
+                            decoration: InputDecoration(
+                                hintText: "Username",
+                                border: OutlineInputBorder(),
+                                errorText: _validateUser ? "Please enter a Username" : null,
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _usernameController.clear();
+                                  },
+                                  icon: const Icon(Icons.clear),
+                                )
+                            )
+                        ),
+                        SizedBox(height: 30),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextField(
+                              obscureText: true,
+                              controller: _passwordController,
+                              decoration: InputDecoration(
+                                  hintText: "Password",
+                                  border: OutlineInputBorder(),
+                                  errorText: _validatePass ? "Please enter a Password" : null,
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      _passwordController.clear();
+                                    },
+                                    icon: const Icon(Icons.clear),
+                                  )
+                              ),
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                text: "Forgot password?",
+                                style: linkStyle,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PasswordReset())),
+                              ),
+                            ),
+                          ],
+
+                        ),
+                        SizedBox(height: 30),
+                        MaterialButton(
+                          onPressed: () {
+                            user = _usernameController.text;
+                            password = _passwordController.text;
+
+
+                            setState(() {
+                              _validateUser = user.isEmpty;
+                              _validatePass = password.isEmpty;
+
+                              if (!_validatePass && !_validateUser) {
+                                _futureUser = authenticateUser(
+                                    _usernameController.text,
+                                    _passwordController.text);
+                              };
+                            });
+                          },
+                          color: Colors.blueAccent,
+                          child: const Text('Login', style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 40),
+          RichText(
+              text: TextSpan(
+                  style: defaultStyle,
+                  children: <TextSpan>[
+                    TextSpan(text: "Don't have an account? "),
+                    TextSpan(
+                      text: 'Register here.',
+                      style: linkStyle,
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MyRegPage())),
+                    )
+                  ]
+              )
           )
         ]
     );
@@ -377,6 +413,7 @@ class _registerPage extends State<MyRegPage> {
   final _phoneController = TextEditingController();
 
   String _emailErrorText = "";
+  String _passwordErrorText = "";
   String user = "";
   String password = "";
   String firstName = "";
@@ -396,22 +433,19 @@ class _registerPage extends State<MyRegPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Theme Park Time Tracker",
+      title: "Park Pal",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         appBarTheme: const AppBarTheme(color: Colors.indigo),
       ),
       home: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text('ThemeParkTimeTracker'),
-            titleTextStyle: const TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
-          ),
           body: SingleChildScrollView(
             child: Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
 
               child: (_futureUser == null)
                   ? buildColumn()
@@ -429,160 +463,173 @@ class _registerPage extends State<MyRegPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              "Register",
-              style: TextStyle(fontSize: 30),
+          SizedBox(height: 20,),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              border: Border.all(width: 2, color: Colors.black),
             ),
-          ),
-          SizedBox(height: 30),
-          TextField(
-              controller: _firstnameController,
-              decoration: InputDecoration(
-                  hintText: "First Name",
-                  errorText: _validateFirst ? "Please enter a First Name" : null,
-                  border: OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    onPressed: (){
-                      _firstnameController.clear();
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "Register",
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextField(
+                    controller: _firstnameController,
+                    decoration: InputDecoration(
+                        hintText: "First Name",
+                        errorText: _validateFirst ? "Please enter a First Name" : null,
+                        border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          onPressed: (){
+                            _firstnameController.clear();
+                          },
+                          icon: const Icon(Icons.clear),
+                        )
+                    )
+                ),
+                SizedBox(height: 15),
+                TextField(
+                    controller: _lastnameController,
+                    decoration: InputDecoration(
+                        hintText: "Last Name",
+                        border: OutlineInputBorder(),
+                        errorText: _validateLast ? "Please enter a Last Name" : null,
+                        suffixIcon: IconButton(
+                          onPressed: (){
+                            _lastnameController.clear();
+                          },
+                          icon: const Icon(Icons.clear),
+                        )
+                    )
+                ),
+                SizedBox(height: 15),
+                TextField(
+                  controller: _phoneController,
+                  decoration: InputDecoration(
+                    hintText: "Phone Number",
+                    border: OutlineInputBorder(),
+                    errorText: _validatePhone ? "Please enter a Phone Number" : null,
+                    suffixIcon: IconButton(
+                      onPressed: (){
+                        _phoneController.clear();
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    hintText: "Email",
+                    border: OutlineInputBorder(),
+                    errorText: (_emailErrorText == "") ? null : _emailErrorText,
+                    suffixIcon: IconButton(
+                      onPressed: (){
+                        _emailController.clear();
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
+                  ),
+                  onChanged: (value) => checkEmail(_emailController.text),
+
+                ),
+                SizedBox(height: 15),
+                TextField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                        hintText: "Username",
+                        border: OutlineInputBorder(),
+                        errorText: _validateUser ? "Please enter a Username" : null,
+
+                        suffixIcon: IconButton(
+                          onPressed: (){
+                            _usernameController.clear();
+                          },
+                          icon: const Icon(Icons.clear),
+                        )
+                    )
+                ),
+                // if the user selects the button, populate the username with that users email
+                MaterialButton(
+                    onPressed: () {
+                      _usernameController.text = _emailController.text;
                     },
-                    icon: const Icon(Icons.clear),
-                  )
-              )
-          ),
-          SizedBox(height: 30),
-          TextField(
-              controller: _lastnameController,
-              decoration: InputDecoration(
-                  hintText: "Last Name",
-                  border: OutlineInputBorder(),
-                  errorText: _validateLast ? "Please enter a Last Name" : null,
-                  suffixIcon: IconButton(
-                    onPressed: (){
-                      _lastnameController.clear();
-                    },
-                    icon: const Icon(Icons.clear),
-                  )
-              )
-          ),
-          SizedBox(height: 30),
-          TextField(
-            controller: _phoneController,
-            decoration: InputDecoration(
-              hintText: "Phone Number",
-              border: OutlineInputBorder(),
-              errorText: _validatePhone ? "Please enter a Phone Number" : null,
-              suffixIcon: IconButton(
-                onPressed: (){
-                  _phoneController.clear();
-                },
-                icon: const Icon(Icons.clear),
-              ),
-            ),
-          ),
-          SizedBox(height: 30),
-          TextField(
-            controller: _emailController,
-            decoration: InputDecoration(
-              hintText: "Email",
-              border: OutlineInputBorder(),
-              errorText: (_emailErrorText == "") ? null : _emailErrorText,
-              suffixIcon: IconButton(
-                onPressed: (){
-                  _emailController.clear();
-                },
-                icon: const Icon(Icons.clear),
-              ),
-            ),
-            onChanged: (value) => checkEmail(_emailController.text),
+                    color: Colors.grey,
+                    child: const Align(
+                      child: Text('Use Email', style: TextStyle(color: Colors.white)),
+                      alignment: Alignment.topLeft,
+                    )
+                ),
+                SizedBox(height: 15),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: "Password",
+                    border: OutlineInputBorder(),
+                    errorText: (_passwordErrorText.isEmpty) ? null : _passwordErrorText,
+                    suffixIcon: IconButton(
+                      onPressed: (){
+                        _passwordController.clear();
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+                MaterialButton(
+                  onPressed: () {
+                    user = _usernameController.text;
+                    password = _passwordController.text;
+                    firstName = _firstnameController.text;
+                    lastName = _lastnameController.text;
+                    email = _emailController.text;
+                    phone = _phoneController.text;
 
-          ),
-          SizedBox(height: 30),
-          TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                  hintText: "Username",
-                  border: OutlineInputBorder(),
-                  errorText: _validateUser ? "Please enter a Username" : null,
+                    // update validate vars to reflect completeness of the fields,
+                    // turn on error text if any are empty, if not go through with registration
+                    setState(() {
+                      _validateUser = user.isEmpty;
+                      _validatePhone = phone.isEmpty;
+                      _validateFirst = firstName.isEmpty;
+                      _validateLast = lastName.isEmpty;
+                      _validateEmail = !checkEmail(email);
+                      _validatePass = !checkPassword(password);
 
-                  suffixIcon: IconButton(
-                    onPressed: (){
-                      _usernameController.clear();
-                    },
-                    icon: const Icon(Icons.clear),
-                  )
-              )
-          ),
-          // if the user selects the button, populate the username with that users email
-          MaterialButton(
-              onPressed: () {
-                _usernameController.text = _emailController.text;
-              },
-              color: Colors.grey,
-              child: const Align(
-                child: Text('Use Email', style: TextStyle(color: Colors.white)),
-                alignment: Alignment.topLeft,
-              )
-          ),
-          SizedBox(height: 30),
-          TextField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              hintText: "Password",
-              border: OutlineInputBorder(),
-              errorText: _validatePass ? "Please enter a Password" : null,
-              suffixIcon: IconButton(
-                onPressed: (){
-                  _passwordController.clear();
-                },
-                icon: const Icon(Icons.clear),
-              ),
-            ),
-          ),
-          SizedBox(height: 30),
-          MaterialButton(
-            onPressed: () {
-              user = _usernameController.text;
-              password = _passwordController.text;
-              firstName = _firstnameController.text;
-              lastName = _lastnameController.text;
-              email = _emailController.text;
-              phone = _phoneController.text;
-
-              // update validate vars to reflect completeness of the fields,
-              // turn on error text if any are empty, if not go through with registration
-              setState(() {
-                _validateUser = user.isEmpty;
-                _validatePass = password.isEmpty;
-                _validateEmail = email.isEmpty;
-                _validatePhone = phone.isEmpty;
-                _validateFirst = firstName.isEmpty;
-                _validateLast = lastName.isEmpty;
-
-                if (!_validatePass && !_validateUser && !_validateEmail && !_validatePhone && !_validateFirst && !_validateLast) {
-                  _futureUser = registerUser(
-                    firstName,
-                    lastName,
-                    email,
-                    phone,
-                    user,
-                    password,);
-                };
-              });
+                      if (checkPassword(password) && !_validateUser && checkEmail(email) && !_validatePhone && !_validateFirst && !_validateLast) {
+                        _futureUser = registerUser(
+                          firstName,
+                          lastName,
+                          email,
+                          phone,
+                          user,
+                          password,);
+                      };
+                    });
 
 
-              if (!_validateLast && !_validateFirst && !_validatePhone && !_validateEmail && !_validateUser && !_validatePass){
-                Fluttertoast.showToast(msg: 'Registering...');
-              }
+                    if (!_validateLast && !_validateFirst && !_validatePhone && !_validateEmail && !_validateUser && !_validatePass){
+                      Fluttertoast.showToast(msg: 'Registering...');
+                    }
 
 
-            },
-            color: Colors.blueAccent,
-            child: const Text('Register', style: TextStyle(color: Colors.white)),
+                  },
+                  color: Colors.blueAccent,
+                  child: const Text('Register', style: TextStyle(color: Colors.white)),
 
+                )
+              ],
+            )
           )
+
         ]
     );
   }
@@ -625,23 +672,62 @@ class _registerPage extends State<MyRegPage> {
     );
   }
 
-  void checkEmail(String email) {
+  bool checkEmail(String email) {
+    _emailErrorText = '';
     if (email.isEmpty){
       setState(() {
         _validateEmail = true;
-        _emailErrorText = 'Email is required';
+        _emailErrorText += '• Email is required\n';
       });
-    } else if (!EmailValidator.validate(email)) {
+    } if (!EmailValidator.validate(email)) {
       setState(() {
         _validateEmail = true;
-        _emailErrorText = 'Enter a valid email address';
-      });
-    } else {
-      setState(() {
-        _validateEmail = false;
-        _emailErrorText = "";
+        _emailErrorText = '• Enter a valid email address\n';
       });
     }
+    return _emailErrorText.isEmpty;
+  }
+
+  bool checkPassword(String password){
+    _passwordErrorText = '';
+
+    if (password.length < 8){
+
+      setState(() {
+        _passwordErrorText += '• Password must be at least 8 characters.\n';
+        _validatePass = true;
+      });
+    }
+    if (!password.contains(RegExp(r'[A-Z]'))){
+      setState(() {
+        _validatePass = true;
+
+        _passwordErrorText += '• Password must contain an uppercase letter.\n';
+      });
+    }
+    if (!password.contains(RegExp(r'[a-z]'))){
+      setState(() {
+        _validatePass = true;
+
+      _passwordErrorText += '• Password must contain a lowercase letter.\n';
+      });
+    }
+    if (!password.contains(RegExp(r'[0-9]'))){
+      setState(() {
+        _validatePass = true;
+
+      _passwordErrorText += '• Password must contain a number.\n';
+      });
+    }
+    if (!password.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
+      setState(() {
+        _validatePass = true;
+        _passwordErrorText += '• Password must contain a special character.\n';
+      });
+    }
+
+
+    return _passwordErrorText.isEmpty;
   }
 }
 
@@ -688,7 +774,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Theme Park Time Tracker',
+      title: 'Park Pal',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         appBarTheme: const AppBarTheme(color: Colors.indigo),

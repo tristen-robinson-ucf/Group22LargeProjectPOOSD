@@ -111,7 +111,12 @@ class _SavedParks extends State<SavedParks>{
                                 ),
                                 onPressed: () {
                                   removePark(parkMap.values.elementAt(index), id);
-                                  parkMap.remove(parkMap.keys.elementAt(index));
+
+                                  setState(() {
+                                    parkArr.remove(parkMap.values.elementAt(index));
+                                    //parkMap.remove(index);
+
+                                  });
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
                                 },
                               ),
@@ -161,7 +166,6 @@ class _SavedParks extends State<SavedParks>{
         })
     );
     if (response.statusCode == 200){
-      parkArr.remove(parkNum);
       Fluttertoast.showToast(msg: "Removed Park");
     }
     else {
