@@ -1,12 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const path = require('path')
+const PORT = process.env.PORT || 5000
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
+app.set('port', (process.env.PORT || 5000));
 
 app.use((req, res, next) => 
 {
@@ -22,11 +23,10 @@ app.use((req, res, next) =>
   next();
 });
 
-app.listen(5000); // start Node + Express server on port 5000
-
 
 // Database
-const url = 'mongodb+srv://asher12353:COP4331-19thGroup@cluster0.vwkhdxi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+require('dotenv').config();
+const url = process.env.MONGODB_URI;
 const MongoClient = require("mongodb").MongoClient;
 const client = new MongoClient(url);
 client.connect(console.log("mongodb connected"));
@@ -43,6 +43,20 @@ exports = async function(changeEvent) {
     
     console.log(`Updated ${JSON.stringify(changeEvent.ns)} with counter ${counter.seq_value} result : ${JSON.stringify(updateRes)}`);
 };
+///////////////////////////////////////////////////
+// For Heroku deployment
+
+// Server static assets if in production
+if (process.env.NODE_ENV === 'production') 
+{
+  // Set static folder
+  app.use(express.static('frontend/build'));
+
+  app.get('*', (req, res) => 
+ {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
+  });
+}
 
 
 // REGISTER API
@@ -508,4 +522,8 @@ app.post('/api/searchRide', async (req, res, next) =>
 	  
 	var ret = {results:_ret, error:error};
 	res.status(200).json(ret);
+});
+
+app.listen(PORT, () =>{
+	console.log('Server is running on port ' + PORT);
 });
