@@ -318,9 +318,9 @@ class _landingPage extends State<LandingPage> {
     return MaterialApp(
         title: 'Landing Page',
         theme: ThemeData(
-          appBarTheme: const AppBarTheme(color: Colors.indigo),
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          tabBarTheme: const TabBarTheme(dividerColor: Colors.black, indicatorColor: Colors.indigo, labelColor: Colors.indigo, unselectedLabelColor: Colors.grey),
+          appBarTheme: AppBarTheme(color: HexColor("#EB5756")),
+          colorScheme: ColorScheme.fromSeed(seedColor:HexColor("#EB5756")),
+          tabBarTheme: TabBarTheme(dividerColor: Colors.black, indicatorColor: HexColor("Eb7978"), labelColor:HexColor("Eb7978"), unselectedLabelColor: Colors.grey),
     ),
       home: DefaultTabController(
         length: 2,
@@ -439,17 +439,14 @@ class _registerPage extends State<MyRegPage> {
         appBarTheme: const AppBarTheme(color: Colors.indigo),
       ),
       home: Scaffold(
-          body: SingleChildScrollView(
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-
-              child: (_futureUser == null)
-                  ? buildColumn()
-                  : buildFutureBuilder(email),
+          body: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: HexColor("#Fb9c7E"),
+            ),
+            child: SingleChildScrollView(
+              child: buildColumn(),
             ),
           )
 
@@ -463,212 +460,168 @@ class _registerPage extends State<MyRegPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 20,),
+          SizedBox(height: 20),
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              border: Border.all(width: 2, color: Colors.black),
+              color: Colors.white,
+              border: Border.all(width: 4, color: Colors.black),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    "Register",
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                    controller: _firstnameController,
-                    decoration: InputDecoration(
-                        hintText: "First Name",
-                        errorText: _validateFirst ? "Please enter a First Name" : null,
-                        border: OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          onPressed: (){
-                            _firstnameController.clear();
+          child: Column(
+            children: [
+
+                  SizedBox(height: 10,),
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            "Register",
+                            style: TextStyle(fontSize: 30),
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        TextField(
+                            controller: _firstnameController,
+                            decoration: InputDecoration(
+                                hintText: "First Name",
+                                errorText: _validateFirst ? "Please enter a First Name" : null,
+                                border: OutlineInputBorder(),
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    _firstnameController.clear();
+                                  },
+                                  icon: const Icon(Icons.clear),
+                                )
+                            )
+                        ),
+                        SizedBox(height: 15),
+                        TextField(
+                            controller: _lastnameController,
+                            decoration: InputDecoration(
+                                hintText: "Last Name",
+                                border: OutlineInputBorder(),
+                                errorText: _validateLast ? "Please enter a Last Name" : null,
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    _lastnameController.clear();
+                                  },
+                                  icon: const Icon(Icons.clear),
+                                )
+                            )
+                        ),
+                        SizedBox(height: 15),
+                        TextField(
+                          controller: _phoneController,
+                          decoration: InputDecoration(
+                            hintText: "Phone Number",
+                            border: OutlineInputBorder(),
+                            errorText: _validatePhone ? "Please enter a Phone Number" : null,
+                            suffixIcon: IconButton(
+                              onPressed: (){
+                                _phoneController.clear();
+                              },
+                              icon: const Icon(Icons.clear),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        TextField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            hintText: "Email",
+                            border: OutlineInputBorder(),
+                            errorText: (_emailErrorText == "") ? null : _emailErrorText,
+                            suffixIcon: IconButton(
+                              onPressed: (){
+                                _emailController.clear();
+                              },
+                              icon: const Icon(Icons.clear),
+                            ),
+                          ),
+                          // onChanged: (value) => checkEmail(_emailController.text),
+
+                        ),
+                        SizedBox(height: 15),
+                        TextField(
+                            controller: _usernameController,
+                            decoration: InputDecoration(
+                                hintText: "Username",
+                                border: OutlineInputBorder(),
+                                errorText: _validateUser ? "Please enter a Username" : null,
+
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    _usernameController.clear();
+                                  },
+                                  icon: const Icon(Icons.clear),
+                                )
+                            )
+                        ),
+                        // if the user selects the button, populate the username with that users email
+                        MaterialButton(
+                            onPressed: () {
+                              _usernameController.text = _emailController.text;
+                            },
+                            color: Colors.grey,
+                            child: const Align(
+                              child: Text('Use Email', style: TextStyle(color: Colors.white)),
+                              alignment: Alignment.topLeft,
+                            )
+                        ),
+                        SizedBox(height: 15),
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: "Password",
+                            border: OutlineInputBorder(),
+                            errorText: (_passwordErrorText.isEmpty) ? null : _passwordErrorText,
+                            suffixIcon: IconButton(
+                              onPressed: (){
+                                _passwordController.clear();
+                              },
+                              icon: const Icon(Icons.clear),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        MaterialButton(
+                          onPressed: () {
+                            user = _usernameController.text;
+                            password = _passwordController.text;
+                            firstName = _firstnameController.text;
+                            lastName = _lastnameController.text;
+                            email = _emailController.text;
+                            phone = _phoneController.text;
+
+                            // update validate vars to reflect completeness of the fields,
+                            // turn on error text if any are empty, if not go through with registration
+                            setState(() {
+                              _validateUser = user.isEmpty;
+                              _validatePhone = phone.isEmpty;
+                              _validateFirst = firstName.isEmpty;
+                              _validateLast = lastName.isEmpty;
+                              _validateEmail = !checkEmail(email);
+                              _validatePass = !checkPassword(password);
+
+                              if (checkPassword(password) && !_validateUser && checkEmail(email) && !_validatePhone && !_validateFirst && !_validateLast) {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => verifyEmailScreen(firstName: firstName, lastName: lastName, email: email, phone: phone, username: user, password: password)));
+                              };
+                            });
+
                           },
-                          icon: const Icon(Icons.clear),
+                          color: HexColor("#99dbFF"),
+                          child: const Text('Register', style: TextStyle(color: Colors.black)),
+
                         )
-                    )
-                ),
-                SizedBox(height: 15),
-                TextField(
-                    controller: _lastnameController,
-                    decoration: InputDecoration(
-                        hintText: "Last Name",
-                        border: OutlineInputBorder(),
-                        errorText: _validateLast ? "Please enter a Last Name" : null,
-                        suffixIcon: IconButton(
-                          onPressed: (){
-                            _lastnameController.clear();
-                          },
-                          icon: const Icon(Icons.clear),
-                        )
-                    )
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: _phoneController,
-                  decoration: InputDecoration(
-                    hintText: "Phone Number",
-                    border: OutlineInputBorder(),
-                    errorText: _validatePhone ? "Please enter a Phone Number" : null,
-                    suffixIcon: IconButton(
-                      onPressed: (){
-                        _phoneController.clear();
-                      },
-                      icon: const Icon(Icons.clear),
-                    ),
+                      ],
                   ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    hintText: "Email",
-                    border: OutlineInputBorder(),
-                    errorText: (_emailErrorText == "") ? null : _emailErrorText,
-                    suffixIcon: IconButton(
-                      onPressed: (){
-                        _emailController.clear();
-                      },
-                      icon: const Icon(Icons.clear),
-                    ),
-                  ),
-                  onChanged: (value) => checkEmail(_emailController.text),
-
-                ),
-                SizedBox(height: 15),
-                TextField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                        hintText: "Username",
-                        border: OutlineInputBorder(),
-                        errorText: _validateUser ? "Please enter a Username" : null,
-
-                        suffixIcon: IconButton(
-                          onPressed: (){
-                            _usernameController.clear();
-                          },
-                          icon: const Icon(Icons.clear),
-                        )
-                    )
-                ),
-                // if the user selects the button, populate the username with that users email
-                MaterialButton(
-                    onPressed: () {
-                      _usernameController.text = _emailController.text;
-                    },
-                    color: Colors.grey,
-                    child: const Align(
-                      child: Text('Use Email', style: TextStyle(color: Colors.white)),
-                      alignment: Alignment.topLeft,
-                    )
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "Password",
-                    border: OutlineInputBorder(),
-                    errorText: (_passwordErrorText.isEmpty) ? null : _passwordErrorText,
-                    suffixIcon: IconButton(
-                      onPressed: (){
-                        _passwordController.clear();
-                      },
-                      icon: const Icon(Icons.clear),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 15),
-                MaterialButton(
-                  onPressed: () {
-                    user = _usernameController.text;
-                    password = _passwordController.text;
-                    firstName = _firstnameController.text;
-                    lastName = _lastnameController.text;
-                    email = _emailController.text;
-                    phone = _phoneController.text;
-
-                    // update validate vars to reflect completeness of the fields,
-                    // turn on error text if any are empty, if not go through with registration
-                    setState(() {
-                      _validateUser = user.isEmpty;
-                      _validatePhone = phone.isEmpty;
-                      _validateFirst = firstName.isEmpty;
-                      _validateLast = lastName.isEmpty;
-                      _validateEmail = !checkEmail(email);
-                      _validatePass = !checkPassword(password);
-
-                      if (checkPassword(password) && !_validateUser && checkEmail(email) && !_validatePhone && !_validateFirst && !_validateLast) {
-                        _futureUser = registerUser(
-                          firstName,
-                          lastName,
-                          email,
-                          phone,
-                          user,
-                          password,);
-                      };
-                    });
-
-
-                    if (!_validateLast && !_validateFirst && !_validatePhone && !_validateEmail && !_validateUser && !_validatePass){
-                      Fluttertoast.showToast(msg: 'Registering...');
-                    }
-
-
-                  },
-                  color: Colors.blueAccent,
-                  child: const Text('Register', style: TextStyle(color: Colors.white)),
-
-                )
               ],
-            )
-          )
-
-        ]
-    );
-  }
-
-  FutureBuilder<User> buildFutureBuilder(String email) {
-    return FutureBuilder<User>(
-      future: _futureUser,
-      builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data!.id != -1) {
-          Fluttertoast.showToast(
-              msg: 'Welcome ${snapshot.data!.firstname}, registering you now.');
-          final user = snapshot.data;
-          if (user?.id != -1) {
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                  verifyEmailScreen(firstName: snapshot.data!.firstname,
-                      email: email,
-                      lastName: snapshot.data!.lastname,
-                      id: snapshot.data!.id,
-                      parkArr: snapshot.data!.saved_parks)));
-            });
-            return Container();
-
-            //Navigator.push( context, MaterialPageRoute( builder: (context) => _landingPage(firstName: user!.firstname, lastName: user!.lastname, id: user!.id)));
-          }
-          else {
-            return Text('Cannot login right now.');
-          }
-          return Container();
-        } else if (snapshot.hasError) {
-          return Text('${snapshot.error}');
-        } else if (snapshot.hasData && snapshot.data!.id == -1) {
-          Fluttertoast.showToast(
-              msg: "Unable to register");
-          return buildColumn();
-        }
-
-        return const CircularProgressIndicator();
-      },
+            ),
+          ),
+        ],
     );
   }
 
@@ -735,9 +688,10 @@ class verifyEmailScreen extends StatefulWidget {
   String firstName;
   String lastName;
   String email;
-  int id;
-  List<int> parkArr;
-  verifyEmailScreen({super.key, required this.firstName, required this.lastName, required this.email, required this.id, required this.parkArr});
+  String username;
+  String password;
+  String phone;
+  verifyEmailScreen({super.key, required this.firstName, required this.lastName, required this.email, required this.phone, required this.username, required this.password});
 
   @override
   State<verifyEmailScreen> createState() => _VerifyEmailScreen();
@@ -749,8 +703,12 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
   late String firstName;
   late String lastName;
   late String email;
+  late String username;
+  late String password;
+  late String phone;
   late int id;
   late List<int> parkArr;
+  Future<User>? _futureUser;
 
   TextEditingController _codeController = TextEditingController();
 
@@ -765,8 +723,9 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
     firstName = widget.firstName;
     lastName = widget.lastName;
     email = widget.email;
-    id = widget.id;
-    parkArr = widget.parkArr;
+    username = widget.username;
+    phone = widget.phone;
+    password = widget.password;
     testVal = random.nextInt(90000) + 10000;
 
   }
@@ -774,33 +733,69 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Park Pal',
+      title: "Park Pal",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         appBarTheme: const AppBarTheme(color: Colors.indigo),
       ),
       home: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text('Verify your email'),
-            titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+          body: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: HexColor("#Fb9c7E"),
+            ),
+
+            child: SingleChildScrollView(
+
+              child: (_futureUser == null)
+              ? buildColumn()
+              : buildFutureBuilder(email),
+            ),
+          )
+
+      ),
+    );
+  }
+
+
+  Column buildColumn(){
+   return Column(
+        children:[
+
+          SizedBox(height: 40),
+          SizedBox(
+            width: 200,
+            height: 75,
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              // request code to email
+              child: MaterialButton(
+                onPressed: () {
+                  sendEmail(firstName, email, "Confirm your email for Park Pal", "Your one time code is $testVal");
+                },
+                color: HexColor("#99dbFF"),
+                child: const Text('Send verification email', style: TextStyle(color: Colors.black)),
+              ),
+            ),
           ),
-          body: Column(
-              children:[
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(8),
-                  // request code to email
-                  child: MaterialButton(
-                    onPressed: () {
-                      sendEmail(firstName, email, "Confirm your email for Park Pal", "Your one time code is $testVal");
-                    },
-                    color: Colors.blueAccent,
-                    child: const Text('Send verification email', style: TextStyle(color: Colors.white)),
-                  ),
+
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(width: 4, color: Colors.black),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 20),
+                SizedBox(
+                    height: 40,
+                    child: Text("Enter code", style: TextStyle(fontSize: 30),),
                 ),
 
-                SizedBox(height: 70),
+                SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -816,28 +811,64 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
                       const SizedBox(height: 30),
                       // button for user to test if their code matches OTP
                       MaterialButton(
-                          onPressed: (){
-                            int code = int.parse(_codeController.text);
+                        onPressed: (){
+                          int code = int.parse(_codeController.text);
 
-                            if (code == testVal){
-                              Navigator.push( context, MaterialPageRoute( builder: (context) => LandingPage(firstname: firstName, lastname: lastName, id: id, parkArr: parkArr))
-                              );
-                            } else{
-                              Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
-                            }
-                          },
-                        color: Colors.blueAccent,
-                        child: const Text('Register', style: TextStyle(color: Colors.white)),
+                          if (code == testVal){
+                            setState(() {
+                              _futureUser = registerUser(firstName, lastName, email, phone, username, password);
+                            });
+
+                          } else{
+                            Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
+                          }
+                        },
+                        color: HexColor("#99dbFF"),
+                        child: const Text('Register', style: TextStyle(color: Colors.black)),
 
                       )
                     ],
                   ),
                 )
-              ]
+              ],
+            ),
+          ),
 
-          )
+      ],
+   );
+  }
 
-      ),
+  FutureBuilder<User> buildFutureBuilder(String email) {
+    return FutureBuilder<User>(
+      future: _futureUser,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.id != -1) {
+          Fluttertoast.showToast(
+              msg: 'Welcome ${snapshot.data!.firstname}, registering you now.');
+          final user = snapshot.data;
+          if (user?.id != -1) {
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                 LandingPage(id: snapshot.data!.id, firstname: snapshot.data!.firstname, lastname: snapshot.data!.lastname, parkArr: snapshot.data!.saved_parks)));
+            });
+            return Container();
+
+            //Navigator.push( context, MaterialPageRoute( builder: (context) => _landingPage(firstName: user!.firstname, lastName: user!.lastname, id: user!.id)));
+          }
+          else {
+            return Text('Cannot login right now.');
+          }
+          return Container();
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        } else if (snapshot.hasData && snapshot.data!.id == -1) {
+          Fluttertoast.showToast(
+              msg: "Unable to register");
+          return buildColumn();
+        }
+
+        return const CircularProgressIndicator();
+      },
     );
   }
 }

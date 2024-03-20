@@ -9,6 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:theme_park_tracker/main.dart';
@@ -259,7 +260,7 @@ class _TripRides extends State<TripRides>{
                           itemCount: rideIdName.length,
                           shrinkWrap: true,
                           itemBuilder: (context, index) => Card(
-                            color: Colors.indigo,
+                            color: HexColor("Eb5756"),
                             elevation: 2,
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             child: SingleChildScrollView(

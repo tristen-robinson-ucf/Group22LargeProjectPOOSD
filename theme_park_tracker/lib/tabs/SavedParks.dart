@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:theme_park_tracker/tabs/listItems.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:dio/dio.dart';
@@ -82,7 +83,7 @@ class _SavedParks extends State<SavedParks>{
                 itemCount: parkMap.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) => Card(
-                  color: Colors.indigo,
+                  color: HexColor("Eb5756"),
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
 
@@ -143,7 +144,7 @@ class _SavedParks extends State<SavedParks>{
             MaterialButton(onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => AddParks(parkArr: parkArr, id: id, firstname: firstname, lastname: lastname)));
             },
-              color: Colors.lightBlue,
+              color: HexColor("#99dbFF"),
               child: Text('Add more Parks', style: TextStyle(color: Colors.black) ),
 
           )

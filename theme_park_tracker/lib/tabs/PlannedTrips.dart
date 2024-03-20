@@ -9,6 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:theme_park_tracker/main.dart';
@@ -88,7 +89,7 @@ class _PlannedTrips extends State<PlannedTrips>{
                   child: ListView.builder(
                       itemCount: resultArr.length,
                       itemBuilder: (context, index) => Card(
-                        color: Colors.indigo,
+                          color: HexColor("Eb5756"),
                         elevation: 4,
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
@@ -144,7 +145,7 @@ class _PlannedTrips extends State<PlannedTrips>{
               MaterialButton(onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => MakeTrip(id: id, firstname: firstname, lastname: lastname, parkArr: parkArr)));
               },
-                color: Colors.lightBlue,
+                color: HexColor("#99dbFF"),
                 child: Text('Make a new trip', style: TextStyle(color: Colors.black) ),
 
               )
