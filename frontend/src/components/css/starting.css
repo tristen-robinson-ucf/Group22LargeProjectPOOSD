@@ -1,0 +1,74 @@
+body{
+    background-color: #C3E1E5;
+    overflow: hidden;
+}
+
+.startDiv{
+    margin: 0;
+}
+
+.photoCont{
+    display: flex;
+    max-width: 90%;
+    max-height: 100vh;
+}
+
+.parkImage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 45%;
+    height: 100vh;
+    object-fit: cover;
+    margin: 0;
+}
+/*prob need to add a logo & parkimg class*/
+.logo {
+    position: fixed;
+    top: 5%;
+    left: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px; 
+}
+
+.text{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    font-size: 30px;
+    text-align: center;
+}
+
+.startButtons{
+    margin-top: 20px;
+    position: fixed;
+    top: 70%;
+    left: 65%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+    transition: transform 0.2s;
+}
+
+.startButton:hover{
+    transform: scale(1.1);
+}
+
+.loginButton, .registerButton{
+    background: #f78254;
+    font-size: 25px;
+    width: auto;
+    padding: 10px;
+    border-radius: 35px;
+    border-color: white;
+    border-style: solid;
+    color: white;
+    cursor: pointer;
+    margin: 5px;
+    width: auto; 
+    align-self: center;
+}

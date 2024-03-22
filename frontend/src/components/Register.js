@@ -75,9 +75,9 @@ function Register()
             <input type='password' id='registerPassword' placeholder='Password' ref={(c) => registerPassword = c} /><br />
             <input type='password' id='confirmPassword' placeholder='Confirm Password' ref={(c) => confirmPassword = c} /><br />
             <input type='submit' id='registerButton' class='buttons' value='Register' onClick={doRegister} />
-            < Link to="/">
-                <input type='submit' id='loginDiv' class='buttons' value='Return to Login'/>
-            </Link>
+            <Link to="/login">
+                <button className="buttons" >Log in</button>
+            </Link> 
         </form>
         <span id='registerResult'>{message}</span>
       </div>

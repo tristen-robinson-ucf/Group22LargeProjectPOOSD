@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
+import './css/login.css'
+
 
 function Login()
 {
@@ -62,7 +64,7 @@ function Login()
 
 
     return(
-      <div id="loginDiv">
+      <div class= "login" id="loginDiv">
         <form onSubmit={doLogin}>
         <span id="inner-title">PLEASE LOG IN</span><br />
         <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} /><br />
