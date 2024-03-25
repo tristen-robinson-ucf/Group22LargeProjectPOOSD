@@ -6,7 +6,7 @@ function Starting(){
     return(
         <div className="startDiv">
          <div className="photoCont"> 
-             <img src='/images/startingpg.webp' className='parkImage'/>
+             <img src='/images/startingpg.webp' className='parkImg'/>
              <img src='/images/logo.webp' className='logo'/>
          </div>
 

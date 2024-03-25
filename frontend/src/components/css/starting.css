@@ -1,6 +1,6 @@
 body{
     background-color: #C3E1E5;
-    overflow: hidden;
+    
 }
 
 .startDiv{
@@ -13,32 +13,38 @@ body{
     max-height: 100vh;
 }
 
-.parkImage {
+.parkImg{
     position: fixed;
     top: 0;
     left: 0;
-    width: 45%;
+    width: 50%;
     height: 100vh;
     object-fit: cover;
     margin: 0;
 }
-/*prob need to add a logo & parkimg class*/
+/*TODO: adjusting logo/text/but size w screen size*/
 .logo {
     position: fixed;
-    top: 5%;
-    left: 60%;
+    top: 10%;;
+    left: 65%;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 300px;
-    height: 300px; 
+    width: 270px;
+    height: 270px; 
 }
 
 .text{
     position: fixed;
-    top: 50%;
-    left: 50%;
-    font-size: 30px;
+    font-family: "Red Hat Text", sans-serif;
+    top: 54%;
+    left: 60%;
+    font-size: 25px;
+    width: 400px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
 }
 
@@ -46,19 +52,15 @@ body{
     margin-top: 20px;
     position: fixed;
     top: 70%;
-    left: 65%;
+    left: 68%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-left: 0;
-    transition: transform 0.2s;
-}
-
-.startButton:hover{
-    transform: scale(1.1);
 }
 
 .loginButton, .registerButton{
+    font-family: "Red Hat Text", sans-serif;
     background: #f78254;
     font-size: 25px;
     width: auto;
@@ -71,4 +73,10 @@ body{
     margin: 5px;
     width: auto; 
     align-self: center;
+    transition: transform 0.2s;
+}
+
+.loginButton:hover, .registerButton:hover {
+    transform: scale(1.1);
+    background: #ff743d;
 }
