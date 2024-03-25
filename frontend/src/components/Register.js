@@ -84,7 +84,7 @@ function Register()
             
             <div className= "cont">
                 <div class="existing-acc">
-                    <a href="#">Already have an account?</a>
+                    <a href="/login">Already have an account?</a>
                 </div>
                 <input type='submit' id='registerButton' class='buttons' value='Register' onClick={doRegister} />
                 <Link to="/login">
