@@ -277,7 +277,6 @@ class _verifyReset extends State<verifyReset>{
                       MaterialButton(
                         onPressed: (){
                           int code = int.parse(_codeController.text);
-
                           if (code == testVal){
                             Navigator.push( context, MaterialPageRoute( builder: (context) => passwordResetPage(username: username, password: password)));
                           } else{

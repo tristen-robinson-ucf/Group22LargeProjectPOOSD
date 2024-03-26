@@ -322,13 +322,24 @@ class _landingPage extends State<LandingPage> {
           colorScheme: ColorScheme.fromSeed(seedColor:HexColor("#EB5756")),
           tabBarTheme: TabBarTheme(dividerColor: Colors.black, indicatorColor: HexColor("Eb7978"), labelColor:HexColor("Eb7978"), unselectedLabelColor: Colors.grey),
     ),
+      // create two tabs to let users switch between the saved parks and their planned days
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
           appBar: AppBar(
               centerTitle: true,
-              title: Text("Welcome " + firstname),
+              title: Text("Park Pal"),
               titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+              actions: [
+                // add a button to allow the user to logout
+                IconButton(
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+                    },
+                    icon: const Icon(Icons.logout, color: Colors.white),
+
+                ),
+              ],
           ),
           body: Column(
             children: [

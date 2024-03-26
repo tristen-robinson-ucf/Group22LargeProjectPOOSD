@@ -60,12 +60,15 @@ class _PlannedTrips extends State<PlannedTrips>{
       );
       if (response.statusCode == 200){
         var data = response.data as Map<String, dynamic>;
+
         setState(() {
-            for (int i = 0; i < data['results'].length; i += 3){
+            for (int i = 0; i < data['results'].length; i += 4){
               List<dynamic> currTrip = [];
               currTrip.add(data['results'][i]);
               currTrip.add(data['results'][i+ 1]);
               currTrip.add(data['results'][i + 2]);
+              currTrip.add(data['results'][i + 3]);
+
               resultArr.add(currTrip);
             }
 
@@ -86,7 +89,20 @@ class _PlannedTrips extends State<PlannedTrips>{
             children: [
               Expanded(
                   flex: 1,
-                  child: ListView.builder(
+                  child: (resultArr.isEmpty) ?
+                      // if there are no results when searching for a users trips, make the screen show text that prompts a user to create a trip
+                      // if there are trips then this is not shown
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text("Plan a trip!"),
+                          )
+                        ],
+                      )
+                      :
+                  ListView.builder(
                       itemCount: resultArr.length,
                       itemBuilder: (context, index) => Card(
                           color: HexColor("Eb5756"),
@@ -103,7 +119,7 @@ class _PlannedTrips extends State<PlannedTrips>{
                                   Container(
                                     padding: const EdgeInsets.all(7),
                                     child: Text(resultArr[index][0], overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 17, color: Colors.white)),
-                                  )
+                                  ),
                                 ],
                               ),
 
@@ -112,8 +128,10 @@ class _PlannedTrips extends State<PlannedTrips>{
                               padding: const EdgeInsets.only(left: 4.0, right: 10, top: 3.0, bottom: 3.0),
                                 child: MaterialButton(
                                   onPressed: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => TripRides(parkId: 64, id: id, tripId: resultArr[index][1], rides: resultArr[index][2], firstname: firstname, lastname: lastname, parkArr: parkArr)));
-                                  },
+
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => TripRides(parkId: resultArr[index][2], id: id, tripId: resultArr[index][1], rides: resultArr[index][3], firstname: firstname, lastname: lastname, parkArr: parkArr)));
+                                    },
+
                                   color: Colors.white,
                                   child: const Text("Edit trip", style: TextStyle(color: Colors.black)),
 
@@ -259,93 +277,114 @@ class _MakeTrip extends State<MakeTrip>{
       ),
       body: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 30),
-            Padding(
+            SizedBox(height: 20),
+           Container(
+             child: Text("Enter your trip information", style: TextStyle(fontSize: 20),),
+             padding: const EdgeInsets.all(10),
+             decoration: BoxDecoration(
+               color: Colors.white,
+               border: Border.all(width: 2, color: Colors.black),
+             ),
+           ),
+
+            Container(
               padding: const EdgeInsets.all(8.0),
-              child:TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                      hintText: "Trip name",
-                      border: OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          _nameController.clear();
-                        },
-                        icon: const Icon(Icons.clear),
-                      )
-                  )
-              ),
-            ),
 
-            Padding(
-              padding: EdgeInsets.all(30),
-              child: TextField(
-                controller: _dateController,
-                decoration: const InputDecoration(
-                  labelText: 'Date of trip',
-                  filled: true,
-                  prefixIcon: Icon(Icons.calendar_today),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child:TextField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                            hintText: "Trip name",
+                            border: OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                _nameController.clear();
+                              },
+                              icon: const Icon(Icons.clear),
+                            )
+                        )
+                    ),
                   ),
-                ),
-                readOnly: true,
-                onTap: (){
-                  _selectDate();
-                },
-              ),
-            ),
-            DropdownSearch<dynamic>(
-              items: parkNames,
-              popupProps: const PopupProps.menu(
-                showSearchBox: true,
-              ),
-              dropdownButtonProps: DropdownButtonProps(color: Colors.blue),
-              dropdownDecoratorProps: DropDownDecoratorProps(
-                textAlignVertical: TextAlignVertical.center,
-                dropdownSearchDecoration: InputDecoration(
-                  labelText: 'Choose the park',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
+
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: TextField(
+                      controller: _dateController,
+                      decoration: const InputDecoration(
+                        labelText: 'Date of trip',
+                        filled: true,
+                        prefixIcon: Icon(Icons.calendar_today),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                        ),
+                      ),
+                      readOnly: true,
+                      onTap: (){
+                        _selectDate();
+                      },
+                    ),
                   ),
-                ),
+                  DropdownSearch<dynamic>(
+                    items: parkNames,
+                    popupProps: const PopupProps.menu(
+                      showSearchBox: true,
+                    ),
+                    dropdownButtonProps: DropdownButtonProps(color: Colors.blue),
+                    dropdownDecoratorProps: DropDownDecoratorProps(
+                      textAlignVertical: TextAlignVertical.center,
+                      dropdownSearchDecoration: InputDecoration(
+                        labelText: 'Choose the park',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedPark = value.toString();
+                        getParkId(selectedPark);
+                      });
+                    },
+
+                    selectedItem: selectedPark,
+
+                  ),
+
+                  SizedBox(height: 40,),
+                  MaterialButton(onPressed: (){
+                    tripName = _nameController.text;
+                    date = _dateController.text;
+
+                    setState(() {
+                      _validateName = tripName.isEmpty;
+                      _validateDate = date.isEmpty;
+                      _validatePark = parkId == 0;
+
+                      if (!_validatePark && !_validateDate && !_validateName){
+                        addTrip(parkId, id, date, tripName);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage( id: id, firstname: firstname, lastname: lastname, parkArr: parkArr) ));
+                      }
+                      else{
+                        Fluttertoast.showToast(msg: "Please ensure every field is completed.");
+                      }
+                    });
+
+                  },
+                    child: Text("Create Trip", style: TextStyle(color: Colors.white),),
+                    color: Colors.blue,),
+                ],
               ),
-              onChanged: (value) {
-                setState(() {
-                  selectedPark = value.toString();
-                  getParkId(selectedPark);
-                });
-              },
+            )
 
-              selectedItem: selectedPark,
-
-            ),
-
-            SizedBox(height: 40,),
-            MaterialButton(onPressed: (){
-              tripName = _nameController.text;
-              date = _dateController.text;
-
-              setState(() {
-                _validateName = tripName.isEmpty;
-                _validateDate = date.isEmpty;
-                _validatePark = parkId == 0;
-
-                if (!_validatePark && !_validateDate && !_validateName){
-                  addTrip(parkId, id, date, tripName);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage( id: id, firstname: firstname, lastname: lastname, parkArr: parkArr) ));
-                }
-                else{
-                  Fluttertoast.showToast(msg: "Please ensure every field is completed.");
-                }
-              });
-
-            },
-              child: Text("Create Trip", style: TextStyle(color: Colors.white),),
-              color: Colors.blue,),
 
           ],
         ),
@@ -435,21 +474,23 @@ class Trips {
   final List<dynamic> rides;
   final String tripName;
   final int tripId;
-  //final int parkId;
+  final int parkId;
 
   const Trips({
    // required this.parkId,
     required this.rides,
     required this.tripName,
     required this.tripId,
-    //required this.parkId,
+    required this.parkId,
   });
 
   factory Trips.formJson(Map<String, dynamic> jsonMap){
     return Trips(
-      rides: jsonMap['rides'],
-      tripId: jsonMap['tripId'],
       tripName: jsonMap['tripName'],
+      tripId: jsonMap['tripId'],
+
+      parkId: jsonMap['parkId'],
+      rides: jsonMap['rides'],
     );
   }
 }

@@ -158,7 +158,7 @@ class _WaitTimes extends State<WaitTimes>{
     return Scaffold(
         appBar:  AppBar(
           centerTitle: true,
-          title: Text(parkName),
+          title: Text(parkName, style: TextStyle(fontSize: 15)),
           automaticallyImplyLeading: false,
           leading: IconButton(
               onPressed: (){

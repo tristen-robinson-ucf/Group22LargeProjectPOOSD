@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:theme_park_tracker/tabs/listItems.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:dio/dio.dart';
@@ -110,7 +111,7 @@ class _AddParks extends State<AddParks>{
                   child: ListView.builder(
                       itemCount:filteredParks.length,
                       itemBuilder: (context, index) => Card(
-                        color: Colors.indigo,
+                        color: HexColor("Eb5756"),
                         elevation: 4,
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(

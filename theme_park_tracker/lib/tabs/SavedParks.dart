@@ -79,7 +79,19 @@ class _SavedParks extends State<SavedParks>{
         children: [
           Expanded(
             flex: 1,
-              child: ListView.builder(
+              child: (parkArr.isEmpty) ?
+                  // if the user doesn't have any parks, prompt the user to add some with text on the screen
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        child: Text("Add some parks to your account!"),
+                      ),
+                    ],
+                  )
+                  :
+              ListView.builder(
                 itemCount: parkMap.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) => Card(
@@ -140,18 +152,29 @@ class _SavedParks extends State<SavedParks>{
                     ],
                   ),
 
-                ))),
+                ),
+              ),
+          ),
             MaterialButton(onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => AddParks(parkArr: parkArr, id: id, firstname: firstname, lastname: lastname)));
             },
               color: HexColor("#99dbFF"),
-              child: Text('Add more Parks', style: TextStyle(color: Colors.black) ),
+              child: Text('Add a Park', style: TextStyle(color: Colors.black) ),
 
           )
         ],
       ),
       )
 
+    );
+  }
+
+  Column emptyScreen(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Add some parks"),
+      ],
     );
   }
 

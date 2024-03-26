@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:http/http.dart' as http;
 
@@ -131,7 +132,7 @@ class waitTimeItem extends StatelessWidget{
         ),
         child:  Container(
           padding: const EdgeInsets.all(15),
-          color: Colors.indigo,
+          color: HexColor("Eb5756"),
           height: 90,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -163,7 +164,11 @@ class waitTimeItem extends StatelessWidget{
                    Container(
                     height: 35,
                     width: 35,
-                    color: chooseColor(avgWaitTime, currWaitTime),
+
+                    decoration: BoxDecoration(
+                      color: chooseColor(avgWaitTime, currWaitTime),
+                      border: Border.all(width: 1.0, color: Colors.black),
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -181,7 +186,10 @@ class waitTimeItem extends StatelessWidget{
                       Container(
                           height: 35,
                           width: 35,
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(width: 1.0, color: Colors.black),
+                          ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -207,7 +215,7 @@ class waitTimeItem extends StatelessWidget{
 
     if (diff < .9 || (avgWaitTime == 0 && currWaitTime == 0)) return Colors.green;
     else if (diff >= .9 && diff <= 1.1) return Colors.yellow;
-    else return Colors.redAccent;
+    else return Colors.red;
   }
 
   String printCurr(int currWaitTime) {
