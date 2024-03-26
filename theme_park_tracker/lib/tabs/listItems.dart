@@ -126,16 +126,15 @@ class waitTimeItem extends StatelessWidget{
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(
-              width: 5,
+              width: 1,
               color: Colors.black38,
             )
         ),
         child:  Container(
           padding: const EdgeInsets.all(15),
-          color: HexColor("Eb5756"),
-          height: 90,
+          color: HexColor("Fb9c7E"),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             // alignment: Alignment.centerLeft,
             // padding: EdgeInsets.all(15.0),
             children: [
@@ -143,13 +142,11 @@ class waitTimeItem extends StatelessWidget{
               Expanded(
                 flex: 7,
                 child: Column(
-
-
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     padding: const EdgeInsets.all(7),
-                  child: Text(rideName, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 17, color: Colors.white)),
+                  child: Text(rideName, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 15, color: Colors.white)),
                 ),]
                 )),
 
@@ -157,7 +154,7 @@ class waitTimeItem extends StatelessWidget{
               // add a button that will allow the user to see the wait times for this park number
               // calls function wait times in SavedParks file
               Expanded(
-                flex: 3,
+                flex: 2,
                 child: Column(
                   children: [
                     Text("Current", style: TextStyle(color: Colors.white)),
@@ -179,7 +176,7 @@ class waitTimeItem extends StatelessWidget{
               ),
 
               Expanded(
-                flex: 3,
+                flex: 2,
                 child: Column(
                     children: [
                       Text("Average", style: TextStyle(color: Colors.white)),

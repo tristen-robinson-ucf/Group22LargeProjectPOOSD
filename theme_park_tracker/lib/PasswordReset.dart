@@ -9,9 +9,11 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
@@ -104,7 +106,7 @@ class _PasswordReset extends State<PasswordReset>{
       title: "Park Pal",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        appBarTheme: const AppBarTheme(color: Colors.indigo),
+        appBarTheme: AppBarTheme(color: HexColor("99dbFF")),
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -113,14 +115,13 @@ class _PasswordReset extends State<PasswordReset>{
           titleTextStyle: const TextStyle(
               fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
         ),
-        body: Column(
-          children:[
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(8),
-              child: (_futureUser == null) ? buildColumn() : buildFutureBuilder(),
-            ),
-          ],
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          child: (_futureUser == null) ?
+              Center( child: buildColumn() ) : buildFutureBuilder(),
 
         ),
       ),
@@ -131,43 +132,61 @@ class _PasswordReset extends State<PasswordReset>{
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget> [
-        SizedBox(height: 30),
-        TextField(
-            controller: _username,
-            decoration: InputDecoration(
-                hintText: "Enter the username of your account",
-                errorText: _validateUser ? "Please enter your account's username" : null,
-                border: OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  onPressed: (){
-                    _username.clear();
-                  },
-                  icon: const Icon(Icons.clear),
-                )
-            )
-        ),
 
-        SizedBox(height: 30,),
-        MaterialButton(
-          onPressed: () {
-            user = _username.text;
+              SizedBox(height: 30),
+              Container(
+                padding: const EdgeInsets.all(10),
 
-            // update validate vars to reflect completeness of the fields,
-            // turn on error text if any are empty, if not go through with registration
-            setState(() {
-              _validateUser = user.isEmpty;
+                child: Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text("Get the email linked to your account.", style: TextStyle(color: Colors.black, fontSize: 15),),
+                    ),
+                    TextField(
+                        controller: _username,
+                        decoration: InputDecoration(
+                            hintText: "Enter the username of your account",
+                            errorText: _validateUser ? "Please enter your account's username" : null,
+                            border: OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              onPressed: (){
+                                _username.clear();
+                              },
+                              icon: const Icon(Icons.clear),
+                            )
+                        )
+                    ),
 
-              if (!_validateUser) {
-                _futureUser = authenticatePasswordReset(user);
-              };
-            });
+                    SizedBox(height: 10,),
+                    MaterialButton(
+                      onPressed: () {
+                        user = _username.text;
 
-          },
-          color: Colors.blueAccent,
-          child: const Text('Register', style: TextStyle(color: Colors.white)),
+                        // update validate vars to reflect completeness of the fields,
+                        // turn on error text if any are empty, if not go through with registration
+                        setState(() {
+                          _validateUser = user.isEmpty;
 
-        )
-      ],
+                          if (!_validateUser) {
+                            _futureUser = authenticatePasswordReset(user);
+                          };
+                        });
+
+                      },
+                      color: Colors.blueAccent,
+                      child: const Text('Find email', style: TextStyle(color: Colors.white)),
+
+                    )
+                  ],
+                ),
+              ),
+              ),
+
+            ],
+
     );
   }
 
@@ -236,7 +255,7 @@ class _verifyReset extends State<verifyReset>{
       title: 'Park Pal',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        appBarTheme: const AppBarTheme(color: Colors.indigo),
+        appBarTheme: AppBarTheme(color: HexColor("99dbFF")),
       ),
       home: Scaffold(
           appBar: AppBar(
@@ -247,7 +266,26 @@ class _verifyReset extends State<verifyReset>{
           body: Column(
               children:[
                 Container(
+                  height: 90,
+                  padding: const EdgeInsets.all(10),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Wrap(
+                          children: [
+                            Text("Your email on file: $email", style: TextStyle(color: Colors.black, fontSize: 15)),
+                          ],
+                        )
+
+                      ],
+                    )
+
+                  ),
+                ),
+                Container(
                   alignment: Alignment.center,
+                  width: double.infinity,
                   padding: const EdgeInsets.all(8),
                   // request code to email
                   child: MaterialButton(
@@ -259,7 +297,7 @@ class _verifyReset extends State<verifyReset>{
                   ),
                 ),
 
-                SizedBox(height: 70),
+                SizedBox(height: 30),
                 Container(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -368,7 +406,7 @@ class _passwordResetPage extends State<passwordResetPage> {
       title: 'Park Pal',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        appBarTheme: const AppBarTheme(color: Colors.indigo),
+        appBarTheme: AppBarTheme(color: HexColor("99dbFF")),
       ),
       home: Scaffold(
         appBar: AppBar(

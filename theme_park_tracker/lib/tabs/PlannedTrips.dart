@@ -273,120 +273,151 @@ class _MakeTrip extends State<MakeTrip>{
       appBar:  AppBar(
         centerTitle: true,
         title: Text("Make a trip"),
-        titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+        titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
+        backgroundColor: Colors.white,
+
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 20),
-           Container(
-             child: Text("Enter your trip information", style: TextStyle(fontSize: 20),),
-             padding: const EdgeInsets.all(10),
-             decoration: BoxDecoration(
-               color: Colors.white,
-               border: Border.all(width: 2, color: Colors.black),
-             ),
-           ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
 
-            Container(
-              padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: HexColor("#99dbFF"),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                alignment: Alignment.topCenter,
+                width: double.infinity,
+                height: 150,
 
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child:TextField(
-                        controller: _nameController,
-                        decoration: InputDecoration(
-                            hintText: "Trip name",
-                            border: OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                _nameController.clear();
-                              },
-                              icon: const Icon(Icons.clear),
-                            )
-                        )
-                    ),
-                  ),
 
-                  Padding(
-                    padding: EdgeInsets.all(30),
-                    child: TextField(
-                      controller: _dateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Date of trip',
-                        filled: true,
-                        prefixIcon: Icon(Icons.calendar_today),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue),
-                        ),
-                      ),
-                      readOnly: true,
-                      onTap: (){
-                        _selectDate();
-                      },
-                    ),
-                  ),
-                  DropdownSearch<dynamic>(
-                    items: parkNames,
-                    popupProps: const PopupProps.menu(
-                      showSearchBox: true,
-                    ),
-                    dropdownButtonProps: DropdownButtonProps(color: Colors.blue),
-                    dropdownDecoratorProps: DropDownDecoratorProps(
-                      textAlignVertical: TextAlignVertical.center,
-                      dropdownSearchDecoration: InputDecoration(
-                        labelText: 'Choose the park',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedPark = value.toString();
-                        getParkId(selectedPark);
-                      });
-                    },
+                decoration: BoxDecoration(
+                  color: HexColor("#99dbFF"),
 
-                    selectedItem: selectedPark,
-
-                  ),
-
-                  SizedBox(height: 40,),
-                  MaterialButton(onPressed: (){
-                    tripName = _nameController.text;
-                    date = _dateController.text;
-
-                    setState(() {
-                      _validateName = tripName.isEmpty;
-                      _validateDate = date.isEmpty;
-                      _validatePark = parkId == 0;
-
-                      if (!_validatePark && !_validateDate && !_validateName){
-                        addTrip(parkId, id, date, tripName);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage( id: id, firstname: firstname, lastname: lastname, parkArr: parkArr) ));
-                      }
-                      else{
-                        Fluttertoast.showToast(msg: "Please ensure every field is completed.");
-                      }
-                    });
-
-                  },
-                    child: Text("Create Trip", style: TextStyle(color: Colors.white),),
-                    color: Colors.blue,),
-                ],
+                ),
+                child: Center(
+                  child: Text("Plan a trip with Park Pal!", style: TextStyle(fontSize: 25),),
+                ),
               ),
-            )
+              Container(
 
+                padding: const EdgeInsets.all(15),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30.0), bottom: Radius.circular(30.0), ),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
 
-          ],
+                      offset: Offset(0.0, 1.0),
+                      blurRadius: 5,
+                    )
+                  ]
+                ),
+                    child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(15),
+                        child: Center(
+                          child: Text("Enter some information about your trip", style: TextStyle(color: Colors.black, fontSize: 16)),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child:TextField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                                hintText: "Trip name",
+                                border: OutlineInputBorder(),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _nameController.clear();
+                                  },
+                                  icon: const Icon(Icons.clear),
+                                )
+                            )
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.all(30),
+                        child: TextField(
+                          controller: _dateController,
+                          decoration: const InputDecoration(
+                            labelText: 'Date of trip',
+                            filled: true,
+                            prefixIcon: Icon(Icons.calendar_today),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide.none),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                            ),
+                          ),
+                          readOnly: true,
+                          onTap: (){
+                            _selectDate();
+                          },
+                        ),
+                      ),
+                      DropdownSearch<dynamic>(
+                        items: parkNames,
+                        popupProps: const PopupProps.menu(
+                          showSearchBox: true,
+                        ),
+                        dropdownButtonProps: DropdownButtonProps(color: Colors.blue),
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          textAlignVertical: TextAlignVertical.center,
+                          dropdownSearchDecoration: InputDecoration(
+                            labelText: 'Choose the park',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedPark = value.toString();
+                            getParkId(selectedPark);
+                          });
+                        },
+
+                        selectedItem: selectedPark,
+
+                      ),
+
+                      SizedBox(height: 35),
+                      MaterialButton(onPressed: (){
+                        tripName = _nameController.text;
+                        date = _dateController.text;
+
+                        setState(() {
+                          _validateName = tripName.isEmpty;
+                          _validateDate = date.isEmpty;
+                          _validatePark = parkId == 0;
+
+                          if (!_validatePark && !_validateDate && !_validateName){
+                            addTrip(parkId, id, date, tripName);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage( id: id, firstname: firstname, lastname: lastname, parkArr: parkArr) ));
+                          }
+                          else{
+                            Fluttertoast.showToast(msg: "Please ensure every field is completed.");
+                          }
+                        });
+
+                      },
+                        child: Text("Create Trip", style: TextStyle(color: Colors.black),),
+                        color: HexColor("99dbFF")
+                      ),
+                    ],
+                  ),
+                ),
+
+            ],
+          ),
         ),
       ),
     );

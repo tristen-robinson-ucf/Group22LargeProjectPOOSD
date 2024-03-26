@@ -166,15 +166,14 @@ class _WaitTimes extends State<WaitTimes>{
               },
               icon: const Icon(Icons.arrow_back)),
         ),
-        body: avgWaits.length != rideWaits.length
-            ? Center(child: CircularProgressIndicator())
-            : Column(
+        body: Column(
             children: [
               Expanded(
                 flex: 1,
 
-                child: ListView.builder(
-                    itemCount: rideWaits.length,
+                child:
+                ListView.builder(
+                    itemCount: avgWaits.length,
                     itemBuilder: (context, index){
                       String key = rideWaits.keys.elementAt(index);
                       return waitTimeItem(currWaitTime: rideWaits.values.elementAt(index)[0], avgWaitTime: avgWaits.values.elementAt(index), rideName: key);

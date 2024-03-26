@@ -131,127 +131,140 @@ class _MyAppState extends State<MyApp> {
    );
   }
   Column buildColumn() {
-    TextStyle defaultStyle = TextStyle(color: Colors.grey, fontSize: 20.0);
-    TextStyle linkStyle = TextStyle(color: Colors.blue);
+    TextStyle defaultStyle = TextStyle(color: Colors.grey, fontSize: 18.0);
+    TextStyle linkStyle = TextStyle(color: Colors.blue, fontSize: 18.0);
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          SizedBox(height: 20),
+
           Container(
-            height: 230,
-            child: const Image(
-              image: AssetImage('assets/ParkPal.png'),
+            height: 200,
+            child: Center(
+              child: const Image(
+                image: AssetImage('assets/ParkPal.png'),
+              ),
             ),
           ),
 
+          // create container to hold login text fields, and another to ensure spacing between fields and the border
           Container(
             decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(width: 6, color: Colors.black),
             ),
-            child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: 15),
-                const FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    "Login",
-                    style: TextStyle(fontSize: 30),
+            child: Container(
+              padding: const EdgeInsets.all(15),
+
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 15),
+                  const FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      "Login",
+                      style: TextStyle(fontSize: 30),
+                    ),
                   ),
-                ),
-                SizedBox(height: 30),
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextField(
-                            controller: _usernameController,
-                            decoration: InputDecoration(
-                                hintText: "Username",
-                                border: OutlineInputBorder(),
-                                errorText: _validateUser ? "Please enter a Username" : null,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    _usernameController.clear();
-                                  },
-                                  icon: const Icon(Icons.clear),
-                                )
-                            )
-                        ),
-                        SizedBox(height: 30),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextField(
-                              obscureText: true,
-                              controller: _passwordController,
+                  SizedBox(height: 15),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextField(
+                              controller: _usernameController,
                               decoration: InputDecoration(
-                                  hintText: "Password",
+                                  hintText: "Username",
                                   border: OutlineInputBorder(),
-                                  errorText: _validatePass ? "Please enter a Password" : null,
+                                  errorText: _validateUser ? "Please enter a Username" : null,
                                   suffixIcon: IconButton(
                                     onPressed: () {
-                                      _passwordController.clear();
+                                      _usernameController.clear();
                                     },
                                     icon: const Icon(Icons.clear),
                                   )
+                              )
+                          ),
+                          SizedBox(height: 30),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextField(
+                                obscureText: true,
+                                controller: _passwordController,
+                                decoration: InputDecoration(
+                                    hintText: "Password",
+                                    border: OutlineInputBorder(),
+                                    errorText: _validatePass ? "Please enter a Password" : null,
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        _passwordController.clear();
+                                      },
+                                      icon: const Icon(Icons.clear),
+                                    )
+                                ),
                               ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                text: "Forgot password?",
-                                style: linkStyle,
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PasswordReset())),
+                              Container(
+                                alignment: Alignment.centerRight,
+                                child:
+                                RichText(
+                                  text: TextSpan(
+                                    text: "Forgot password?",
+                                    style: linkStyle,
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PasswordReset())),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
 
-                        ),
-                        SizedBox(height: 30),
-                        MaterialButton(
-                          onPressed: () {
-                            user = _usernameController.text;
-                            password = _passwordController.text;
+                          ),
+                          SizedBox(height: 30),
+                          MaterialButton(
+                            onPressed: () {
+                              user = _usernameController.text;
+                              password = _passwordController.text;
 
 
-                            setState(() {
-                              _validateUser = user.isEmpty;
-                              _validatePass = password.isEmpty;
+                              setState(() {
+                                _validateUser = user.isEmpty;
+                                _validatePass = password.isEmpty;
 
-                              if (!_validatePass && !_validateUser) {
-                                _futureUser = authenticateUser(
-                                    _usernameController.text,
-                                    _passwordController.text);
-                              };
-                            });
-                          },
-                          color: Colors.blueAccent,
-                          child: const Text('Login', style: TextStyle(color: Colors.white)),
-                        ),
-                      ],
+                                if (!_validatePass && !_validateUser) {
+                                  _futureUser = authenticateUser(
+                                      _usernameController.text,
+                                      _passwordController.text);
+                                };
+                              });
+                            },
+                            color: Colors.blueAccent,
+                            child: const Text('Login', style: TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                    ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 15),
+                  RichText(
+                      text: TextSpan(
+                          style: defaultStyle,
+                          children: <TextSpan>[
+                            TextSpan(text: "Don't have an account? "),
+                            TextSpan(
+                              text: 'Register here.',
+                              style: linkStyle,
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MyRegPage())),
+                            )
+                          ]
+                      )
+                  ),
+                ],
+              ),
             ),
           ),
-          SizedBox(height: 40),
-          RichText(
-              text: TextSpan(
-                  style: defaultStyle,
-                  children: <TextSpan>[
-                    TextSpan(text: "Don't have an account? "),
-                    TextSpan(
-                      text: 'Register here.',
-                      style: linkStyle,
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MyRegPage())),
-                    )
-                  ]
-              )
-          )
+
+
         ]
     );
   }
@@ -478,10 +491,12 @@ class _registerPage extends State<MyRegPage> {
               color: Colors.white,
               border: Border.all(width: 4, color: Colors.black),
             ),
-          child: Column(
+          child: Container(
+            padding: const EdgeInsets.all(15),
+            child: Column(
             children: [
 
-                  SizedBox(height: 10,),
+
                   Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -551,8 +566,7 @@ class _registerPage extends State<MyRegPage> {
                               icon: const Icon(Icons.clear),
                             ),
                           ),
-                          // onChanged: (value) => checkEmail(_emailController.text),
-
+                          onChanged: (value) => updateUsername(),
                         ),
                         SizedBox(height: 15),
                         TextField(
@@ -571,16 +585,7 @@ class _registerPage extends State<MyRegPage> {
                             )
                         ),
                         // if the user selects the button, populate the username with that users email
-                        MaterialButton(
-                            onPressed: () {
-                              _usernameController.text = _emailController.text;
-                            },
-                            color: Colors.grey,
-                            child: const Align(
-                              child: Text('Use Email', style: TextStyle(color: Colors.white)),
-                              alignment: Alignment.topLeft,
-                            )
-                        ),
+
                         SizedBox(height: 15),
                         TextField(
                           controller: _passwordController,
@@ -631,9 +636,16 @@ class _registerPage extends State<MyRegPage> {
                   ),
               ],
             ),
-          ),
+          ),),
         ],
     );
+  }
+
+  String updateUsername(){
+    setState(() {
+      _usernameController.text = _emailController.text;
+    });
+    return _usernameController.text;
   }
 
   bool checkEmail(String email) {

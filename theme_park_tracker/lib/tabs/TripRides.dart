@@ -230,96 +230,115 @@ class _TripRides extends State<TripRides>{
           icon: const Icon(Icons.arrow_back),
         ),
       ),
-      body: ((avgWaits.length != rideWaits.length) && plannedRides.isNotEmpty) || avgWaits.isEmpty
-      ? Center(child: CircularProgressIndicator())
-      : Padding(
+      body:  Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 10),
+
             Container(
-              padding: const EdgeInsets.all(10.0),
-              child: Text("Current Time: ${calculateTime().toString()} minutes", style: TextStyle(fontSize: 25, color: Colors.black)),
+              height: 100,
+              width: double.infinity,
+              child: Center(
+                child: Text("Current Time: ${calculateTime().toString()} minutes", style: TextStyle(fontSize: 25, color: Colors.black)),
+              ),
             ),
-            SizedBox(height: 10),
+
 
             Expanded(
               flex: 1,
-                  child:
-                    Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Current rides planned for the day."),
+                      Text("Current rides planned for the day.", style: TextStyle(fontSize: 15, color: Colors.black)),
 
                       // create a container to hold all the current rides, it is going to be a scrollable sub-section of the page to allow space for adding more rides at the bottom of the page
                       Container(
                         height: 350,
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child:  ListView.builder(
-                          itemCount: rideIdName.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => Card(
-                            color: HexColor("Eb5756"),
-                            elevation: 2,
-                            margin: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: SingleChildScrollView(
-                              child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  flex: 7,
-                                  child:  Container(
-                                    padding: const EdgeInsets.all(7),
-                                    child: Text(rideIdName.keys.elementAt(index), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 17, color: Colors.white)),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(4.0),
-                                  child: Column(
-                                      children: [
-                                        Text("Average", style: TextStyle(color: Colors.white)),
-                                        Container(
-                                            height: 30,
-                                            width: 30,
-                                            color: Colors.white,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [Text(avgWaits[rideIdName.values.elementAt(index)].toString() , style: TextStyle(color: Colors.black, fontSize: 17), textAlign: TextAlign.center)],
-                                            )
-                                        )
-                                      ]
-                                  ),
-                                ),
-                                // this is the button to remove a ride from the current trip plan
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: IconButton(
-                                    iconSize: 30,
-                                    color: Colors.white,
-                                    icon: const Icon(
-                                      Icons.remove,
+
+                          padding: const EdgeInsets.all(15),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(30.0), bottom: Radius.circular(30.0), ),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+
+                                offset: Offset(0.0, 1.0),
+                                blurRadius: 5,
+                              )
+                            ],
+                          ),
+
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          child: ListView.builder(
+                            itemCount: rideIdName.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => Card(
+                              color: HexColor("Eb5756"),
+                              elevation: 2,
+                              margin: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: SingleChildScrollView(
+                                child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 7,
+                                    child:  Container(
+                                      padding: const EdgeInsets.all(7),
+                                      child: Text(rideIdName.keys.elementAt(index), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 17, color: Colors.white)),
                                     ),
-                                    onPressed: () {
-                                      removeRide(rideIdName.values.elementAt(index), tripId);
-                                      for (dynamic it in rides){
-                                        if (int.parse(it.toString()) == rideIdName.values.elementAt(index)){
-                                          rides.remove(it);
-                                          break;
-                                        }
-                                      }
-                                      calculateTime();
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => TripRides(parkId: parkId, id: id, tripId: tripId, rides: rides, firstname: firstname, lastname: lastname, parkArr: parkArr)));
-                                    },
                                   ),
-                                )
-                              ],
-                            ),
+                                  Padding(
+                                    padding: EdgeInsets.all(4.0),
+                                    child: (avgWaits[rideIdName.values.elementAt(index)] == null)
+                                        ? Center()
+                                        :
+                                    Column(
+                                        children: [
+                                          Text("Average", style: TextStyle(color: Colors.white)),
+                                          Container(
+                                              height: 30,
+                                              width: 30,
+                                              color: Colors.white,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [Text(avgWaits[rideIdName.values.elementAt(index)].toString() , style: TextStyle(color: Colors.black, fontSize: 17), textAlign: TextAlign.center)],
+                                              )
+                                          )
+                                        ]
+                                    ),
+                                  ),
+                                  // this is the button to remove a ride from the current trip plan
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      iconSize: 30,
+                                      color: Colors.white,
+                                      icon: const Icon(
+                                        Icons.remove,
+                                      ),
+                                      onPressed: () {
+                                        removeRide(rideIdName.values.elementAt(index), tripId);
+                                        for (dynamic it in rides){
+                                          if (int.parse(it.toString()) == rideIdName.values.elementAt(index)){
+                                            rides.remove(it);
+                                            break;
+                                          }
+                                        }
+                                        calculateTime();
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => TripRides(parkId: parkId, id: id, tripId: tripId, rides: rides, firstname: firstname, lastname: lastname, parkArr: parkArr)));
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                              ),
                             ),
                           ),
-                        )
-                      )
+                        ),
+                      ),
                     ],
                 ),
             ),
