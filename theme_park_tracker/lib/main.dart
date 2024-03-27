@@ -786,76 +786,159 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
    return Column(
         children:[
 
-          SizedBox(height: 40),
-          SizedBox(
-            width: 200,
-            height: 75,
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(10),
-              // request code to email
-              child: MaterialButton(
-                onPressed: () {
-                  sendEmail(firstName, email, "Confirm your email for Park Pal", "Your one time code is $testVal");
-                },
-                color: HexColor("#99dbFF"),
-                child: const Text('Send verification email', style: TextStyle(color: Colors.black)),
-              ),
-            ),
-          ),
 
           Container(
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(width: 4, color: Colors.black),
+              border: Border.all(width: 3, color: Colors.black),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
-                SizedBox(
-                    height: 40,
-                    child: Text("Enter code", style: TextStyle(fontSize: 30),),
-                ),
-
-                SizedBox(height: 20),
                 Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextField(
-                        controller: _codeController,
-                        decoration: const InputDecoration(
-                          hintText: "Enter one time code",
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      // button for user to test if their code matches OTP
-                      MaterialButton(
-                        onPressed: (){
-                          int code = int.parse(_codeController.text);
-
-                          if (code == testVal){
-                            setState(() {
-                              _futureUser = registerUser(firstName, lastName, email, phone, username, password);
-                            });
-
-                          } else{
-                            Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
-                          }
-                        },
-                        color: HexColor("#99dbFF"),
-                        child: const Text('Register', style: TextStyle(color: Colors.black)),
-
-                      )
-                    ],
+                  height: 100,
+                  padding: const EdgeInsets.all(10),
+                  child: Icon(
+                    size: 100,
+                    Icons.email
                   ),
-                )
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                  child: Center(
+                    child: Text("Confirm your email to continue with your registration.", style: TextStyle(color: Colors.black, fontSize: 13) ),
+                  )
+                ),
+                SizedBox(
+                  width: 200,
+                  height: 75,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    // request code to email
+                    child: MaterialButton(
+                      onPressed: () {
+                        sendEmail(firstName, email, "Confirm your email for Park Pal", "Your one time code is $testVal");
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              // create a popup to prompt the user to enter a code, if the codes match register the user and send them to the landing page
+                              return AlertDialog(
+                                scrollable: true,
+                                content: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(height: 20),
+                                    SizedBox(
+                                        height: 40,
+                                        child: Text("Enter code", style: TextStyle(fontSize: 30),),
+                                    ),
+
+                                    SizedBox(height: 20),
+                                    Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          TextField(
+                                            controller: _codeController,
+                                            decoration: const InputDecoration(
+                                              hintText: "Enter one time code",
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 30),
+                                          // button for user to test if their code matches OTP
+                                          MaterialButton(
+                                            onPressed: (){
+                                              int code = int.parse(_codeController.text);
+
+                                              if (code == testVal){
+                                                setState(() {
+                                                  _futureUser = registerUser(firstName, lastName, email, phone, username, password);
+                                                });
+                                                Navigator.pop(context);
+                                              } else{
+                                                Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
+                                              }
+                                            },
+                                            color: HexColor("#99dbFF"),
+                                            child: const Text('Register', style: TextStyle(color: Colors.black)),
+
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                            );
+                      },
+                      color: HexColor("#99dbFF"),
+                      child: const Text('Send verification email', style: TextStyle(color: Colors.black)),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
+
+
+
+          // Container(
+          //   decoration: BoxDecoration(
+          //     color: Colors.white,
+          //     border: Border.all(width: 4, color: Colors.black),
+          //   ),
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       SizedBox(height: 20),
+          //       SizedBox(
+          //           height: 40,
+          //           child: Text("Enter code", style: TextStyle(fontSize: 30),),
+          //       ),
+          //
+          //       SizedBox(height: 20),
+          //       Container(
+          //         padding: const EdgeInsets.all(8.0),
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             TextField(
+          //               controller: _codeController,
+          //               decoration: const InputDecoration(
+          //                 hintText: "Enter one time code",
+          //                 border: OutlineInputBorder(),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 30),
+          //             // button for user to test if their code matches OTP
+          //             MaterialButton(
+          //               onPressed: (){
+          //                 int code = int.parse(_codeController.text);
+          //
+          //                 if (code == testVal){
+          //                   setState(() {
+          //                     _futureUser = registerUser(firstName, lastName, email, phone, username, password);
+          //                   });
+          //
+          //                 } else{
+          //                   Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
+          //                 }
+          //               },
+          //               color: HexColor("#99dbFF"),
+          //               child: const Text('Register', style: TextStyle(color: Colors.black)),
+          //
+          //             )
+          //           ],
+          //         ),
+          //       )
+          //     ],
+          //   ),
+          // ),
 
       ],
    );
@@ -865,6 +948,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
     return FutureBuilder<User>(
       future: _futureUser,
       builder: (context, snapshot) {
+
         if (snapshot.hasData && snapshot.data!.id != -1) {
           Fluttertoast.showToast(
               msg: 'Welcome ${snapshot.data!.firstname}, registering you now.');

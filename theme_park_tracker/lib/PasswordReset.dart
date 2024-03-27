@@ -232,6 +232,10 @@ class _verifyReset extends State<verifyReset>{
   late String username;
   late String password;
   late String email;
+  late String firstPartEmail;
+  late String secondPartEmail;
+
+  final censoredEmail = StringBuffer();
 
   TextEditingController _codeController = TextEditingController();
 
@@ -247,6 +251,20 @@ class _verifyReset extends State<verifyReset>{
     username = widget.username;
     password = widget.password;
     testVal = random.nextInt(90000) + 10000;
+
+    splitEmail();
+  }
+
+  // censor the email so we don't display the whole thing once the user enters a username
+  void splitEmail(){
+    List<String> emailArr = email.split("@");
+    String firstPart = emailArr[0].substring(0, emailArr[0].length - 2);
+    for (int i = 0; i < emailArr[0].length - 2; i++){
+      censoredEmail.write("*");
+    }
+    censoredEmail.write(emailArr[0].substring(emailArr[0].length - 2, emailArr[0].length));
+    censoredEmail.write("@${emailArr[1]}");
+
   }
 
   @override
@@ -263,75 +281,108 @@ class _verifyReset extends State<verifyReset>{
             title: const Text('Verify your email'),
             titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
           ),
-          body: Column(
-              children:[
-                Container(
-                  height: 90,
-                  padding: const EdgeInsets.all(10),
-                  child: Center(
+          body: Container(
+            alignment: Alignment.center,
+              color: HexColor("99dbFF"),
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Center(
+                    child:
+                  Container(
+                    padding: const EdgeInsets.all(0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 3, color: Colors.black),
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Wrap(
-                          children: [
-                            Text("Your email on file: $email", style: TextStyle(color: Colors.black, fontSize: 15)),
-                          ],
-                        )
 
-                      ],
-                    )
 
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  // request code to email
-                  child: MaterialButton(
-                    onPressed: () {
-                      sendEmail("", email, "Confirm your email for Park Pal", "Your one time code is $testVal");
-                    },
-                    color: Colors.blueAccent,
-                    child: const Text('Send verification email', style: TextStyle(color: Colors.white)),
-                  ),
-                ),
+                        Container(
 
-                SizedBox(height: 30),
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextField(
-                        controller: _codeController,
-                        decoration: const InputDecoration(
-                          hintText: "Enter one time code",
-                          border: OutlineInputBorder(),
+                          padding: const EdgeInsets.only(top: 20, left: 5, right: 5, bottom: 0),
+                          child: Center(
+                              child: Wrap(
+                                    children: [
+                                      Text("Your email on file: $censoredEmail", style: TextStyle(color: Colors.black, fontSize: 15)),
+                                    ],
+                              )
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                      // button for user to test if their code matches OTP
-                      MaterialButton(
-                        onPressed: (){
-                          int code = int.parse(_codeController.text);
-                          if (code == testVal){
-                            Navigator.push( context, MaterialPageRoute( builder: (context) => passwordResetPage(username: username, password: password)));
-                          } else{
-                            Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
-                          }
-                        },
-                        color: Colors.blueAccent,
-                        child: const Text('Confirm', style: TextStyle(color: Colors.white)),
+                        Container(
+                          height: 100,
+                          padding: const EdgeInsets.all(10),
+                          child: Center(
+                            child: Icon(
+                              size: 100,
+                              Icons.email
+                            ),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(8),
+                          // request code to email
+                          child: MaterialButton(
+                            onPressed: () {
+                              sendEmail("", email, "Confirm your email for Park Pal", "Your one time code is $testVal");
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      scrollable: true,
+                                      content: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(height: 30),
+                                          SizedBox(
+                                            height: 40,
+                                            child: Text("Enter code", style: TextStyle(fontSize: 30),),
+                                          ),
+                                          SizedBox(height: 20),
+                                          TextField(
+                                            controller: _codeController,
+                                            decoration: const InputDecoration(
+                                              hintText: "Enter one time code",
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 30),
+                                          // button for user to test if their code matches OTP
+                                          MaterialButton(
+                                            onPressed: (){
+                                              int code = int.parse(_codeController.text);
+                                              if (code == testVal){
+                                                Navigator.push( context, MaterialPageRoute( builder: (context) => passwordResetPage(username: username, password: password)));
+                                              } else{
+                                                Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
+                                              }
+                                            },
+                                            color: Colors.blueAccent,
+                                            child: const Text('Confirm', style: TextStyle(color: Colors.white)),
 
-                      )
-                    ],
-                  ),
-                )
-              ]
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
+                              );
+                            },
+                            color: Colors.blueAccent,
+                            child: const Text('Send verification email', style: TextStyle(color: Colors.white)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),),
+                ]
 
-          )
-
+            )
+          ),
       ),
     );
   }
@@ -414,87 +465,96 @@ class _passwordResetPage extends State<passwordResetPage> {
           title: const Text('Park Pal'),
           titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
         ),
-        body: SingleChildScrollView(
-          child: Column(
+        body: Container(
+          padding: const EdgeInsets.all(8),
+            child: Center(
+              child:SingleChildScrollView(
+            child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 30),
-              const FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  "Reset your password",
-                  style: TextStyle(fontSize: 30),
-                ),
-              ),
-              SizedBox(height: 30),
-              // create text fields for user to input their passwords, one for new and one to confirm the new password
               Container(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 30),
-                    TextField(
-                      obscureText: true,
-                      controller: _newPasswordController,
-                      decoration: InputDecoration(
-                        hintText: "New Password",
-                        border: OutlineInputBorder(),
-                        errorText: _validatePasswords ? "Please enter matching passwords" : null,
-                        suffixIcon: IconButton(
-                          onPressed: (){
-                            _newPasswordController.clear();
-                          },
-                          icon: const Icon(Icons.clear),
-                        )
+                padding: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 15),
+                      const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "Reset your password",
+                          style: TextStyle(fontSize: 30),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 30),
-                    TextField(
-                      obscureText: true,
-                      controller: _newPasswordController2,
-                      decoration: InputDecoration(
-                          hintText: "Confirm new Password",
-                          border: OutlineInputBorder(),
-                          errorText: _validatePasswords ? "Please enter matching passwords" : null,
-                          suffixIcon: IconButton(
-                            onPressed: (){
-                              _newPasswordController2.clear();
-                            },
-                            icon: const Icon(Icons.clear),
-                          )
+                   
+                      // create text fields for user to input their passwords, one for new and one to confirm the new password
+                      Container(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 30),
+                            TextField(
+                              obscureText: true,
+                              controller: _newPasswordController,
+                              decoration: InputDecoration(
+                                  hintText: "New Password",
+                                  border: OutlineInputBorder(),
+                                  errorText: _validatePasswords ? "Please enter matching passwords" : null,
+                                  suffixIcon: IconButton(
+                                    onPressed: (){
+                                      _newPasswordController.clear();
+                                    },
+                                    icon: const Icon(Icons.clear),
+                                  )
+                              ),
+                            ),
+                            SizedBox(height: 30),
+                            TextField(
+                              obscureText: true,
+                              controller: _newPasswordController2,
+                              decoration: InputDecoration(
+                                  hintText: "Confirm new Password",
+                                  border: OutlineInputBorder(),
+                                  errorText: _validatePasswords ? "Please enter matching passwords" : null,
+                                  suffixIcon: IconButton(
+                                    onPressed: (){
+                                      _newPasswordController2.clear();
+                                    },
+                                    icon: const Icon(Icons.clear),
+                                  )
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 30),
+                      MaterialButton(
+                        onPressed: (){
+                          newPassword = _newPasswordController.text;
+                          newPassword2 = _newPasswordController2.text;
+
+                          setState(() {
+                            // ensure that both of the fields are filled out and that both passwords match
+                            if (newPassword2.isNotEmpty && newPassword.isNotEmpty && newPassword == newPassword2){
+                              _validatePasswords = true;
+                            }
+
+                            // send the user back to the login page when password is reset
+                            if (_validatePasswords){
+                              completeReset(username, newPassword);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp()));
+                            }
+                          });
+                        },
+                        child: const Text('Reset', style: TextStyle(color: Colors.black)),
+                        color: HexColor("99dbFF"),
+                        ),
+                      ],
+                   ),
+                  ),
+                ],
                 ),
               ),
-              SizedBox(height: 30),
-              MaterialButton(
-                  onPressed: (){
-                    newPassword = _newPasswordController.text;
-                    newPassword2 = _newPasswordController2.text;
-
-                    setState(() {
-                      // ensure that both of the fields are filled out and that both passwords match
-                      if (newPassword2.isNotEmpty && newPassword.isNotEmpty && newPassword == newPassword2){
-                        _validatePasswords = true;
-                      }
-
-                      // send the user back to the login page when password is reset
-                      if (_validatePasswords){
-                        completeReset(username, newPassword);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp()));
-                      }
-                    });
-                  },
-                child: const Text('Reset', style: TextStyle(color: Colors.white)),
-                color: Colors.blueAccent,
-
-
-              ),
-            ],
-          )
-
+            ),
         ),
       ),
     );
