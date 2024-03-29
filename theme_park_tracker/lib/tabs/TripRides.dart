@@ -218,6 +218,7 @@ class _TripRides extends State<TripRides>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         centerTitle: true,
         title: Text("Make a trip"),
@@ -229,6 +230,7 @@ class _TripRides extends State<TripRides>{
           },
           icon: const Icon(Icons.arrow_back),
         ),
+
       ),
       body:  Padding(
         padding: EdgeInsets.all(8.0),
@@ -272,9 +274,9 @@ class _TripRides extends State<TripRides>{
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           child:
-                          ((avgWaits.length != rideWaits.length) && plannedRides.isNotEmpty)
-                              ? Center(child: CircularProgressIndicator(),)
-                              :
+                          // ((avgWaits.length != rideWaits.length) && plannedRides.isNotEmpty)
+                          //     ? Center(child: CircularProgressIndicator(),)
+                          //     :
 
                           ListView.builder(
                             itemCount: rideIdName.length,
@@ -297,7 +299,7 @@ class _TripRides extends State<TripRides>{
                                   Padding(
                                     padding: EdgeInsets.all(4.0),
                                     child:
-                                    // (avgWaits[rideIdName.values.elementAt(index)] == null) ? Center() :
+                                    (avgWaits[rideIdName.values.elementAt(index)] == null) ? Center() :
                                     Column(
                                         children: [
                                           Text("Average", style: TextStyle(color: Colors.white)),

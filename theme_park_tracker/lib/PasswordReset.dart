@@ -436,12 +436,14 @@ class _passwordResetPage extends State<passwordResetPage> {
   late String username;
   late String password;
   late String email;
+  String _passwordErrorText = "";
 
   TextEditingController _newPasswordController = TextEditingController();
   String newPassword = "";
   String newPassword2 = "";
   TextEditingController _newPasswordController2 = TextEditingController();
 
+  bool _validatePass = false;
   bool _validatePasswords = false;
 
   @override
@@ -498,7 +500,7 @@ class _passwordResetPage extends State<passwordResetPage> {
                               decoration: InputDecoration(
                                   hintText: "New Password",
                                   border: OutlineInputBorder(),
-                                  errorText: _validatePasswords ? "Please enter matching passwords" : null,
+                                  errorText: (_passwordErrorText.isEmpty) ? null : _passwordErrorText,
                                   suffixIcon: IconButton(
                                     onPressed: (){
                                       _newPasswordController.clear();
@@ -514,7 +516,7 @@ class _passwordResetPage extends State<passwordResetPage> {
                               decoration: InputDecoration(
                                   hintText: "Confirm new Password",
                                   border: OutlineInputBorder(),
-                                  errorText: _validatePasswords ? "Please enter matching passwords" : null,
+                                  errorText: !_validatePasswords ? "Please enter matching passwords" : null,
                                   suffixIcon: IconButton(
                                     onPressed: (){
                                       _newPasswordController2.clear();
@@ -534,12 +536,17 @@ class _passwordResetPage extends State<passwordResetPage> {
 
                           setState(() {
                             // ensure that both of the fields are filled out and that both passwords match
-                            if (newPassword2.isNotEmpty && newPassword.isNotEmpty && newPassword == newPassword2){
+                            _validatePass = !checkPassword(_newPasswordController.text);
+                            if (checkPassword(newPassword) && newPassword2.isNotEmpty && newPassword.isNotEmpty && newPassword == newPassword2){
                               _validatePasswords = true;
+                            }
+                            // if the passwords don't match, show the error message about matching passwords
+                            else if (newPassword != newPassword2) {
+                              _validatePasswords = false;
                             }
 
                             // send the user back to the login page when password is reset
-                            if (_validatePasswords){
+                            if (_validatePasswords && checkPassword(newPassword)){
                               completeReset(username, newPassword);
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp()));
                             }
@@ -577,6 +584,48 @@ class _passwordResetPage extends State<passwordResetPage> {
     else {
       Fluttertoast.showToast(msg: response.statusCode.toString());
     }
+  }
+
+  bool checkPassword(String password){
+    _passwordErrorText = '';
+
+    if (password.length < 8){
+
+      setState(() {
+        _passwordErrorText += '• Password must be at least 8 characters.\n';
+        _validatePass = true;
+      });
+    }
+    if (!password.contains(RegExp(r'[A-Z]'))){
+      setState(() {
+        _validatePass = true;
+
+        _passwordErrorText += '• Password must contain an uppercase letter.\n';
+      });
+    }
+    if (!password.contains(RegExp(r'[a-z]'))){
+      setState(() {
+        _validatePass = true;
+
+        _passwordErrorText += '• Password must contain a lowercase letter.\n';
+      });
+    }
+    if (!password.contains(RegExp(r'[0-9]'))){
+      setState(() {
+        _validatePass = true;
+
+        _passwordErrorText += '• Password must contain a number.\n';
+      });
+    }
+    if (!password.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
+      setState(() {
+        _validatePass = true;
+        _passwordErrorText += '• Password must contain a special character.\n';
+      });
+    }
+
+
+    return _passwordErrorText.isEmpty;
   }
 }
 
