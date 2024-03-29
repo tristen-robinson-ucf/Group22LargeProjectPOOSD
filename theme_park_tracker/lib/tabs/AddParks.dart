@@ -70,10 +70,12 @@ class _AddParks extends State<AddParks>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      home: Scaffold(
         appBar:  AppBar(
           centerTitle: true,
           title: Text("Save Parks"),
+          backgroundColor: HexColor("Eb5756"),
           titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
           automaticallyImplyLeading: false,
           leading: IconButton(
@@ -146,6 +148,7 @@ class _AddParks extends State<AddParks>{
                   )
               )])
         )
+      ),
 
     );
   }

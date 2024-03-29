@@ -884,62 +884,6 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
               ],
             ),
           ),
-
-
-
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: Colors.white,
-          //     border: Border.all(width: 4, color: Colors.black),
-          //   ),
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       SizedBox(height: 20),
-          //       SizedBox(
-          //           height: 40,
-          //           child: Text("Enter code", style: TextStyle(fontSize: 30),),
-          //       ),
-          //
-          //       SizedBox(height: 20),
-          //       Container(
-          //         padding: const EdgeInsets.all(8.0),
-          //         child: Column(
-          //           mainAxisAlignment: MainAxisAlignment.center,
-          //           children: [
-          //             TextField(
-          //               controller: _codeController,
-          //               decoration: const InputDecoration(
-          //                 hintText: "Enter one time code",
-          //                 border: OutlineInputBorder(),
-          //               ),
-          //             ),
-          //             const SizedBox(height: 30),
-          //             // button for user to test if their code matches OTP
-          //             MaterialButton(
-          //               onPressed: (){
-          //                 int code = int.parse(_codeController.text);
-          //
-          //                 if (code == testVal){
-          //                   setState(() {
-          //                     _futureUser = registerUser(firstName, lastName, email, phone, username, password);
-          //                   });
-          //
-          //                 } else{
-          //                   Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
-          //                 }
-          //               },
-          //               color: HexColor("#99dbFF"),
-          //               child: const Text('Register', style: TextStyle(color: Colors.black)),
-          //
-          //             )
-          //           ],
-          //         ),
-          //       )
-          //     ],
-          //   ),
-          // ),
-
       ],
    );
   }

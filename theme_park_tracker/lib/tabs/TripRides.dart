@@ -9,6 +9,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
@@ -218,7 +219,6 @@ class _TripRides extends State<TripRides>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         centerTitle: true,
         title: Text("Make a trip"),
@@ -430,7 +430,5 @@ class _TripRides extends State<TripRides>{
       Fluttertoast.showToast(msg: response.statusCode.toString());
     }
   }
-
-
-
 }
+

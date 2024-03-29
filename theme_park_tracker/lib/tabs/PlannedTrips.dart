@@ -269,12 +269,20 @@ class _MakeTrip extends State<MakeTrip>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      home: Scaffold(
       appBar:  AppBar(
         centerTitle: true,
         title: Text("Make a trip"),
         titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: (){
+            Navigator.push((context), MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
 
       ),
       body: Container(
@@ -419,6 +427,7 @@ class _MakeTrip extends State<MakeTrip>{
             ],
           ),
         ),
+      ),
       ),
     );
   }
