@@ -1,0 +1,82 @@
+body{
+    background-color: #C3E1E5;
+    
+}
+
+.startDiv{
+    margin: 0;
+}
+
+.photoCont{
+    display: flex;
+    max-width: 90%;
+    max-height: 100vh;
+}
+
+.parkImg{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100vh;
+    object-fit: cover;
+    margin: 0;
+}
+/*TODO: adjusting logo/text/but size w screen size*/
+.logo {
+    position: fixed;
+    top: 10%;;
+    left: 65%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 270px;
+    height: 270px; 
+}
+
+.text{
+    position: fixed;
+    font-family: "Red Hat Text", sans-serif;
+    top: 54%;
+    left: 60%;
+    font-size: 25px;
+    width: 400px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.startButtons{
+    margin-top: 20px;
+    position: fixed;
+    top: 70%;
+    left: 68%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+}
+
+.loginButton, .registerButton{
+    font-family: "Red Hat Text", sans-serif;
+    background: #f78254;
+    font-size: 25px;
+    width: auto;
+    padding: 10px;
+    border-radius: 35px;
+    border-color: white;
+    border-style: solid;
+    color: white;
+    cursor: pointer;
+    margin: 5px;
+    width: auto; 
+    align-self: center;
+    transition: transform 0.2s;
+}
+
+.loginButton:hover, .registerButton:hover {
+    transform: scale(1.1);
+    background: #ff743d;
+}

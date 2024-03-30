@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
+import './css/login.css'
+
 
 function Login()
 {
@@ -62,19 +64,33 @@ function Login()
 
 
     return(
-      <div id="loginDiv">
+    <>
+      <div className= "login" id="loginDiv">
+        <div class="inner-title">
+            LOG IN FORM
+        </div>
+
         <form onSubmit={doLogin}>
-        <span id="inner-title">PLEASE LOG IN</span><br />
-        <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} /><br />
-        <input type="password" id="loginPassword" placeholder="Password" ref={(c) => loginPassword = c} /><br />
-        <input type="submit" id="loginButton" class="buttons" value = "Log In" onClick={doLogin} />
-        <Link to="/register">
-            <input type="submit" id="registerDiv" class="buttons" value="Register" />
-        </Link>
+            <div className="inputCont">
+                 <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} required /><br />
+                 <input type="password" id="loginPassword" placeholder="Password" ref={(c) => loginPassword = c} required /><br />
+             </div>
+             <div class="content">
+                 <div class="forgot-pass">
+                    <a href="/forgot-password">Forgot Password?</a>
+                 </div>
+                 <div class="buttons">
+                    <input type="submit" id="loginButton" class="buttons" value = "Log In" onClick={doLogin} />
+                     <Link to="/register">
+                        <input type="submit" id="registerDiv" class="buttons" value="Register" />
+                    </Link>
+                </div>
+            </div>
         </form>
         <span id="loginResult">{message}</span>
-    </div>
-    );
+      </div>
+    </>
+   );
 };
 
 export default Login;

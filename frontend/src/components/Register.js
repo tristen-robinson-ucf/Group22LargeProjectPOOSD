@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
+import './css/register.css';
 
 function Register()
 {
@@ -65,22 +66,35 @@ function Register()
 
 
     return(
-      <div>
+      <>
+      <div className="register">
+        <div className="inner-title">
+            REGISTER FORM
+        </div>
         <form onSubmit={doRegister}>
-            <input type='text' id='registerName' placeholder='Username' ref={(c) => registerName = c} /><br />
-            <input type='text' id='firstName' placeholder='First Name' ref={(c) => firstName = c} /><br />
-            <input type='text' id='lastName' placeholder='Last Name' ref={(c) => lastName = c} /><br />
-            <input type='text' id='email' placeholder='Email' ref={(c) => email = c} /><br />
-            <input type='text' id='phone' placeholder='Phone Number' ref={(c) => phoneNumber = c} /><br />
-            <input type='password' id='registerPassword' placeholder='Password' ref={(c) => registerPassword = c} /><br />
-            <input type='password' id='confirmPassword' placeholder='Confirm Password' ref={(c) => confirmPassword = c} /><br />
-            <input type='submit' id='registerButton' class='buttons' value='Register' onClick={doRegister} />
-            < Link to="/">
-                <input type='submit' id='loginDiv' class='buttons' value='Return to Login'/>
-            </Link>
+            <div className="inputCont">
+                <input type='text' id='registerName' placeholder='Username' ref={(c) => registerName = c} required/><br />
+                <input type='text' id='firstName' placeholder='First Name' ref={(c) => firstName = c} required /><br />
+                <input type='text' id='lastName' placeholder='Last Name' ref={(c) => lastName = c} required /><br />
+                <input type='text' id='email' placeholder='Email' ref={(c) => email = c} required /><br />
+                <input type='text' id='phone' placeholder='Phone Number' ref={(c) => phoneNumber = c} required /><br />
+                <input type='password' id='registerPassword' placeholder='Password' ref={(c) => registerPassword = c} required /><br />
+                <input type='password' id='confirmPassword' placeholder='Confirm Password' ref={(c) => confirmPassword = c} required /><br />
+            </div>
+            
+            <div className= "cont">
+                <div class="existing-acc">
+                    <a href="/login">Already have an account?</a>
+                </div>
+                <input type='submit' id='registerButton' class='buttons' value='Register' onClick={doRegister} />
+                <Link to="/login">
+                    <input type='submit' id='loginButton' class="buttons" value='Login' />
+                 </Link> 
+            </div>
         </form>
         <span id='registerResult'>{message}</span>
       </div>
+      </>
     );
 };
 
