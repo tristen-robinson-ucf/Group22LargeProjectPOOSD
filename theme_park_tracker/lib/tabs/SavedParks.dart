@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:theme_park_tracker/main.dart';
+import 'package:theme_park_tracker/theme/theme.dart';
 
 
 import 'AddParks.dart';
@@ -73,6 +74,7 @@ class _SavedParks extends State<SavedParks>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(
@@ -95,7 +97,7 @@ class _SavedParks extends State<SavedParks>{
                 itemCount: parkMap.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) => Card(
-                  color: HexColor("Eb5756"),
+                  color: Theme.of(context).colorScheme.primary,
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
 
@@ -158,8 +160,8 @@ class _SavedParks extends State<SavedParks>{
             MaterialButton(onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => AddParks(parkArr: parkArr, id: id, firstname: firstname, lastname: lastname)));
             },
-              color: HexColor("#99dbFF"),
-              child: Text('Add a Park', style: TextStyle(color: Colors.black) ),
+              color: Theme.of(context).colorScheme.secondary,
+              child: Text('Add a Park', style: TextStyle(color: Theme.of(context).colorScheme.tertiary) ),
 
           )
         ],

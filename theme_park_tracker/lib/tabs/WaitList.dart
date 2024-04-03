@@ -156,15 +156,18 @@ class _WaitTimes extends State<WaitTimes>{
   Widget build(BuildContext context) {
     // appBarTheme: const AppBarTheme(color: Colors.indigo);
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar:  AppBar(
           centerTitle: true,
-          title: Text(parkName, style: TextStyle(fontSize: 15)),
+          title: Text(parkName, style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.tertiary)),
+          backgroundColor: Theme.of(context).colorScheme.primary,
           automaticallyImplyLeading: false,
           leading: IconButton(
               onPressed: (){
                 Navigator.push((context), MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname,)));
               },
-              icon: const Icon(Icons.arrow_back)),
+              icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.tertiary)),
+
         ),
         body: Column(
             children: [

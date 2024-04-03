@@ -11,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:theme_park_tracker/main.dart';
+import 'package:theme_park_tracker/theme/theme.dart';
 
 import 'SavedParks.dart';
 
@@ -72,10 +73,11 @@ class _AddParks extends State<AddParks>{
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar:  AppBar(
           centerTitle: true,
           title: Text("Save Parks"),
-          backgroundColor: HexColor("Eb5756"),
+          backgroundColor: Theme.of(context).colorScheme.primary,
           titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
           automaticallyImplyLeading: false,
           leading: IconButton(
@@ -95,9 +97,11 @@ class _AddParks extends State<AddParks>{
                 // create a search bar where the parks available are filtered whenever something is typed
                 child: TextField(
                   controller: controller,
+                  style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.search),
                     hintText: "Park Name",
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(4),
                       borderSide: const BorderSide(color: Colors.blue),
@@ -113,7 +117,7 @@ class _AddParks extends State<AddParks>{
                   child: ListView.builder(
                       itemCount:filteredParks.length,
                       itemBuilder: (context, index) => Card(
-                        color: HexColor("Eb5756"),
+                        color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Colors.grey.shade800): HexColor("Eb5756"),
                         elevation: 4,
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(

@@ -221,9 +221,10 @@ class _TripRides extends State<TripRides>{
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Make a trip"),
+        title: Text("Edit your trip"),
         titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
         automaticallyImplyLeading: false,
+        backgroundColor: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Colors.grey.shade800): HexColor("Eb5756"),
         leading: IconButton(
           onPressed: (){
             Navigator.push((context), MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
@@ -242,7 +243,7 @@ class _TripRides extends State<TripRides>{
               height: 100,
               width: double.infinity,
               child: Center(
-                child: Text("Current Time: ${calculateTime().toString()} minutes", style: TextStyle(fontSize: 25, color: Colors.black)),
+                child: Text("Current Time: ${calculateTime().toString()} minutes", style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.tertiary)),
               ),
             ),
 
@@ -252,16 +253,16 @@ class _TripRides extends State<TripRides>{
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Current rides planned for the day.", style: TextStyle(fontSize: 15, color: Colors.black)),
+                      Text("Current rides planned for the day.", style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.tertiary)),
 
                       // create a container to hold all the current rides, it is going to be a scrollable sub-section of the page to allow space for adding more rides at the bottom of the page
                       Container(
                         height: 350,
 
                           padding: const EdgeInsets.all(15),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.vertical(top: Radius.circular(30.0), bottom: Radius.circular(30.0), ),
-                            color: Colors.white,
+                            color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Theme.of(context).colorScheme.secondary) : Colors.white,
                             boxShadow: [
                               BoxShadow(
 
@@ -274,15 +275,11 @@ class _TripRides extends State<TripRides>{
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           child:
-                          // ((avgWaits.length != rideWaits.length) && plannedRides.isNotEmpty)
-                          //     ? Center(child: CircularProgressIndicator(),)
-                          //     :
-
                           ListView.builder(
                             itemCount: rideIdName.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) => Card(
-                              color: HexColor("Eb5756"),
+                              color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Colors.grey.shade500): HexColor("Eb5756"),
                               elevation: 2,
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
                               child: SingleChildScrollView(

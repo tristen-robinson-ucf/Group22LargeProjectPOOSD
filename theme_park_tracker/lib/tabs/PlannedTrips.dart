@@ -82,6 +82,7 @@ class _PlannedTrips extends State<PlannedTrips>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
@@ -105,7 +106,7 @@ class _PlannedTrips extends State<PlannedTrips>{
                   ListView.builder(
                       itemCount: resultArr.length,
                       itemBuilder: (context, index) => Card(
-                          color: HexColor("Eb5756"),
+                        color: Theme.of(context).colorScheme.primary,
                         elevation: 4,
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Row(
@@ -163,8 +164,8 @@ class _PlannedTrips extends State<PlannedTrips>{
               MaterialButton(onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => MakeTrip(id: id, firstname: firstname, lastname: lastname, parkArr: parkArr)));
               },
-                color: HexColor("#99dbFF"),
-                child: Text('Make a new trip', style: TextStyle(color: Colors.black) ),
+                color: Theme.of(context).colorScheme.secondary,
+                child: Text('Make a new trip', style: TextStyle(color: Theme.of(context).colorScheme.tertiary) ),
 
               )
             ],
@@ -274,14 +275,15 @@ class _MakeTrip extends State<MakeTrip>{
       appBar:  AppBar(
         centerTitle: true,
         title: Text("Make a trip"),
-        titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black),
-        backgroundColor: Colors.white,
+        titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Theme.of(context).colorScheme.tertiary),
+        backgroundColor: Theme.of(context).colorScheme.background,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: (){
             Navigator.push((context), MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
           },
           icon: const Icon(Icons.arrow_back),
+          color: Theme.of(context).colorScheme.tertiary,
         ),
 
       ),
@@ -290,7 +292,7 @@ class _MakeTrip extends State<MakeTrip>{
         height: double.infinity,
 
         decoration: BoxDecoration(
-          color: HexColor("#99dbFF"),
+          color: Theme.of(context).colorScheme.secondary,
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -303,19 +305,19 @@ class _MakeTrip extends State<MakeTrip>{
 
 
                 decoration: BoxDecoration(
-                  color: HexColor("#99dbFF"),
+                  color: Theme.of(context).colorScheme.secondary,
 
                 ),
                 child: Center(
-                  child: Text("Plan a trip with Park Pal!", style: TextStyle(fontSize: 25),),
+                  child: Text("Plan a trip with Park Pal!", style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.tertiary ),),
                 ),
               ),
               Container(
 
                 padding: const EdgeInsets.all(15),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(30.0), bottom: Radius.circular(30.0), ),
-                  color: Colors.white,
+                  color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Colors.grey): Colors.white,
                   boxShadow: [
                     BoxShadow(
 
@@ -417,8 +419,8 @@ class _MakeTrip extends State<MakeTrip>{
                         });
 
                       },
-                        child: Text("Create Trip", style: TextStyle(color: Colors.black),),
-                        color: HexColor("99dbFF")
+                        child: Text("Create Trip", style: TextStyle(color: Theme.of(context).colorScheme.tertiary),),
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ],
                   ),
