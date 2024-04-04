@@ -514,9 +514,9 @@ class _passwordResetPage extends State<passwordResetPage> {
                               obscureText: true,
                               controller: _newPasswordController2,
                               decoration: InputDecoration(
-                                  hintText: "Confirm new Password",
+                                  hintText: "Confirm New Password",
                                   border: OutlineInputBorder(),
-                                  errorText: !_validatePasswords ? "Please enter matching passwords" : null,
+                                  errorText: _newPasswordController.text != _newPasswordController2.text ? "Please enter matching passwords" : null,
                                   suffixIcon: IconButton(
                                     onPressed: (){
                                       _newPasswordController2.clear();

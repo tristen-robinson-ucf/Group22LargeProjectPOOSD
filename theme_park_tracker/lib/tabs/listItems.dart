@@ -127,12 +127,12 @@ class waitTimeItem extends StatelessWidget{
         decoration: BoxDecoration(
             border: Border.all(
               width: 1,
-              color: Colors.black38,
+              color: View.of(context).platformDispatcher.platformBrightness == Brightness.light ? Colors.black : Colors.grey,
             )
         ),
         child:  Container(
           padding: const EdgeInsets.all(15),
-          color:  View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.grey.shade800 : HexColor("Fb9c7E"),
+          color:  View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : HexColor("Fb9c7E"),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             // alignment: Alignment.centerLeft,
@@ -146,7 +146,9 @@ class waitTimeItem extends StatelessWidget{
                 children: [
                   Container(
                     padding: const EdgeInsets.all(7),
-                  child: Text(rideName, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 15, color: Colors.white)),
+                  child: Text(rideName, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 15,
+                      color: Colors.white
+                  )),
                 ),]
                 )),
 

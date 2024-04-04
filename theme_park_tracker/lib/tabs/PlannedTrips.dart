@@ -276,7 +276,7 @@ class _MakeTrip extends State<MakeTrip>{
         centerTitle: true,
         title: Text("Make a trip"),
         titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Theme.of(context).colorScheme.tertiary),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.background,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: (){
@@ -292,7 +292,7 @@ class _MakeTrip extends State<MakeTrip>{
         height: double.infinity,
 
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
+          color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : Theme.of(context).colorScheme.secondary,
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -305,7 +305,7 @@ class _MakeTrip extends State<MakeTrip>{
 
 
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : Theme.of(context).colorScheme.secondary,
 
                 ),
                 child: Center(
