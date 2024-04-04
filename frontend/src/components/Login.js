@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
-import './css/login.css'
+import './css/login.css';
 
 
 function Login()
@@ -65,29 +65,43 @@ function Login()
 
     return(
     <>
-      <div className= "login" id="loginDiv">
-        <div class="inner-title">
-            LOG IN FORM
+      <div className= "login">
+        <div className="inner-title">
+            Log In Form
         </div>
 
         <form onSubmit={doLogin}>
             <div className="inputCont">
+                 <div>
+                    <span class="details">Username</span>
+                 </div>
                  <input type="text" id="loginName" placeholder="Username" ref={(c) => loginName = c} required /><br />
+                 <div>
+                    <span class="details">Password</span>
+                 </div>
                  <input type="password" id="loginPassword" placeholder="Password" ref={(c) => loginPassword = c} required /><br />
              </div>
-             <div class="content">
-                 <div class="forgot-pass">
-                    <a href="/forgot-password">Forgot Password?</a>
-                 </div>
-                 <div class="buttons">
-                    <input type="submit" id="loginButton" class="buttons" value = "Log In" onClick={doLogin} />
-                     <Link to="/register">
-                        <input type="submit" id="registerDiv" class="buttons" value="Register" />
-                    </Link>
+             <div className="content">
+                 <div class="logButton">
+                    <input type="submit" id="loginButton" class="buttons" value = 'Log In' />
+                </div>
+                
+                <div className= "forgotParent">
+                    <div class="forgot-pass">
+                        <a href="/forgot-password">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <div id="loginResult">{message}</div>
+
+                <div className="parentCont">
+                    <div class="new-user">
+                        <p style={{color:'grey'}}>Don't have an account?</p>
+                         <a href ="/register"> Sign up here!</a>
+                     </div>
                 </div>
             </div>
         </form>
-        <span id="loginResult">{message}</span>
       </div>
     </>
    );
