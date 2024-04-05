@@ -147,10 +147,45 @@ class _PlannedTrips extends State<PlannedTrips>{
                                   Icons.remove,
                                 ),
                                 onPressed: () {
-                                  removeTrip(id, resultArr[index][0]);
-                                  resultArr.remove(index);
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context){
+                                        // create popup to confirm trip deletion
+                                        return AlertDialog(
+                                          scrollable: true,
+                                          content: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              SizedBox(height: 20),
+                                              SizedBox(
+                                                height: 40,
+                                                child: Text("Delete Trip?", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 23),),
+                                              ),
+                                              SizedBox(height: 20),
+                                              MaterialButton(
+                                                onPressed: (){
+                                                  removeTrip(id, resultArr[index][0]);
 
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
+                                                  setState(() {
+                                                    resultArr.remove(index);
+                                                    //parkMap.remove(index);
+
+                                                  });
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
+
+                                                },
+                                                color: HexColor("#99dbFF"),
+                                                child: const Text('Confirm', style: TextStyle(color: Colors.black)),
+
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                  );
+
+
+
                                 },
                               ),
                             )

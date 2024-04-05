@@ -667,7 +667,7 @@ class _registerPage extends State<MyRegPage> {
     } if (!EmailValidator.validate(email)) {
       setState(() {
         _validateEmail = true;
-        _emailErrorText = '• Enter a valid email address\n';
+        _emailErrorText += '• Enter a valid email address\n';
       });
     }
     return _emailErrorText.isEmpty;
@@ -686,8 +686,9 @@ class _registerPage extends State<MyRegPage> {
     if (!password.contains(RegExp(r'[A-Z]'))){
       setState(() {
         _validatePass = true;
-
         _passwordErrorText += '• Password must contain an uppercase letter.\n';
+
+
       });
     }
     if (!password.contains(RegExp(r'[a-z]'))){

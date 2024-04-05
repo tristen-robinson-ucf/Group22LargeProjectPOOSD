@@ -132,7 +132,7 @@ class waitTimeItem extends StatelessWidget{
         ),
         child:  Container(
           padding: const EdgeInsets.all(15),
-          color:  View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : HexColor("Fb9c7E"),
+          color:  View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : HexColor("Eb7978"),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             // alignment: Alignment.centerLeft,
