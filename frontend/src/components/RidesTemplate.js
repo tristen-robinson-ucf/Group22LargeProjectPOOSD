@@ -13,6 +13,20 @@ function RidesTemplate(parkID)
 
     var rides = []
 
+    const app_name = 'group-22-0b4387ea5ed6'
+
+    function buildPath(route)
+    {
+        if (process.env.NODE_ENV === 'production') 
+        {
+            return 'https://' + app_name +  '.herokuapp.com/' + route;
+        }
+        else
+        {        
+            return 'http://localhost:5000/' + route;
+        }
+    }
+
     const fetchRides = async event => 
     {
         //event.preventDefault();
@@ -22,26 +36,18 @@ function RidesTemplate(parkID)
 
         try
         {    
-            const response = await fetch("https://queue-times.com/parks/" + parkID + "/queue_times.json",
-                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-            console.log(response)
-            var res = JSON.parse(await response.text());
-            console.log(res)
-            /*if( res.id <= 0 )
-            {
-                setMessage('User/Password combination incorrect');
-            }
-            else
-            {
-                var user = {firstname:res.firstname,lastname:res.lastname,id:res.id}
-                localStorage.setItem('user_data', JSON.stringify(user));
-
-                setMessage('');
-
-                window.location.href = '/landing';
-
-            }*/
-            //setMessage('');
+            (async () => {
+                const response = await fetch(buildPath('api/parks'));
+                console.log(`response status is ${response.status}`);
+                const mediaType = response.headers.get('content-type');
+                let data;
+                if (mediaType.includes('json')) {
+                  data = await response.json();
+                } else {
+                  data = await response.text();
+                }
+                console.log(data);
+              })();
         }
         catch(e)
         {
@@ -90,8 +96,8 @@ function RidesTemplate(parkID)
     }
     useEffect(() => 
     {
-        //fetchRides();
-        createRideButtons();
+        fetchRides();
+        //createRideButtons();
     }, []);
 
     return(

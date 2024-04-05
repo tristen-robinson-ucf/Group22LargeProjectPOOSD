@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path')
 const PORT = process.env.PORT || 5000
+const axios = require('axios');
+
 
 const app = express();
 app.use(cors());
@@ -522,6 +524,16 @@ app.post('/api/searchRide', async (req, res, next) =>
 	  
 	var ret = {results:_ret, error:error};
 	res.status(200).json(ret);
+});
+
+app.get('/api/parks', async (req, res) => {
+    try {
+        const response = await axios.get('https://queue-times.com/parks.json');
+        res.json(response.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 app.listen(PORT, () =>{
