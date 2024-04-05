@@ -1,29 +1,37 @@
-/*.register{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    height: 90vh;
-    width: 35%;
-    border-radius: 0px; 
-    position: relative;
-    top: 45px; 
-    left: 650px;
-}
-*/
-
 .register{
-  margin-top: 50px;
-  width: 380px;
+  max-width: 700px;
+  width: 100%;
+  margin-top: 70px;
   background: #fff;
+  padding: 25px 30px;
   border-radius: 15px;
   box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
   margin-bottom: 50px;
 }
 
+::selection{
+  background: #4158d0;
+  color:#fff;
+}
+
+.emailVerification{
+  width: 380px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+}
+
+.emailVerification .inner-title{
+  width: 320px;
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 100px;
+  user-select: none;
+}
+
 .register .inner-title{
-    width: 380px;
+    width: 620px;
     font-size: 30px;
     font-weight: 600;
     text-align: center;
@@ -31,76 +39,140 @@
     user-select: none;
 }
 
-.register form{
-    padding: 10px 30px 30px 30px;
+.emailVerification form{
+  padding: 10px 30px 50px 30px;
+}
+
+.emailVerification form .emailInp input:focus, form .emailInp input:valid{
+  border-color: #68B8C1;
+}
+
+
+.emailVerification form .emailInp{
+  height: 50px;
+  width: 100%;
+  margin-top: 20px;
+  position: relative;
+}
+
+.emailVerification form .emailInp input{
+  height: 100%;
+  width: 100%;
+  outline: none;
+  font-size: 17px;
+  padding-left: 20px;
+  border: 1px solid lightgrey;
+  border-radius: 25px;
+  transition: all 0.3s ease;
 }
 
 .register form .inputCont{
-    height: 30px;
-    width: 100%;
-    margin-top: 0px;
-    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 15px; 
   }
 
-  .register form .inputCont input{
+  .inputCont > div{
+    width: calc(100% /2 - 20px);
+  }
+
+  .inputCont > .centered{
+    width: 60%; 
+    margin: 0 auto;
+  }
+
+  .register form .inputCont span.details{
+    display: block;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-bottom: 10px; 
+  }
+
+  .register form .inputCont span.centDetails{
+    display: block;
+    font-weight: 500;
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+  }
+
+  .inputCont input{
     height: 45px;
     width: 100%;
     outline: none;
     font-size: 17px;
-    padding-left: 20px;
+    padding-left: 15px;
     border: 1px solid lightgrey;
-    border-radius: 25px;
+    border-radius: 15px;
     transition: all 0.3s ease;
   }
+
 
   .register form .inputCont input:focus, form .inputCont input:valid{
     border-color: #68B8C1;
   }
 
   .inputCont input[type="password"]{
-    margin-bottom: 20px;
-}
-  
-  form .cont{
-    margin-top: 430px;
-    display: flex;
-    width: 100%;
-    height: 50px;
-    font-size: 16px;
-    align-items: center;
-    justify-content: space-around;
+    margin-bottom: 5px;
 }
 
-  
-
-
-
-  /*
-
-#background-title{
-    margin-right: auto;
+form .regBttn{
+  height: 45px;
+  margin: 35px 0
 }
 
-#inputCont{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
+form .regBttn input{
+  background: #f78254;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
-*/
 
-/*
-#inputCont input[type="text"], #inputCont input[type="password"]{
-    border-radius: 40px;
-    display: inline-block;
-    text-align: center;
-    width: 80%;
-    background-color: #D5EEEB;
-    border: none;
-    height: 40px;
-    margin-bottom: -20px;
+.regBttn:hover{
+  transform: scale(1.05);
+  background: #ff743d;
 }
-*/
 
+.parent{
+  display: flex;
+  justify-content: center;
+}
+
+.existing-acc{
+  display: flex;
+  margin: 0 auto;
+}
+
+.existing-acc p {
+  margin-right: 8px; 
+}
+
+.existing-acc a{
+  color: grey;
+  text-decoration: none;
+  position: relative;
+}
+
+.existing-acc a::before{
+  content: '';
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  width: 0;
+  height: 0.5px;
+  background-color: grey;
+  transition: width 0.2s ease;
+}
+
+.existing-acc a:hover::before{
+  width: 100%;
+}
 
 

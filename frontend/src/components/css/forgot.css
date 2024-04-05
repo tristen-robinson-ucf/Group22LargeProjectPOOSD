@@ -1,0 +1,197 @@
+html,body{
+  display: grid;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+}
+  
+.forgot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  width: 380px;
+  background: #fff;
+  margin-top: 50px;
+  border-radius: 15px;
+  box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 50px;
+}
+
+
+.forgot .title{
+  width: 380px;
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 50px;
+  user-select: none;
+}
+
+::selection{
+  background: #4158d0;
+  color:#fff;
+}
+
+.forgot .updatePassForm {
+  padding: 10px 30px 120px 30px;
+} 
+
+.forgot .sendVerificationForm {
+  padding: 10px 30px 380px 30px;
+}
+
+.forgot form .inpCont, .forgot form .passInp{
+  height: 50px;
+  width: 100%;
+  margin-top: 10px;
+  position: relative;
+}
+
+
+.forgot  form .inpCont input, .forgot form .passInp input{
+  height: 100%;
+  width: 100%;
+  outline: none;
+  font-size: 17px;
+  padding-left: 20px;
+  border: 1px solid lightgrey;
+  border-radius: 25px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease; 
+}
+
+.forgot form .inpCont input:focus, form .inpCont input:valid{
+  border-color: #68B8C1;
+}
+
+.forgot form .inpCont  #sendEmail{
+  background: #f78254;
+  color: #fff;
+  border: none;
+  padding-left: 80px;
+  padding-right: 96px;
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transition: transform 0.2s;
+}
+
+.forgot form .passInp #updatePass{
+  background: #f78254;
+  color: #fff;
+  border: none;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-top: 10px;
+  margin-left: 30px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transition: transform 0.2s;
+}
+
+.forgot form #resendCode{
+  background: #f78254;
+  color: #fff;
+  border: none;
+  padding-left: 40px;
+  padding-right: 55px;
+  margin-top: 10px;
+  margin-left: 30px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+ .returnLogin{
+  display: flex;
+  margin: -10px auto;
+}
+
+.retLogin a, .returnLogin a{
+  color: grey;
+  position: relative;
+  text-decoration: none;
+}
+
+.retLogin a::before, .returnLogin a::before{
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: grey;
+  transition: width 0.2s ease;
+}
+
+.retLogin a:hover::before, .returnLogin a:hover::before{
+  width: 100%;
+}
+
+.forgot form .inpCont  .retLogin{
+  color: rgb(129, 124, 124);
+  border: none;
+  padding-left: 70px;
+  padding-right: 60px;
+  margin-top: 20px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.forgot #text{
+  text-align: center;
+}
+
+.forgot .updatePassForm p.message{
+  margin-top: 70px;
+  text-align: center;
+}
+
+.forgot form .inpCont #bttn{
+  margin-left: 20px;
+}
+
+#sendEmail:hover, #updatePass:hover{
+  transform: scale(1.1);
+  background: #ff743d;
+}
+
+.forgotImg{
+  align-items: center;
+}
+
+.forgotImg img{
+  width: 80px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  user-select: none;
+}
+
+
+.forgot form .passInp input:focus, form .passInp input:valid{
+  border-color: #68B8C1;
+}
+
+.retParent{
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.mssg{
+  text-align: center;
+  margin-top: 10px; 
+  margin-bottom: 10px;
+}
+
+
+
+

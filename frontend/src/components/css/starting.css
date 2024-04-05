@@ -36,7 +36,6 @@ body{
 
 .text{
     position: fixed;
-    font-family: "Red Hat Text", sans-serif;
     top: 54%;
     left: 60%;
     font-size: 25px;
@@ -60,14 +59,12 @@ body{
 }
 
 .loginButton, .registerButton{
-    font-family: "Red Hat Text", sans-serif;
     background: #f78254;
     font-size: 25px;
     width: auto;
     padding: 10px;
-    border-radius: 35px;
-    border-color: white;
-    border-style: solid;
+    border-radius: 15px;
+    border:none;
     color: white;
     cursor: pointer;
     margin: 5px;
