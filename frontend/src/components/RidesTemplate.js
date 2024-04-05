@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function RidesTemplate(rides)
+function RidesTemplate(parkID)
 {
     const [rideContent, setRideContent] = useState([]);
 
@@ -10,6 +10,45 @@ function RidesTemplate(rides)
     const waitTime = 1;
 
     var sortBy = alphabetical;
+
+    var rides = []
+
+    const fetchRides = async event => 
+    {
+        //event.preventDefault();
+
+        var obj = {};
+        var js = JSON.stringify(obj);
+
+        try
+        {    
+            const response = await fetch("https://queue-times.com/parks/" + parkID + "/queue_times.json",
+                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
+            console.log(response)
+            var res = JSON.parse(await response.text());
+            console.log(res)
+            /*if( res.id <= 0 )
+            {
+                setMessage('User/Password combination incorrect');
+            }
+            else
+            {
+                var user = {firstname:res.firstname,lastname:res.lastname,id:res.id}
+                localStorage.setItem('user_data', JSON.stringify(user));
+
+                setMessage('');
+
+                window.location.href = '/landing';
+
+            }*/
+            //setMessage('');
+        }
+        catch(e)
+        {
+            alert(e.toString());
+            return;
+        }    
+    };
 
     function sortRides()
     {
@@ -51,6 +90,7 @@ function RidesTemplate(rides)
     }
     useEffect(() => 
     {
+        //fetchRides();
         createRideButtons();
     }, []);
 
