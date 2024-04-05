@@ -27,7 +27,7 @@ const USFPage = () =>
   
     return(
       <div>
-        {RidesTemplate(rides)}
+        {RidesTemplate(65)}
       </div>
     );
 };

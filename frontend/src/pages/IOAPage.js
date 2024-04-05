@@ -36,7 +36,7 @@ const IOAPage = () =>
 
     return(
       <div>
-       {RidesTemplate(rides)}
+       {RidesTemplate(64)}
       </div>
     );
 };
