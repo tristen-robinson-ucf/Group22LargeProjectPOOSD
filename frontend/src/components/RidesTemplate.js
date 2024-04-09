@@ -4,44 +4,52 @@ function RidesTemplate(parkID)
 {
     const [rideContent, setRideContent] = useState([]);
 
-    const closed = 1001;
-    const open = -2;
     const alphabetical = 0;
     const waitTime = 1;
 
     var sortBy = alphabetical;
 
+    var ridesData = []
     var rides = []
+
+    const app_name = 'group-22-0b4387ea5ed6'
+
+    function buildPath(route)
+    {
+        if (process.env.NODE_ENV === 'production') 
+        {
+            return 'https://' + app_name +  '.herokuapp.com/' + route;
+        }
+        else
+        {        
+            return 'http://localhost:5000/' + route;
+        }
+    }
 
     const fetchRides = async event => 
     {
         //event.preventDefault();
 
-        var obj = {};
+        var obj = {parkID:parkID};
         var js = JSON.stringify(obj);
 
         try
         {    
-            const response = await fetch("https://queue-times.com/parks/" + parkID + "/queue_times.json",
-                {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
-            console.log(response)
-            var res = JSON.parse(await response.text());
-            console.log(res)
-            /*if( res.id <= 0 )
-            {
-                setMessage('User/Password combination incorrect');
-            }
-            else
-            {
-                var user = {firstname:res.firstname,lastname:res.lastname,id:res.id}
-                localStorage.setItem('user_data', JSON.stringify(user));
-
-                setMessage('');
-
-                window.location.href = '/landing';
-
-            }*/
-            //setMessage('');
+            (async () => {
+                const response = await fetch(buildPath('api/rides'), {headers:{'Content-Type': 'application/json'}, body:js, method: 'POST'});
+                console.log(`response status is ${response.status}`);
+                const mediaType = response.headers.get('content-type');
+                let data;
+                if (mediaType.includes('json')) {
+                  data = await response.json();
+                } else {
+                  data = await response.text();
+                }
+                console.log(data);
+                ridesData = data
+                rides = extractRideInfo(ridesData)
+                createRideButtons();
+              })();
         }
         catch(e)
         {
@@ -50,48 +58,90 @@ function RidesTemplate(parkID)
         }    
     };
 
-    function sortRides()
+    function extractRideInfo(jsonData) 
     {
-        sortBy = document.getElementById("sortBy").value;
+        const rideInfo = [];
+        // Iterate over each land
+        for (const land of jsonData.lands) 
+        {
+            // Iterate over rides in each land
+            for (const ride of land.rides) 
+            {
+                // Extract ride name and wait time
+                const rideName = ride.name;
+                const waitTime = ride.wait_time;
+                const isOpen = ride.is_open;
+                const id = ride.id
+                // Add ride info to rideInfo array
+                rideInfo.push({ id: id, name: rideName, wait_time: waitTime, is_open:isOpen });
+            }
+        }
+        return rideInfo;
+    }
 
-        if(sortBy == alphabetical)
+    function sortRides() {
+        sortBy = document.getElementById("sortBy").value;
+    
+        if (sortBy == 'alphabetical') 
         {
-            rides.sort((a, b) => a[0] - b[0]);
-        }
-        else if(sortBy == waitTime)
+            // Sort rides alphabetically by name
+            rides.sort((a, b) => a.name.localeCompare(b.name));
+        } 
+        else if (sortBy == 'waitTime') 
         {
-            rides.sort((a, b) => a[1] - b[1]);
+            // Sort rides by wait time
+            rides.sort((a, b) => a.wait_time - b.wait_time);
         }
+    
+        // After sorting, recreate ride buttons
         createRideButtons();
     }
+    
+    
 
     function createRideButtons()
     {
         var rideButtons = []
         var button;
 
-        for(let i = 0; i < rides.length; i++)
+        for (const ride of rides) 
         {
-            if(rides[i][1] == open)
+            let waitTimeText = '';
+            if (ride.is_open) 
             {
-                button = <button key={i} className='waitTimeButton'><text>{rides[i][0]}</text><b className='waitTime'>Open</b></button>
-            }
-            else if(rides[i][1] == closed)
+                waitTimeText = 'Open';
+            } 
+            else 
             {
-                button = <button key={i} className='waitTimeButton'><text>{rides[i][0]}</text><b className='waitTime'>Closed</b></button>
+                waitTimeText = 'Closed';
             }
-            else
+
+            // If the ride is open and there's a wait time, display the wait time
+            if (ride.is_open && ride.wait_time > 0) 
             {
-                button = <button key={i} className='waitTimeButton'><text>{rides[i][0]}</text><b className='waitTime'>{rides[i][1].toString()}</b></button>
+                waitTimeText = ride.wait_time.toString();
             }
+
+            // Create button element
+            button = (
+                <button key={ride.id} className='waitTimeButton'>
+                    <text>{ride.name}</text>
+                    <b className='waitTime'>{waitTimeText}</b>
+                </button>
+            );
+
+            // Push button to rideButtons array
             rideButtons.push(button);
         }
-        setRideContent(rideButtons)
+
+        // Update state with rideButtons
+        setRideContent(rideButtons);
     }
+
+
     useEffect(() => 
     {
-        //fetchRides();
-        createRideButtons();
+        fetchRides();
     }, []);
 
     return(
