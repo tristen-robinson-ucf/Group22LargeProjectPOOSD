@@ -112,7 +112,7 @@ class _SavedParks extends State<SavedParks>{
                               // add the name of the park that is passed in
                               child: Container(
                                 padding: const EdgeInsets.only(left: 15.0, right: 8.0, top: 2.0, bottom: 2.0),
-                                child: Text(parkMap.keys.elementAt(index), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 20, color: Colors.white)),
+                                child: Text(parkMap.keys.elementAt(index), overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 18, color: Colors.white)),
 
                                 ),
                               ),

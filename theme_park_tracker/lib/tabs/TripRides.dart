@@ -230,6 +230,7 @@ class _TripRides extends State<TripRides>{
             Navigator.push((context), MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
           },
           icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
         ),
 
       ),
@@ -238,6 +239,7 @@ class _TripRides extends State<TripRides>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
 
             Container(
               height: 100,
@@ -262,7 +264,7 @@ class _TripRides extends State<TripRides>{
                           padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.vertical(top: Radius.circular(30.0), bottom: Radius.circular(30.0), ),
-                            color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Theme.of(context).colorScheme.secondary) : Colors.white,
+                            color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Theme.of(context).colorScheme.secondary) : Colors.grey.shade100,
                             boxShadow: [
                               BoxShadow(
 

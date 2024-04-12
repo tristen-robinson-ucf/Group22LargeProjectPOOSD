@@ -310,15 +310,15 @@ class _MakeTrip extends State<MakeTrip>{
       appBar:  AppBar(
         centerTitle: true,
         title: Text("Make a trip"),
-        titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Theme.of(context).colorScheme.tertiary),
-        backgroundColor: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.background,
+        titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: (){
             Navigator.push((context), MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname)));
           },
           icon: const Icon(Icons.arrow_back),
-          color: Theme.of(context).colorScheme.tertiary,
+          color: Colors.white,
         ),
 
       ),
@@ -327,7 +327,7 @@ class _MakeTrip extends State<MakeTrip>{
         height: double.infinity,
 
         decoration: BoxDecoration(
-          color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : Theme.of(context).colorScheme.secondary,
+          color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : Colors.white,
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -340,7 +340,7 @@ class _MakeTrip extends State<MakeTrip>{
 
 
                 decoration: BoxDecoration(
-                  color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : Theme.of(context).colorScheme.secondary,
+                  color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : Colors.white,
 
                 ),
                 child: Center(
@@ -352,10 +352,9 @@ class _MakeTrip extends State<MakeTrip>{
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(30.0), bottom: Radius.circular(30.0), ),
-                  color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Colors.grey): Colors.white,
+                  color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Colors.grey): Colors.grey.shade100,
                   boxShadow: [
                     BoxShadow(
-
                       offset: Offset(0.0, 1.0),
                       blurRadius: 5,
                     )

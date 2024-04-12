@@ -159,14 +159,14 @@ class _WaitTimes extends State<WaitTimes>{
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar:  AppBar(
           centerTitle: true,
-          title: Text(parkName, style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.tertiary)),
+          title: Text(parkName, style: TextStyle(fontSize: 15, color: Colors.white)),
           backgroundColor: Theme.of(context).colorScheme.primary,
           automaticallyImplyLeading: false,
           leading: IconButton(
               onPressed: (){
                 Navigator.push((context), MaterialPageRoute(builder: (context) => LandingPage(id: id, parkArr: parkArr, firstname: firstname, lastname: lastname,)));
               },
-              icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.tertiary)),
+              icon: Icon(Icons.arrow_back, color: Colors.white)),
 
         ),
         body: Column(
@@ -175,6 +175,10 @@ class _WaitTimes extends State<WaitTimes>{
                 flex: 1,
 
                 child:
+                    Container(
+                      padding: const EdgeInsets.all(8),
+
+                      child:
                 ListView.builder(
                     itemCount: avgWaits.length,
                     itemBuilder: (context, index){
@@ -183,9 +187,11 @@ class _WaitTimes extends State<WaitTimes>{
                     }
                 ),
 
-              )
+              ),
+              ),
             ]
-        ));
+        ),
+        );
 
   }
 }

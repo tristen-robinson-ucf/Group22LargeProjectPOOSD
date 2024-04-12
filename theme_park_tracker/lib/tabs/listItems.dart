@@ -22,7 +22,8 @@ class listItem extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-   return Padding(
+   return
+     Padding(
        padding: const EdgeInsets.symmetric(vertical: 8.0),
        child: Container(
          decoration: BoxDecoration(
@@ -121,6 +122,7 @@ class waitTimeItem extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -128,11 +130,14 @@ class waitTimeItem extends StatelessWidget{
             border: Border.all(
               width: 1,
               color: View.of(context).platformDispatcher.platformBrightness == Brightness.light ? Colors.black : Colors.grey,
-            )
+
+
+            ),
+
         ),
         child:  Container(
-          padding: const EdgeInsets.all(15),
-          color:  View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : HexColor("Eb7978"),
+          padding: const EdgeInsets.all(10),
+          color:  View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.black : Colors.grey.shade100,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             // alignment: Alignment.centerLeft,
@@ -147,7 +152,7 @@ class waitTimeItem extends StatelessWidget{
                   Container(
                     padding: const EdgeInsets.all(7),
                   child: Text(rideName, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 15,
-                      color: Colors.white
+                      color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.white : Colors.black,
                   )),
                 ),]
                 )),
@@ -159,7 +164,9 @@ class waitTimeItem extends StatelessWidget{
                 flex: 2,
                 child: Column(
                   children: [
-                    Text("Current", style: TextStyle(color: Colors.white)),
+                    Text("Current", style: TextStyle(
+                        color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.white : Colors.black,
+                    )),
                    Container(
                     height: 35,
                     width: 35,
@@ -181,7 +188,9 @@ class waitTimeItem extends StatelessWidget{
                 flex: 2,
                 child: Column(
                     children: [
-                      Text("Average", style: TextStyle(color: Colors.white)),
+                      Text("Average", style: TextStyle(
+                       color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? Colors.white : Colors.black,
+                      )),
                       Container(
                           height: 35,
                           width: 35,

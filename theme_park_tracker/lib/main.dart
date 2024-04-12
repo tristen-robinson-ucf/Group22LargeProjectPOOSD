@@ -476,7 +476,7 @@ class _registerPage extends State<MyRegPage> {
             alignment: Alignment.center,
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: HexColor("#Fb9c7E"),
+              color: HexColor("#99dbFF"),
             ),
             child: SingleChildScrollView(
               child: buildColumn(),
@@ -776,7 +776,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
             alignment: Alignment.center,
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: HexColor("#Fb9c7E"),
+              color: HexColor("#99dbFF"),
             ),
 
             child: SingleChildScrollView(
@@ -858,7 +858,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
                                               border: OutlineInputBorder(),
                                             ),
                                           ),
-                                          const SizedBox(height: 30),
+                                          const SizedBox(height: 20),
                                           // button for user to test if their code matches OTP
                                           MaterialButton(
                                             onPressed: (){
