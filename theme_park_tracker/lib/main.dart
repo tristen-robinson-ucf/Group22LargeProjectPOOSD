@@ -137,7 +137,6 @@ class _MyAppState extends State<MyApp> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-
           Container(
             height: 200,
             child: Center(
@@ -149,9 +148,16 @@ class _MyAppState extends State<MyApp> {
 
           // create container to hold login text fields, and another to ensure spacing between fields and the border
           Container(
+
             decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(width: 6, color: Colors.black),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25.0), bottom: Radius.circular(25.0), ),
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0.0, 1.0),
+                    blurRadius: 10,
+                  ),
+                ]
             ),
             child: Container(
               padding: const EdgeInsets.all(15),
@@ -221,7 +227,7 @@ class _MyAppState extends State<MyApp> {
                             ],
 
                           ),
-                          SizedBox(height: 30),
+                          SizedBox(height: 25),
                           MaterialButton(
                             onPressed: () {
                               user = _usernameController.text;
@@ -239,13 +245,13 @@ class _MyAppState extends State<MyApp> {
                                 };
                               });
                             },
-                            color: Colors.blueAccent,
-                            child: const Text('Login', style: TextStyle(color: Colors.white)),
+                            color: HexColor("#99dbFF"),
+                            child: const Text('Login', style: TextStyle(color: Colors.black)),
                           ),
                         ],
                     ),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 10),
                   RichText(
                       text: TextSpan(
                           style: defaultStyle,
@@ -497,8 +503,14 @@ class _registerPage extends State<MyRegPage> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(width: 4, color: Colors.black),
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25.0), bottom: Radius.circular(25.0), ),
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0.0, 1.0),
+                    blurRadius: 10,
+                  ),
+                ]
             ),
           child: Container(
             padding: const EdgeInsets.all(15),
@@ -774,7 +786,7 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
       home: Scaffold(
           body: Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: HexColor("#99dbFF"),
             ),
@@ -795,20 +807,38 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
   Column buildColumn(){
    return Column(
         children:[
+          SizedBox(height:20),
+          Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+
+            height: 250,
+            child: Center(
+              child: const Image(
+                image: AssetImage('assets/ParkPal.png'),
+              ),
+            ),
+          ),
 
 
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(width: 3, color: Colors.black),
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25.0), bottom: Radius.circular(25.0), ),
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0.0, 1.0),
+                    blurRadius: 10,
+                  ),
+                ]
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   height: 100,
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(5),
                   child: Icon(
                     size: 100,
                     Icons.email
@@ -816,7 +846,8 @@ class _VerifyEmailScreen extends State<verifyEmailScreen>{
                 ),
                 Padding(
                     padding: const EdgeInsets.all(10),
-                  child: Center(
+                  child: Container(
+                    alignment: Alignment.center,
                     child: Text("Confirm your email to continue with your registration.", style: TextStyle(color: Colors.black, fontSize: 13) ),
                   )
                 ),

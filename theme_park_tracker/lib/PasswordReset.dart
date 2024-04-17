@@ -176,8 +176,8 @@ class _PasswordReset extends State<PasswordReset>{
                         });
 
                       },
-                      color: Colors.blueAccent,
-                      child: const Text('Find email', style: TextStyle(color: Colors.white)),
+                      color: HexColor("#99dbFF"),
+                      child: const Text('Find email', style: TextStyle(color: Colors.black)),
 
                     )
                   ],
@@ -281,109 +281,132 @@ class _verifyReset extends State<verifyReset>{
             title: const Text('Verify your email'),
             titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
           ),
-          body: Container(
-            alignment: Alignment.center,
-              color: HexColor("99dbFF"),
-              padding: const EdgeInsets.all(15),
-              child: Column(
+          body: SingleChildScrollView(
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 50),
+              Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+
+                height: 250,
+                child: Center(
+                  child: const Image(
+                    image: AssetImage('assets/ParkPal.png'),
+                  ),
+                ),
+              ),
+
+          Container(
+            padding: const EdgeInsets.all(10),
+              height: 250,
+              child:
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:[
+
                   Center(
-                    child:
-                  Container(
-                    padding: const EdgeInsets.all(0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(width: 3, color: Colors.black),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-
-
-                        Container(
-
-                          padding: const EdgeInsets.only(top: 20, left: 5, right: 5, bottom: 0),
-                          child: Center(
-                              child: Wrap(
-                                    children: [
-                                      Text("Your email on file: $censoredEmail", style: TextStyle(color: Colors.black, fontSize: 15)),
-                                    ],
-                              )
-                          ),
+                      child:Container(
+                      padding: const EdgeInsets.all(0),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0), bottom: Radius.circular(25.0), ),
+                            boxShadow: [
+                              BoxShadow(
+                                offset: Offset(0.0, 1.0),
+                                blurRadius: 10,
+                              ),
+                            ]
                         ),
-                        Container(
-                          height: 100,
-                          padding: const EdgeInsets.all(10),
-                          child: Center(
-                            child: Icon(
-                              size: 100,
-                              Icons.email
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+
+
+                          Container(
+                            padding: const EdgeInsets.only(top: 20, left: 5, right: 5, bottom: 0),
+                            child: Center(
+                                child: Wrap(
+                                      children: [
+                                        Text("Your email on file: $censoredEmail", style: TextStyle(color: Colors.black, fontSize: 15)),
+                                      ],
+                                )
                             ),
                           ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(8),
-                          // request code to email
-                          child: MaterialButton(
-                            onPressed: () {
-                              sendEmail("", email, "Confirm your email for Park Pal", "Your one time code is $testVal");
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      scrollable: true,
-                                      content: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(height: 30),
-                                          SizedBox(
-                                            height: 40,
-                                            child: Text("Enter code", style: TextStyle(fontSize: 30),),
-                                          ),
-                                          SizedBox(height: 20),
-                                          TextField(
-                                            controller: _codeController,
-                                            decoration: const InputDecoration(
-                                              hintText: "Enter one time code",
-                                              border: OutlineInputBorder(),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 30),
-                                          // button for user to test if their code matches OTP
-                                          MaterialButton(
-                                            onPressed: (){
-                                              int code = int.parse(_codeController.text);
-                                              if (code == testVal){
-                                                Navigator.push( context, MaterialPageRoute( builder: (context) => passwordResetPage(username: username, password: password)));
-                                              } else{
-                                                Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
-                                              }
-                                            },
-                                            color: Colors.blueAccent,
-                                            child: const Text('Confirm', style: TextStyle(color: Colors.white)),
-
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                              );
-                            },
-                            color: Colors.blueAccent,
-                            child: const Text('Send verification email', style: TextStyle(color: Colors.white)),
+                          Container(
+                            height: 100,
+                            padding: const EdgeInsets.all(10),
+                            child: Center(
+                              child: Icon(
+                                size: 100,
+                                Icons.email
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),),
-                ]
+                          Container(
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(8),
+                            // request code to email
+                            child: MaterialButton(
+                              onPressed: () {
+                                sendEmail("", email, "Confirm your email for Park Pal", "Your one time code is $testVal");
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        scrollable: true,
+                                        content: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(height: 30),
+                                            SizedBox(
+                                              height: 40,
+                                              child: Text("Enter code", style: TextStyle(fontSize: 30),),
+                                            ),
+                                            SizedBox(height: 20),
+                                            TextField(
+                                              controller: _codeController,
+                                              decoration: const InputDecoration(
+                                                hintText: "Enter one time code",
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 30),
+                                            // button for user to test if their code matches OTP
+                                            MaterialButton(
+                                              onPressed: (){
+                                                int code = int.parse(_codeController.text);
+                                                if (code == testVal){
+                                                  Navigator.push( context, MaterialPageRoute( builder: (context) => passwordResetPage(username: username, password: password)));
+                                                } else{
+                                                  Fluttertoast.showToast(msg: "Incorrect code, try again or request another");
+                                                }
+                                              },
+                                              color: Colors.blueAccent,
+                                              child: const Text('Confirm', style: TextStyle(color: Colors.white)),
 
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                );
+                              },
+                              color: HexColor("#99dbFF"),
+                            child: const Text('Send verification email', style: TextStyle(color: Colors.black)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ]
             )
-          ),
-      ),
+          ),],),
+      ),),
     );
   }
 }
@@ -493,7 +516,7 @@ class _passwordResetPage extends State<passwordResetPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(height: 30),
+                            SizedBox(height: 10),
                             TextField(
                               obscureText: true,
                               controller: _newPasswordController,
@@ -509,7 +532,7 @@ class _passwordResetPage extends State<passwordResetPage> {
                                   )
                               ),
                             ),
-                            SizedBox(height: 30),
+                            SizedBox(height: 15),
                             TextField(
                               obscureText: true,
                               controller: _newPasswordController2,

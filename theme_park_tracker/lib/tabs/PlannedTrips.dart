@@ -352,12 +352,12 @@ class _MakeTrip extends State<MakeTrip>{
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(30.0), bottom: Radius.circular(30.0), ),
-                  color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Colors.grey): Colors.grey.shade100,
+                  color: View.of(context).platformDispatcher.platformBrightness == Brightness.dark ? (Colors.grey): Colors.grey.shade50,
                   boxShadow: [
                     BoxShadow(
                       offset: Offset(0.0, 1.0),
                       blurRadius: 5,
-                    )
+                    ),
                   ]
                 ),
                     child: Column(

@@ -118,6 +118,7 @@ class _WaitTimes extends State<WaitTimes>{
                     double max = 0;
                     String maxKey = "";
 
+                    // go through the histogram and store the max value and key (minute range) in the variables initialized above
                     avgMap.forEach((key, value) {
                       if (value > max) {
                         max = value;
@@ -131,7 +132,9 @@ class _WaitTimes extends State<WaitTimes>{
                       List<String> split = maxKey.split("-");
                       List<String> nextSplit = split[1].split(" ");
                       avgWaits.putIfAbsent(rideNum, () => int.parse(nextSplit[0]));
-                    } else{
+                    }
+                    // if there were no wait times for this ride, put 0
+                    else{
                       avgWaits.putIfAbsent(rideNum, () => 0);
                     }
                   });
