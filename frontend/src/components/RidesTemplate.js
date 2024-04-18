@@ -4,10 +4,14 @@ function RidesTemplate(rides)
 {
     const [rideContent, setRideContent] = useState([]);
 
-    const closed = 1001;
-    const open = -2;
-    const alphabetical = 0;
-    const waitTime = 1;
+    // const closed = 1001;
+    // const open = -2;
+    // const alphabetical = 0;
+    // const waitTime = 1;
+    let closed = 1001;
+    let open = -2;
+    let alphabetical = 0;
+    let waitTime = 1;
 
     var sortBy = alphabetical;
 
@@ -43,7 +47,7 @@ function RidesTemplate(rides)
             }
             else
             {
-                button = <button key={i} className='waitTimeButton'><text>{rides[i][0]}</text><b className='waitTime'>{rides[i][1].toString()}</b></button>
+                button = <button key={i} className='waitTimeButton'><text>{rides[i][0]}</text><b className='waitTime'>{rides.waitTime[i][1].toString()}</b></button>
             }
             rideButtons.push(button);
         }
