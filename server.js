@@ -404,7 +404,7 @@ app.post('/api/deletePark', async (req, res, next) =>
 	// outgoing: message, error
 
 	var error = '';
-	var message = "Park has been deleted from user's saved_parks";
+	var message = "Park has been deleted from user's saved parks";
 
 	const { userID,parkID } = req.body;
 
