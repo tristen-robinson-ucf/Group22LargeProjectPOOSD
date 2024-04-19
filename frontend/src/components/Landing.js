@@ -29,8 +29,24 @@ function Landing(){
 
      //fetch users saved parks 
      useEffect(() => {
+        if(checkIfUserIsNull() == true)
+        {
+            return;
+        }
         fetchSavedParks();
     }, []);
+
+
+    const checkIfUserIsNull = async () =>
+    {
+        if(localStorage.getItem('user_data') == null)
+        {
+            window.location.href = '/login';
+            console.log("User is NULL!");
+            return true;
+        }
+        return false;
+    }
 
     //fetching all the parks from the api
     const fetchParks = async () =>{
@@ -56,6 +72,7 @@ function Landing(){
         try {
             const userDataString = localStorage.getItem('user_data');
             const userData = JSON.parse(userDataString);
+            console.log(userData)
             //saved parks only saved ids and not names so fetch park names and match
             const savedParks = userData.saved_parks || [];
             console.log('savedPark IDS:', userData.saved_parks);
@@ -80,7 +97,7 @@ function Landing(){
 
             //update the saved parks to store their names!
             setSavedParks(savedParkNames); 
-            //console.log(savedParkNames);
+            console.log(savedParkNames);
             return savedParkNames;
         } catch (error) {
             console.error ('Error fetching the saved parks: ', error);
@@ -145,7 +162,7 @@ function Landing(){
                 console.error('Selected park not found');
             }
             //update park list after adding a new park
-           // await fetchSavedParks();
+            //await fetchSavedParks();
             //console.log(savedParks);
             setShowAddPark(false);
         }catch(error){
@@ -177,12 +194,18 @@ function Landing(){
         //localStorage.setItem('user_data', JSON.stringify(userData));
 
         const parkID = park.id;
-        userData.saved_parks = updatedSaved;
+        const updatedIDs = userData.saved_parks.filter(savedPark => savedPark != parkID)
+        userData.saved_parks = updatedIDs;
+        console.log(JSON.stringify(userData))
+        localStorage.setItem('user_data', JSON.stringify(userData));
 
         try {
             //fetching and actual deletion from the endpoint 
             const response = await fetch(buildPath('api/deletePark'),{
                 method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
                 body: JSON.stringify({
                     userID : userData.id,
                     parkID: parseInt(parkID)
@@ -212,6 +235,7 @@ function Landing(){
             console.log('Park not found');
         }
     }
+
 
     return(
         <div id = "app">
@@ -272,7 +296,7 @@ function Landing(){
                     </div>
                 </div>
             </div>
-            {selectedParkId && <RidesTemplate parkID={selectedParkId} />}
+            {selectedParkId && <RidesTemplate parkID={parseInt(selectedParkId)} />}
         </div>
     );
 };

@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 
 function RidesTemplate(parkID)
 {
+    try
+    {
+        parkID = parkID.parkID
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
     const [rideContent, setRideContent] = useState([]);
 
     const alphabetical = 0;
