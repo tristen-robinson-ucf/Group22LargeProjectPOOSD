@@ -8,9 +8,12 @@ import StartingPage from './pages/StartingPage'
 import IOAPage from './pages/IOAPage';
 import USFPage from './pages/USFPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import RidesPage from './pages/RidesPage';
 
 function App()
 {
+  console.log('Rendering App component');
+  
   return (
     <BrowserRouter>
       <Routes>
@@ -20,6 +23,7 @@ function App()
         <Route path='/landing' index element={<LandingPage/>} />
         <Route path='/parks/64' index element={<IOAPage/>}/>
         <Route path='/parks/65' index element={<USFPage/>}/>
+        <Route path ='/parks/:parkID' index element={<RidesPage/>}/>
         <Route path='/forgot-password' index element={<ForgotPasswordPage/>}/>
       </Routes>
     </BrowserRouter>

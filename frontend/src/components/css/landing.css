@@ -81,7 +81,31 @@
     padding: 12px;
 }
 
+.parkCardCont{
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+
+}
+
+
+.scroll{
+    scrollbar-width: thin;
+    overflow-y: scroll;
+    scrollbar-color: red yellow; /*Testing color for now... will change */
+}
+
+.scroll::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+
 .parkCard{
+    flex: 0 0 auto;
+    min-width: 300px;
+    min-height: 200px;
+    margin-right: 20px; 
+    margin-bottom: 20px;
     background-color: #fff;
     border: 1px solid #cccc;
     border-radius: 5px;
@@ -95,10 +119,5 @@
     font-size: 16px;
     color: #333333;
 }
-
-
-
-
-
 
 
