@@ -3,11 +3,15 @@ import { useParams } from 'react-router-dom';
 import RidesTemplate from '../components/RidesTemplate';
 
 function RidesPage() {
-  console.log('Test');
   const { parkID } = useParams();
-  console.log('parkID:', parkID);
+  console.log('test');
+  console.log('park id within rides page:', parkID);
 
-  return <RidesTemplate parkID={parkID} />;
+  return (
+    <div>
+      <RidesTemplate parkID={parkID} />
+    </div>
+  );
 }
 
 export default RidesPage;

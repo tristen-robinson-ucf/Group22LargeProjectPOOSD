@@ -28,8 +28,9 @@ function Register()
          username, 
          password, 
          firstname: firstName,
+         lastname : lastName,
          email : regEmail, 
-         phonenumber: phoneNumber
+         phone: phoneNumber
        };
 
         //var obj = {username,password,firstname:firstName,lastname:lastName,email,phonenumber:phoneNumber};
@@ -54,7 +55,7 @@ function Register()
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                //window.location.href = '/register';
+                //window.location.href = '/landing'; //once user registers -> landing
             }
         }
         catch(e)

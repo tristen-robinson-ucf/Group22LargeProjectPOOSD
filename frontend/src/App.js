@@ -23,7 +23,7 @@ function App()
         <Route path='/landing' index element={<LandingPage/>} />
         <Route path='/parks/64' index element={<IOAPage/>}/>
         <Route path='/parks/65' index element={<USFPage/>}/>
-        <Route path ='/parks/:parkID' index element={<RidesPage/>}/>
+        <Route path ='/rides/:parkID' index element={<RidesPage/>}/>
         <Route path='/forgot-password' index element={<ForgotPasswordPage/>}/>
       </Routes>
     </BrowserRouter>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import RidesTemplate from './RidesTemplate';
+import { useNavigate, BrowserRouter } from 'react-router-dom';
+//import RidesTemplate from './RidesTemplate';
+import RidesPage from '../pages/RidesPage';
+
 
 function Landing(){
     const [parks, setParks] = useState([]);
@@ -9,6 +11,7 @@ function Landing(){
     const [parkContent, setParkContent] = useState('');
     const [savedParks, setSavedParks] = useState([]);
     const [selectedDelParkId, setSelectedDelParkId] = useState([]);
+    const [selectedPark, setSelectedPark] = useState('');
 
     const navigate = useNavigate();
 
@@ -118,7 +121,7 @@ function Landing(){
         setShowAddPark(true);
     };
 
-    //add a park 
+    //add a park (problem with refreshing)
     const addParkSubmit = async () => {
         const userDataString = localStorage.getItem('user_data');
         const userData = JSON.parse(userDataString);
@@ -190,9 +193,7 @@ function Landing(){
 
         const userDataString = localStorage.getItem('user_data');
         const userData = JSON.parse(userDataString);
-        //userData.saved_parks = updatedSaved;
-        //localStorage.setItem('user_data', JSON.stringify(userData));
-
+       
         const parkID = park.id;
         const updatedIDs = userData.saved_parks.filter(savedPark => savedPark != parkID)
         userData.saved_parks = updatedIDs;
@@ -226,11 +227,16 @@ function Landing(){
     };
 
     const seeWaitTimes = (parkName) => {
-        console.log('Park name:', parkName);
-        const selectedPark = parks.find(park => park.name === parkName);
-        console.log('Selected park:', selectedPark);
-        if (selectedPark){
-            navigate(`/rides/${selectedPark.id}`);
+        const selectPark = parks.find(park => park.name === parkName); 
+        const selectedPark = selectPark.id
+        console.log(selectedPark);
+        console.log('park to see wait list', selectPark);
+        
+        if (selectPark){
+           setSelectedPark(selectedPark);
+           console.log('waitlist park id:', selectedPark);
+           console.log('selectedparkid var:', selectedPark);
+           navigate(`/rides/${selectedPark}`); 
         } else{
             console.log('Park not found');
         }
@@ -243,7 +249,7 @@ function Landing(){
                 <div style ={{height: '100%'}}>
                     <div className="inner-landing" style= {{width: '100vw', height: '100%', position:'relative', display: 'flex', flex: '1 1 0%', cursor: 'text' }}>
                         <div class style = {{display: 'flex', flexDirection: 'column', width: '100%', overflow:'hidden'}}>
-                            <header style = {{background: 'red',  maxWidth: '100vw', userSelect:'none'}}>
+                            <header style = {{background:  '#f78254',  maxWidth: '100vw', userSelect:'none'}}>
                                 <div class="topbar" style ={{width: '100%', maxWidth: '100vw', height: '52px', opacity: '1', transition: 'opacity 700ms ease 0s, color 700ms ease 0s', position: 'relative'}}>
                                     <div style ={{display:'flex', justifyContent: 'space-between', alignItem: 'center', overflow: 'hidden', height: '52px', paddingLeft:'12px', paddingRight:'10px', borderBottom: '1px solid'}}>
                                 
@@ -296,7 +302,7 @@ function Landing(){
                     </div>
                 </div>
             </div>
-            {selectedParkId && <RidesTemplate parkID={parseInt(selectedParkId)} />}
+            {selectedParkId && <RidesPage parkID={selectedPark} />}
         </div>
     );
 };
