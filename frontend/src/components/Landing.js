@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, BrowserRouter } from 'react-router-dom';
+//import RidesTemplate from './RidesTemplate';
+import RidesPage from '../pages/RidesPage';
+
 
 function Landing(){
     const [parks, setParks] = useState([]);
@@ -6,6 +10,10 @@ function Landing(){
     const [selectedParkId, setSelectedParkId] = useState('');
     const [parkContent, setParkContent] = useState('');
     const [savedParks, setSavedParks] = useState([]);
+    const [selectedDelParkId, setSelectedDelParkId] = useState([]);
+    const [selectedPark, setSelectedPark] = useState('');
+
+    const navigate = useNavigate();
 
     const app_name = 'group-22-0b4387ea5ed6';
 
@@ -24,8 +32,24 @@ function Landing(){
 
      //fetch users saved parks 
      useEffect(() => {
+        if(checkIfUserIsNull() == true)
+        {
+            return;
+        }
         fetchSavedParks();
     }, []);
+
+
+    const checkIfUserIsNull = async () =>
+    {
+        if(localStorage.getItem('user_data') == null)
+        {
+            window.location.href = '/login';
+            console.log("User is NULL!");
+            return true;
+        }
+        return false;
+    }
 
     //fetching all the parks from the api
     const fetchParks = async () =>{
@@ -76,8 +100,10 @@ function Landing(){
             //update the saved parks to store their names!
             setSavedParks(savedParkNames); 
             console.log(savedParkNames);
+            return savedParkNames;
         } catch (error) {
             console.error ('Error fetching the saved parks: ', error);
+            return undefined;
         }
     };
 
@@ -94,7 +120,7 @@ function Landing(){
         setShowAddPark(true);
     };
 
-    //add a park 
+    //add a park (problem with refreshing)
     const addParkSubmit = async () => {
         const userDataString = localStorage.getItem('user_data');
         const userData = JSON.parse(userDataString);
@@ -137,8 +163,9 @@ function Landing(){
             } else {
                 console.error('Selected park not found');
             }
-            //update park list after adding a new park
-           // await fetchSavedParks();
+            //update park list after adding a new 
+            //await fetchSavedParks();
+
             //console.log(savedParks);
             setShowAddPark(false);
         }catch(error){
@@ -148,31 +175,41 @@ function Landing(){
 
     //delete park endpoint 
     const deletePark = async (parkName) => {
+        //debug
+        console.log('park to delete:', parkName);
+        const savedParks = await fetchSavedParks();
+        console.log('savedParks before del:', savedParks);
+
+        //find the park to del! 
+        const park = parks.find(park => park.name === parkName);
+        console.log('Park info to del:', park);
+        if (!park){
+            console.log('Park not found');
+            return;
+        }
+
+        const updatedSaved = savedParks.filter(savedPark => savedPark !== parkName);
+        console.log('updatedlist:', updatedSaved);
+
+        const userDataString = localStorage.getItem('user_data');
+        const userData = JSON.parse(userDataString);
+       
+        const parkID = park.id;
+        const updatedIDs = userData.saved_parks.filter(savedPark => savedPark != parkID)
+        userData.saved_parks = updatedIDs;
+        console.log(JSON.stringify(userData))
+        localStorage.setItem('user_data', JSON.stringify(userData));
+
         try {
-            console.log('PARKKKKKK', parkName);
-            const savedParks = await fetchSavedParks();
-            console.log(savedParks);
-            // update the exisiting saved parks AFTER deletion
-            const park = parks.find(park => park.name ===parkName);
-            if (!park){
-                console.log('Park not found');
-                return;
-            }
-
-            const updatedSaved = savedParks.filter(savedPark => savedPark !== parkName);
-
-
-            const userDataString = localStorage.getItem('user_data');
-            const userData = JSON.parse(userDataString);
-            userData.saved_parks = updatedSaved;
-            localStorage.setItem('user_data', JSON.stringify(userData));
-
-            //delete park api endpoint! 
-            const response = await fetch(buildPath('api/deletePark'), {
+            //fetching and actual deletion from the endpoint 
+            const response = await fetch(buildPath('api/deletePark'),{
                 method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
                 body: JSON.stringify({
-                    userID: userData.id,
-                    parkID: park.id
+                    userID : userData.id,
+                    parkID: parseInt(parkID)
                 })
             });
 
@@ -181,6 +218,7 @@ function Landing(){
             }
 
             setSavedParks(updatedSaved);
+            console.log('saved parks afterDel',updatedSaved);
             //get message from response
             const responseData = await response.json();
             console.log(responseData.message);
@@ -189,13 +227,30 @@ function Landing(){
         }
     };
 
+    const seeWaitTimes = (parkName) => {
+        const selectPark = parks.find(park => park.name === parkName); 
+        const selectedPark = selectPark.id
+        console.log(selectedPark);
+        console.log('park to see wait list', selectPark);
+        
+        if (selectPark){
+           setSelectedPark(selectedPark);
+           console.log('waitlist park id:', selectedPark);
+           console.log('selectedparkid var:', selectedPark);
+           navigate(`/rides/${selectedPark}`); 
+        } else{
+            console.log('Park not found');
+        }
+    }
+
+
     return(
         <div id = "app">
             <div className="landing">
                 <div style ={{height: '100%'}}>
                     <div className="inner-landing" style= {{width: '100vw', height: '100%', position:'relative', display: 'flex', flex: '1 1 0%', cursor: 'text' }}>
                         <div class style = {{display: 'flex', flexDirection: 'column', width: '100%', overflow:'hidden'}}>
-                            <header style = {{background: 'red',  maxWidth: '100vw', userSelect:'none'}}>
+                            <header style = {{background:  '#f78254',  maxWidth: '100vw', userSelect:'none'}}>
                                 <div class="topbar" style ={{width: '100%', maxWidth: '100vw', height: '52px', opacity: '1', transition: 'opacity 700ms ease 0s, color 700ms ease 0s', position: 'relative'}}>
                                     <div style ={{display:'flex', justifyContent: 'space-between', alignItem: 'center', overflow: 'hidden', height: '52px', paddingLeft:'12px', paddingRight:'10px', borderBottom: '1px solid'}}>
                                 
@@ -214,6 +269,8 @@ function Landing(){
                                                         <div className ="parkCard" key={index}>
                                                             <h3>{park}</h3>
                                                             <button onClick={() => deletePark(park)}>Delete</button>
+                                                            <button onClick={() => seeWaitTimes(park)}>See Wait Times</button>
+
                                                         </div>
                                                     ))}
                                                 </div>
@@ -247,6 +304,7 @@ function Landing(){
                     </div>
                 </div>
             </div>
+            {selectedParkId && <RidesPage parkID={selectedPark} />}
         </div>
     );
 };

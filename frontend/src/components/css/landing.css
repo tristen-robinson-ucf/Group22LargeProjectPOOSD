@@ -92,7 +92,7 @@
 .scroll{
     scrollbar-width: thin;
     overflow-y: scroll;
-    scrollbar-color: red yellow; /*CHANGEE*/
+    scrollbar-color: red yellow; /*Testing color for now... will change */
 }
 
 .scroll::-webkit-scrollbar-track {
@@ -119,13 +119,4 @@
     font-size: 16px;
     color: #333333;
 }
-
-
-
-
-
-
-
-
-
 

@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 
 function RidesTemplate(parkID)
 {
+    console.log('park id within rides template', parkID);
+    try
+    {
+        parkID = parkID.parkID
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
     const [rideContent, setRideContent] = useState([]);
 
     const alphabetical = 0;
@@ -146,7 +155,7 @@ function RidesTemplate(parkID)
 
     return(
         <div id='rides'>
-            <label for="sortBy">Sort by:</label>
+            <label htmlFor="sortBy">Sort by:</label>
             <select id="sortBy" name="sortBy" onChange={() => sortRides()}>
                 <option value={alphabetical}>Alphabetical</option>
                 <option value={waitTime}>Wait Time</option>
