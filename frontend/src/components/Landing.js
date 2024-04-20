@@ -75,7 +75,6 @@ function Landing(){
         try {
             const userDataString = localStorage.getItem('user_data');
             const userData = JSON.parse(userDataString);
-            console.log(userData)
             //saved parks only saved ids and not names so fetch park names and match
             const savedParks = userData.saved_parks || [];
             console.log('savedPark IDS:', userData.saved_parks);
@@ -164,8 +163,9 @@ function Landing(){
             } else {
                 console.error('Selected park not found');
             }
-            //update park list after adding a new park
+            //update park list after adding a new 
             //await fetchSavedParks();
+
             //console.log(savedParks);
             setShowAddPark(false);
         }catch(error){
@@ -219,6 +219,7 @@ function Landing(){
 
             setSavedParks(updatedSaved);
             console.log('saved parks afterDel',updatedSaved);
+            //get message from response
             const responseData = await response.json();
             console.log(responseData.message);
         } catch(error){
@@ -269,6 +270,7 @@ function Landing(){
                                                             <h3>{park}</h3>
                                                             <button onClick={() => deletePark(park)}>Delete</button>
                                                             <button onClick={() => seeWaitTimes(park)}>See Wait Times</button>
+
                                                         </div>
                                                     ))}
                                                 </div>
