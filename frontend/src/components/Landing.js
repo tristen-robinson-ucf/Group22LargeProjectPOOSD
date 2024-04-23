@@ -13,6 +13,15 @@ function Landing(){
     const [selectedDelParkId, setSelectedDelParkId] = useState([]);
     const [selectedPark, setSelectedPark] = useState('');
 
+    // added new variables may not use all of them
+    const [trips, setTrips] = useState([]);
+    const [showAddTrip, setShowAddTrip] = useState(false);
+    const [selectedTripId, setSelectedTripId] = useState('');
+    const [tripContent, setTripContent] = useState('');
+    const [savedTrips, setSavedTrips] = useState([]);
+    const [selectedDelTripId, setSelectedDelTripId] = useState([]);
+    const [selectedTrip, setSelectedTrip] = useState('');
+
     const navigate = useNavigate();
 
     const app_name = 'group-22-0b4387ea5ed6';
@@ -70,6 +79,25 @@ function Landing(){
         }
     };
 
+    // Probs dont need this
+    // const fetchTrips = async () =>{
+    //     try{
+    //         const response = await fetch(buildTrip('api/trips'), {
+    //             method: 'GET' 
+    //         });
+
+    //         if (!response.ok){
+    //             throw new Error('Error fetching parks');
+    //         }
+    //         const data = await response.json();
+    //         const parsedData = extractParkInfo(data);
+    //         setParks(parsedData);
+    //         //console.log('Fetched Parks:', parsedData);
+    //     } catch(error){
+    //         console.error(error);
+    //     }
+    // };
+
     //fetching the users SAVED parks (not all parks)
     const fetchSavedParks = async () => {
         try {
@@ -106,6 +134,44 @@ function Landing(){
             return undefined;
         }
     };
+
+// Probs dont need this
+    // const fetchSavedTrips = async () => {
+    //     try {
+    //         const userDataString = localStorage.getItem('user_data');
+    //         const userData = JSON.parse(userDataString);
+    //         //saved parks only saved ids and not names so fetch park names and match
+    //         const savedTrips = userData.saved_trips || [];
+    //         console.log('savedTrip IDS:', userData.saved_trips);
+
+    //         const response = await fetch(buildPath('api/trip'),{
+    //             method: 'GET'
+    //         });
+
+    //         if(!response.ok){
+    //             throw new Error('error fetching trips');
+    //         }
+
+    //         const data = await response.json();
+    //         const parsedData = extractParkInfo(data);
+
+    //         //match the ids with their corresponding park names! 
+    //         const savedTripIds = savedTrips.map (id => parseInt(id));
+    //         const savedTripNames = savedTripIds.map (tripID =>{
+    //             const trip = parsedData.find(t=>t.id === tripID);
+    //             return trip ? trip.name : '';
+    //         });
+
+    //         //update the saved parks to store their names!
+    //         setSavedTrips(savedTripNames); 
+    //         console.log(savedTripNames);
+    //         return savedTripNames;
+    //     } catch (error) {
+    //         console.error ('Error fetching the saved parks: ', error);
+    //         return undefined;
+    //     }
+    // };
+
 
 
     const extractParkInfo = (jsonData) => {
@@ -154,6 +220,63 @@ function Landing(){
 
             console.log('Selected Park ID:', selectedParkId);
             console.log('Parks Array:', parks);
+
+            //uodate saved parks immediately
+            const selectedPark = parks.find(park => park.id === parseInt(selectedParkId));
+            if (selectedPark) {
+                // Update savedParks state to include the newly added park
+                setSavedParks(prevSavedParks => [...prevSavedParks, selectedPark.name]);
+            } else {
+                console.error('Selected park not found');
+            }
+            //update park list after adding a new 
+            //await fetchSavedParks();
+
+            //console.log(savedParks);
+            setShowAddPark(false);
+        }catch(error){
+            console.error(error);
+        }
+    };
+
+    const addTripSubmit = async () => {
+        const userDataString = localStorage.getItem('user_data');
+        const userData = JSON.parse(userDataString);
+
+        const userID = userData.id;
+
+        if (!selectedTripId){
+            console.error('No trip selected');
+            return;
+        }
+
+        try{
+            const response = await fetch(buildPath('api/addTrip'), {
+                method: 'POST', 
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify({
+                    name: userData.name, 
+                    startDate: userData.startDate,
+                    endDate: userData.endDate,
+                    userID: userID,  
+                    parkID: parseInt(selectedTripId),
+                    rides: userData.rides
+                })
+            });
+
+            if (!response.ok){
+                throw new Error ('Failed to add Trip');
+            }
+
+            const responseData = await response.json();
+            //debug 
+            console.log(responseData.message);
+
+            console.log('Selected Trip ID:', selectedTripId);
+            // console.log('Trips Array:', trip);
+            // console.log('Rides Aray', rides);
 
             //uodate saved parks immediately
             const selectedPark = parks.find(park => park.id === parseInt(selectedParkId));
@@ -227,6 +350,65 @@ function Landing(){
         }
     };
 
+
+
+ //delete trip endpoint 
+ const deleteTrip = async (tripName) => {
+    //debug
+    console.log('trip to delete:', tripName);
+    const savedTrips = await fetchSavedParks();
+    console.log('savedTrips before del:', savedTrips);
+
+    //find the trip to del! 
+    const trip = trips.find(trip => trip.name === tripName);
+    console.log('Trip info to del:', trip);
+    if (!trip){
+        console.log('Trip not found');
+        return;
+    }
+
+    const updatedSaved = savedTrips.filter(savedTrip => savedTrip !== tripName);
+    console.log('updatedlist:', updatedSaved);
+
+    const userDataString = localStorage.getItem('user_data');
+    const userData = JSON.parse(userDataString);
+   
+    const tripID = trip.id;
+    const updatedIDs = userData.saved_trips.filter(savedTrip => savedTrip != tripID)
+    userData.saved_trips = updatedIDs;
+    console.log(JSON.stringify(userData))
+    localStorage.setItem('user_data', JSON.stringify(userData));
+
+    try {
+        //fetching and actual deletion from the endpoint 
+        const response = await fetch(buildPath('api/deletePark'),{
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({
+                userID : userData.id,
+                name: userData.name
+            })
+        });
+
+        if (!response.ok){
+            throw new Error('Failed to delete trip');
+        }
+
+        setSavedParks(updatedSaved);
+        console.log('saved trip afterDel',updatedSaved);
+        //get message from response
+        const responseData = await response.json();
+        console.log(responseData.message);
+    } catch(error){
+        console.error(error);
+    }
+};
+
+
+
+
     const seeWaitTimes = (parkName) => {
         const selectPark = parks.find(park => park.name === parkName); 
         const selectedPark = selectPark.id
@@ -243,6 +425,71 @@ function Landing(){
         }
     }
 
+    // ** Not workig when tested
+    async function addTrip(name, startDate, endDate, userID, parkID){
+        try{
+            const response = await fetch('/api/addTrip',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({name, startDate, endDate, userID, parkID})
+            });
+            const data = await response.json();
+            console.log(data)
+            console.log("AddTrip Function")
+            return data;
+    }catch(error){
+        console.error(error);
+    }
+
+    }
+
+    // async function deleteTrip(userID, name){
+    //     try{
+    //         const response = await fetch('/api/deleteTrip',{
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json'},
+    //             body: JSON.stringify({userID, name})
+    //         });
+    //         const data = await response.json();
+    //         console.log(data)
+    //         console.log("DeleteTrip Function")
+    //         return data;
+    //     }catch(error){
+    //         console.error(error);
+    //     }
+    // }
+
+    async function searchTrip(userID, search){
+        try{
+            const response = await fetch('/api/searchTrip',{
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({userID: userID, search: search})
+            });
+            const data = await response.json();
+            console.log(data)
+            console.log("searchTrip Function")
+            return data;
+            
+        }catch(error){
+            console.error(error);
+        }
+    }
+
+    async function updateTrip(tripID, name, startDate, endDate){
+        const response = await fetch('/api/updateTrip',{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ tripID, name, startDate, endDate})
+        });
+        const data = await response.json();
+        console.log(data)
+        console.log("updateTrip Function")
+        return data;
+    }
+    
+    
+    
 
     return(
         <div id = "app">
@@ -293,10 +540,14 @@ function Landing(){
                                             </div>     
                                         </section>
                                         <h3>Your Planned Trips</h3>
-
-                                        <section className ="plan-trip">
-
-                                        </section>
+                                        {/* Code here is test */}
+                                        <button onClick={addTrip}>Add trip</button>
+                                        <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
+                                        <button onClick={deleteTrip}>Delete Trip</button>
+                                        <button onClick={updateTrip}>Update Trip</button>
+                                        <button onClick={() => addTripSubmit()}>addTripSubmit Trip</button>
+                                        <button onClick={() => deleteTrip("Trip Name")}>Delete Trip</button>
+                                        <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
                                     </div>
                                 </div>
                             </main>
