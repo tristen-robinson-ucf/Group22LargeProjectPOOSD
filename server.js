@@ -558,6 +558,20 @@ app.post('/api/rides', async (req, res) => {
     }
 });
 
+app.get('/api/averageWaitTime', async (req, res) => {
+	//incoming: park id, ride id
+	//outgoing: avg wait time
+	const {parkID, rideID} = req.query;
+
+	try{
+		const response = await axios.get(`https://queue-times.com/parks/${parkID}/rides/${rideID}/average_histogram.json`);
+		res.json(response.data);
+	} catch (error){
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
 app.listen(PORT, () =>{
 	console.log('Server is running on port ' + PORT);
 });

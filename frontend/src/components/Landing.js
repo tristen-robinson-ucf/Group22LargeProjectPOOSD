@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, BrowserRouter } from 'react-router-dom';
-//import RidesTemplate from './RidesTemplate';
+import { useNavigate} from 'react-router-dom';
 import RidesPage from '../pages/RidesPage';
 
 
@@ -8,9 +7,9 @@ function Landing(){
     const [parks, setParks] = useState([]);
     const [showAddPark, setShowAddPark] = useState(false);
     const [selectedParkId, setSelectedParkId] = useState('');
-    const [parkContent, setParkContent] = useState('');
+    //const [parkContent, setParkContent] = useState('');
     const [savedParks, setSavedParks] = useState([]);
-    const [selectedDelParkId, setSelectedDelParkId] = useState([]);
+   // const [selectedDelParkId, setSelectedDelParkId] = useState([]);
     const [selectedPark, setSelectedPark] = useState('');
 
     const navigate = useNavigate();
@@ -40,6 +39,7 @@ function Landing(){
     }, []);
 
 
+    //if a user tries to access saved parks w/o having logged in
     const checkIfUserIsNull = async () =>
     {
         if(localStorage.getItem('user_data') == null)
@@ -64,20 +64,22 @@ function Landing(){
             const data = await response.json();
             const parsedData = extractParkInfo(data);
             setParks(parsedData);
-            //console.log('Fetched Parks:', parsedData);
         } catch(error){
             console.error(error);
         }
     };
 
-    //fetching the users SAVED parks (not all parks)
+    //fetching the users SAVED parks
     const fetchSavedParks = async () => {
         try {
             const userDataString = localStorage.getItem('user_data');
             const userData = JSON.parse(userDataString);
+
+            //console.log(userData)
+            
             //saved parks only saved ids and not names so fetch park names and match
             const savedParks = userData.saved_parks || [];
-            console.log('savedPark IDS:', userData.saved_parks);
+            //console.log('savedPark IDS:', userData.saved_parks);
 
             const response = await fetch(buildPath('api/parks'),{
                 method: 'GET'
@@ -115,12 +117,12 @@ function Landing(){
         })));
     };
 
-    //ensure that the dropdown/etc is onyl displayed when set show is true 
+    //ensure that the dropdown/etc is only displayed when set show is true 
     const addPark = () => {
         setShowAddPark(true);
     };
 
-    //add a park (problem with refreshing)
+    //add a park 
     const addParkSubmit = async () => {
         const userDataString = localStorage.getItem('user_data');
         const userData = JSON.parse(userDataString);
@@ -155,11 +157,14 @@ function Landing(){
             console.log('Selected Park ID:', selectedParkId);
             console.log('Parks Array:', parks);
 
-            //uodate saved parks immediately
+            //update saved parks to include newly added park
             const selectedPark = parks.find(park => park.id === parseInt(selectedParkId));
             if (selectedPark) {
-                // Update savedParks state to include the newly added park
                 setSavedParks(prevSavedParks => [...prevSavedParks, selectedPark.name]);
+                const updatedSavedParks = [...userData.saved_parks, parseInt(selectedParkId)];
+                userData.saved_parks = updatedSavedParks;
+                localStorage.setItem('user_data', JSON.stringify(userData));
+
             } else {
                 console.error('Selected park not found');
             }
@@ -304,7 +309,7 @@ function Landing(){
                     </div>
                 </div>
             </div>
-            {selectedParkId && <RidesPage parkID={selectedPark} />}
+            {selectedPark && <RidesPage parkID={selectedPark} />}
         </div>
     );
 };
