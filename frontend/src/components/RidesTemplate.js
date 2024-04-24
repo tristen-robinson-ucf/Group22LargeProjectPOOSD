@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './css/rides.css';
 
 function RidesTemplate(parkID)
 {
@@ -22,6 +23,17 @@ function RidesTemplate(parkID)
     var rides = []
 
     const app_name = 'group-22-0b4387ea5ed6'
+    const [avgWaitTimes, setAvgWaitTimes] = useState({});
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const ridesResponse = await fetchRides(); 
+            const avgWaitTimes = await fetchAverageWaitTimes(ridesResponse); 
+            createRideButtons(avgWaitTimes); 
+        };
+    
+        fetchData();
+    }, []);
 
     function buildPath(route)
     {
@@ -35,36 +47,87 @@ function RidesTemplate(parkID)
         }
     }
 
-    const fetchRides = async event => 
-    {
-        //event.preventDefault();
-
+    const fetchRides = async event => {
         var obj = {parkID:parkID};
         var js = JSON.stringify(obj);
+    
+        try {    
+            const response = await fetch(buildPath('api/rides'), {headers:{'Content-Type': 'application/json'}, body:js, method: 'POST'});
+            console.log(`response status is ${response.status}`);
+            const mediaType = response.headers.get('content-type');
+            let data;
+            if (mediaType.includes('json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+            console.log(data);
+            ridesData = data;
+            rides = extractRideInfo(ridesData);
 
-        try
-        {    
-            (async () => {
-                const response = await fetch(buildPath('api/rides'), {headers:{'Content-Type': 'application/json'}, body:js, method: 'POST'});
-                console.log(`response status is ${response.status}`);
-                const mediaType = response.headers.get('content-type');
-                let data;
-                if (mediaType.includes('json')) {
-                  data = await response.json();
-                } else {
-                  data = await response.text();
-                }
-                console.log(data);
-                ridesData = data
-                rides = extractRideInfo(ridesData)
-                createRideButtons();
-              })();
+            return rides;
         }
-        catch(e)
-        {
+        catch(e) {
             alert(e.toString());
             return;
         }    
+    };
+
+    //fetching average wait times from the histogram api! 
+    const fetchAverageWaitTimes = async () => {
+        try {
+            const avgWaitTimesData = {};
+
+            for (const ride of rides){
+                //fetch histogram from api 
+                const url = `${buildPath('api/averageWaitTime')}?parkID=${parkID}&rideID=${ride.id}`;
+                
+                const response = await fetch(url, {
+                    method: 'GET'
+                });
+
+                if (response.ok){
+                    const avgHistogram = await response.json();
+                    //console.log('recieved histogram:', avgHistogram); 
+
+                    let maxFreq = 0;
+                    let maxFreqRange = '';
+
+                    //looking for the highest freq in histogram
+                    if (Object.keys(avgHistogram).length > 0) {
+                        for (const range in avgHistogram) {
+                            const frequency = avgHistogram[range];
+                            if (frequency > maxFreq) {
+                                maxFreq = frequency;
+                                maxFreqRange = range;
+                            }
+                        }
+    
+                        // get the upperbound of the highest freq 
+                        const maxFreqRangeParts = maxFreqRange.split('-');
+                        const maxFreqRangeUpperBound = parseInt(maxFreqRangeParts[1]);
+    
+                        //update avgtimesdata 
+                        avgWaitTimesData[ride.id] = maxFreqRangeUpperBound; 
+                        //console.log('status of avgwaittimesdata:', avgWaitTimesData);
+                       // console.log(`Max wait time for ${ride.name}: ${maxFreqRangeUpperBound}`);
+                    
+                    } else {
+                        //if no histogram assume wait time of 0
+                        avgWaitTimesData[ride.id] = 0;
+                    }
+
+                }
+                else{
+                    console.log('No average wait time available');
+                }
+            }  
+            console.log('END OF FETCH AVG:', avgWaitTimesData);
+            return avgWaitTimesData;
+          }  catch (error){
+            console.log('Error fetching average wait times', error);
+            return {};
+        }
     };
 
     function extractRideInfo(jsonData) 
@@ -108,50 +171,47 @@ function RidesTemplate(parkID)
     
     
 
-    function createRideButtons()
+    function createRideButtons(avgWaitTimes)
     {
-        var rideButtons = []
-        var button;
+        var rideCards = []
 
         for (const ride of rides) 
         {
-            let waitTimeText = '';
-            if (ride.is_open) 
-            {
-                waitTimeText = 'Open';
-            } 
-            else 
-            {
-                waitTimeText = 'Closed';
-            }
+            //comparison of curr wait time w average wait times (color codes it accrodingly)
+            let avgWaitTime = avgWaitTimes[ride.id] !== undefined ? avgWaitTimes[ride.id] : 0;
+            let avgWaitTimeText = avgWaitTimes[ride.id] !== undefined ? avgWaitTimes[ride.id].toString() : '';
+            let waitTimeText = ride.is_open ? (ride.wait_time > 0 ? ride.wait_time.toString() : '0') : 'Closed';
+            let waitTimeClass = ride.is_open ? (ride.wait_time > avgWaitTime ? 'red' : (ride.wait_time < avgWaitTime ? 'green' : 'yellow')) : 'orange';
 
-            // If the ride is open and there's a wait time, display the wait time
-            if (ride.is_open && ride.wait_time > 0) 
-            {
-                waitTimeText = ride.wait_time.toString();
-            }
-
-            // Create button element
-            button = (
-                <button key={ride.id} className='waitTimeButton'>
-                    <text>{ride.name}</text>
-                    <b className='waitTime'>{waitTimeText}</b>
-                </button>
+        
+            const rideCard = (
+                <div key={ride.id} className='rideCard'>
+                    <div className='rideInfo'>
+                        <h3> {ride.name}</h3>
+                   </div>
+                    <div className= 'waitTimeContainer'>
+                        <span className='waitTimeTitle'>Current Time:</span>
+                        <span className={`waitTime ${waitTimeClass}`}>
+                            {waitTimeText}  
+                        </span>
+                    </div>
+                    <div className= 'avgWaitTimeContainer'>
+                        <span className='avgWaitTimeTitle'>Average Time:</span>
+                        <span className= 'avgWaitTime'>
+                            {avgWaitTimeText}
+                         </span>
+                    </div>
+                </div>
             );
 
-            // Push button to rideButtons array
-            rideButtons.push(button);
+            rideCards.push(rideCard);
         }
 
-        // Update state with rideButtons
-        setRideContent(rideButtons);
-    }
+        // update state
+        setRideContent(rideCards);
+    };
 
-
-    useEffect(() => 
-    {
-        fetchRides();
-    }, []);
+    
 
     return(
         <div id='rides'>

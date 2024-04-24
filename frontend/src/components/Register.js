@@ -19,6 +19,23 @@ function Register()
     const [enteredCode, setEnteredCode] = useState('');
     const [codeVerified, setCodeVerified] = useState('');
 
+    //regex for the password requirements 
+    const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    const handlePasswordInput = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+        
+        //make sure the password fits the requirements 
+        if (!passwordRequirements.test(newPassword)) {
+            setMessage('*Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and a special character.');
+        } else {
+            setMessage('');
+        }
+    };
+
+
+
     const doRegister = async event => 
     {
         event.preventDefault();
@@ -165,7 +182,7 @@ function Register()
                 </div>
                 <div>
                     <span class="details">Password</span>
-                    <input type='password' id='registerPassword' placeholder='Password'  value = {password} onChange={(e) => setPassword(e.target.value)}required /><br />
+                    <input type='password' id='registerPassword' placeholder='Password'  value = {password} onChange={handlePasswordInput}required /><br />
                 </div>
                 <div className= "centered">
                     <span class="centDetails">Confirm Password</span>
@@ -175,7 +192,7 @@ function Register()
             
             <div className= "cont">
                 <div class="regBttn">
-                    <input type='submit' class='buttons' value='Register' />
+                    <input type='submit' class='buttons' value='Register' disabled={message !== ''}/>
                 </div>
                 
                 <div className="parent">
