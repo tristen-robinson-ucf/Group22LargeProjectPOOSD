@@ -630,39 +630,42 @@ function Landing(){
                                                     
                                         <div>
                                             {/* should I make the code below into a form....event listener vs onClick? */}
-                                            <div>
-                                                <label for="trip_name">Trip Name:</label>
-                                                <input type="text" id="trip_name" name="trip_name" placeholder="ThemePark" required></input>
-                                            </div>
-                                            <div>
-                                                <label for="trip_startDate">Start Date:</label>
-                                                <input type="date" id="trip_startDate" name="trip_startDate"></input>
-                                            </div>
-                                            <div>
-                                                <label for="trip_endDate">End Date:</label>
-                                                <input type="date" id="trip_endDate" name="trip_endDate"></input>
-                                            </div>
+                                            <form id='trip_data'>
+                                                <div>
+                                                    <label for="trip_name">Trip Name:</label>
+                                                    <input type="text" id="trip_name" name="trip_name" placeholder="ThemePark" required></input>
+                                                </div>
+                                                <div>
+                                                    <label for="trip_startDate">Start Date:</label>
+                                                    <input type="date" id="trip_startDate" name="trip_startDate"></input>
+                                                </div>
+                                                <div>
+                                                    <label for="trip_endDate">End Date:</label>
+                                                    <input type="date" id="trip_endDate" name="trip_endDate"></input>
+                                                </div>
 
-                                            <div className="addPark">
-                                                <button onClick={addPark}>Add Park</button>
-                                                {showAddPark && (
-                                                    <div>
-                                                        <label>Choose a Park: </label>
-                                                        <select onChange={(e) => setSelectedParkId(e.target.value)}>
-                                                            <option value ="">Select a park... </option>
-                                                            {parks.map((park, index) => (
-                                                                <option key= {index} value={park.id}>{park.name}</option>
-                                                            ))}
-                                                        </select>
-                                                        <button onClick={addParkSubmit}>Add Park</button>
-                                                        <button onClick ={() => setShowAddPark(false)}>Close</button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <button onClick={addPark}>Future Function</button>
-                                            <input id="createTrip" type="submit" onClick={addTrip} value="Create Trip"></input>
-                                        
+                                                <div className="addPark">
+                                                    <button onClick={addPark}>Add Park</button>
+                                                    {showAddPark && (
+                                                        <div>
+                                                            <label>Choose a Park: </label>
+                                                            <select onChange={(e) => setSelectedParkId(e.target.value)}>
+                                                                <option value ="">Select a park... </option>
+                                                                {parks.map((park, index) => (
+                                                                    <option key= {index} value={park.id}>{park.name}</option>
+                                                                ))}
+                                                            </select>
+                                                            <button onClick={addParkSubmit}>Add Park</button>
+                                                            <button onClick ={() => setShowAddPark(false)}>Close</button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <button onClick={addPark}>Future Function</button> {/**I may not need to do it this way but the idea is there incase try to use submit and event listener */}
+                                                <input id="createTrip" type="submit" onClick={addTrip} value="Create Trip"></input>
+
+                                            </form>
                                         </div>
+                                            
 
                                         
 
