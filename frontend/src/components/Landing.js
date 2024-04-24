@@ -667,15 +667,7 @@ const seeTripDetails = async(trip) => {
                                                             </div>*/} 
                                                
                                         </section>
-                                        <h3>Your Planned Trips</h3>
                                         {/* Code here is test api calls */}
-                                        <button onClick={toggleAddTripDiv}>Add trip</button>
-                                        <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
-                                        <button onClick={deleteTrip}>Delete Trip</button>
-                                        <button onClick={updateTrip}>Update Trip</button>
-                                        <button onClick={() => addTripSubmit()}>addTripSubmit Trip</button>
-                                        <button onClick={() => deleteTrip("Trip Name")}>Delete Trip</button>
-                                        <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
                                         
                                         
                                         {/* may not need to be a form, form is for  */}
@@ -716,7 +708,7 @@ const seeTripDetails = async(trip) => {
                                                 </div>
                                             </div>   
                                         </section>
-                                                    
+                                        <button onClick={toggleAddTripDiv}>Add trip</button>
                                         <div id='trip_form' style={{display: 'none'}}>
                                             {/* should I make the code below into a form....event listener vs onClick? */}
                                             <form id='trip_data'>

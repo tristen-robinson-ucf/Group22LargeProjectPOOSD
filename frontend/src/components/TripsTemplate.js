@@ -149,7 +149,7 @@ function TripsTemplate(tripID)
             var rides2 = extractRideInfo(ridesData2);
             for (let rideID of rideIDs) {
                 for (let ride of rides2) {
-                    if (ride.id === rideID) {
+                    if (ride.id === rideID && !rides.some(existingRide => existingRide.id === rideID)) {
                         rides.push(ride);
                         break;
                     }
@@ -306,11 +306,11 @@ function TripsTemplate(tripID)
 
     return(
         <div id='rides'>
-            <label htmlFor="sortBy">Sort by:</label>
+            {/*<label htmlFor="sortBy">Sort by:</label>
             <select id="sortBy" name="sortBy" onChange={() => sortRides()}>
                 <option value={alphabetical}>Alphabetical</option>
                 <option value={waitTime}>Wait Time</option>
-            </select>
+            </select>*/}
             {rideContent}
         </div>
     )
