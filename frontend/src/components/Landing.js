@@ -498,8 +498,8 @@ function Landing(){
     //     }
     // }
 
-   
-
+// deelete park will be used to edit trips to delete parks in it
+// Will change this to edit trip
     async function updateTrip(tripID, name, startDate, endDate){
         const response = await fetch('/api/updateTrip',{
             method: 'POST',
