@@ -276,7 +276,7 @@ app.post('/api/addTrip', async (req, res, next) =>
 				var sdate = new Date(startDate);
 				var edate = new Date(endDate);
 
-		        db.collection('Trips').insertOne( { tripID:tripID,name:name,startDate:sdate,endDate:edate,userID:userID,parkID:parkID,rides:rides });
+		        db.collection('Trips').insertOne( { tripID:tripID,name:name,startDate:startdate,endDate:enddate,userID:userID,parkID:parkID,rides:rides });
 	        }
 	        catch(e)
 	        {
