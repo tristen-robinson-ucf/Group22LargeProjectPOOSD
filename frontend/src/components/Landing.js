@@ -31,6 +31,7 @@ function Landing(){
     const [savedTrips, setSavedTrips] = useState([]);
     const [selectedDelTripId, setSelectedDelTripId] = useState([]);
     const [selectedTrip, setSelectedTrip] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
 
     const inputRef = useRef(null);
@@ -102,29 +103,11 @@ function Landing(){
             const data = await response.json();
             const parsedData = extractParkInfo(data);
             setParks(parsedData);
+            setIsLoading(false);
         } catch(error){
             console.error(error);
         }
     };
-
-    // Probs dont need this
-    // const fetchTrips = async () =>{
-    //     try{
-    //         const response = await fetch(buildTrip('api/trips'), {
-    //             method: 'GET' 
-    //         });
-
-    //         if (!response.ok){
-    //             throw new Error('Error fetching parks');
-    //         }
-    //         const data = await response.json();
-    //         const parsedData = extractParkInfo(data);
-    //         setParks(parsedData);
-    //         //console.log('Fetched Parks:', parsedData);
-    //     } catch(error){
-    //         console.error(error);
-    //     }
-    // };
 
     //fetching the users SAVED parks (not all parks)
 
@@ -167,7 +150,6 @@ function Landing(){
         }
     };
 
-// Probs dont need this
     const fetchSavedTrips = async () => {
         try {
             const userDataString = localStorage.getItem('user_data');
@@ -524,8 +506,8 @@ function Landing(){
     }
 };
 
-const seeTripDetails = async(tripName) => {
-    navigate(`/trips/${tripName}`); 
+const seeTripDetails = async(trip) => {
+    navigate(`/trips/${trip[1]}`); 
 }
 
 
@@ -563,51 +545,7 @@ const seeTripDetails = async(tripName) => {
         setShowTripSearchBar(!showTripSearchBar);
     }
 
-
-    // ** Not workig when tested
-    // adding functionality, will work with edit trip
-    // async function addTrip(event)
-    // {
-    //     try
-    //     {
-    //         var trip_data = document.getElementById
-    //         const response = await fetch('/api/addTrip',
-    //         {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({name, startDate, endDate, userID, parkID})
-    //         });
-    //         const data = await response.json();
-    //         console.log(data)
-    //         console.log("AddTrip Function")
-    //         return data;
-    //     }
-    //     catch(error)
-    //     {
-    //         console.error(error);
-    //     }
-
-    // }
-
-
-
-    // async function deleteTrip(userID, name){
-    //     try{
-    //         const response = await fetch('/api/deleteTrip',{
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json'},
-    //             body: JSON.stringify({userID, name})
-    //         });
-    //         const data = await response.json();
-    //         console.log(data)
-    //         console.log("DeleteTrip Function")
-    //         return data;
-    //     }catch(error){
-    //         console.error(error);
-    //     }
-    // }
-
-// deelete park will be used to edit trips to delete parks in it
+// delete park will be used to edit trips to delete parks in it
 // Will change this to edit trip
     async function updateTrip(tripID, name, startDate, endDate){
         const response = await fetch('/api/updateTrip',{
@@ -777,14 +715,18 @@ const seeTripDetails = async(tripName) => {
                                             {/* div className= "scrollVert" */}
                                             <div className="scroll">
                                                 < div className ="parkCardCont">
-                                                    {savedTrips.map((trip,index) => (
+                                                    {isLoading ? (
+                                                        <p>Loading parks...</p>
+                                                    ) : (
+                                                        savedTrips.map((trip,index) => (
                                                         <TripCard
                                                             key={index}
                                                             trip={trip}
                                                             deleteTrip={deleteTrip}
                                                             seeTripDetails={seeTripDetails}
+                                                            park={parks.find(park => park.id === trip[2]).name}
                                                         />
-                                                    ))}
+                                                    )))}
                                                 </div>
                                             </div>   
                                         

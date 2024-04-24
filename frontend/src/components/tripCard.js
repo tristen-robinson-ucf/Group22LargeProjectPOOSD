@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { SketchPicker } from 'react-color';
 
-function TripCard({ trip, deleteTrip, seeTripDetails }) {
+function TripCard({ trip, deleteTrip, seeTripDetails, park }) {
     //ensure the trip card saves its selected color according to user's choice 
     const [selectedColor, setSelectedColor] = useState(() => {
         const savedColors = JSON.parse(localStorage.getItem('tripColors')) || {};
@@ -38,7 +38,8 @@ function TripCard({ trip, deleteTrip, seeTripDetails }) {
                 </div>
             )}
             <div className="parkCardBottom">
-                <h3>{trip[0]}</h3>
+                <h2>{trip[0]}</h2>
+                {<h3>{park}</h3>}
                 <button className="waitTimeButton" onClick={() => seeTripDetails(trip)}>See Trip Details</button>
                 <button className="deleteButton" onClick={() => deleteTrip(trip)}>Delete</button>
             </div>
