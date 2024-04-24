@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './css/rides.css';
 
-function TripsTemplate(tripName)
+function TripsTemplate(tripID)
 {
-    console.log('trip id within rides template', tripName);
+    const [parks, setParks] = useState([]);
+
+    //console.log('park id within rides template', tripID);
     try
     {
-        tripName = tripName.tripName
+        tripID = parseInt(tripID.tripID)
     }
     catch(e)
     {
@@ -17,7 +19,15 @@ function TripsTemplate(tripName)
     const alphabetical = 0;
     const waitTime = 1;
 
+    var data = localStorage.getItem('user_data')
+    var parsedData = JSON.parse(data)
+    const userID = parsedData.id
+
     var sortBy = alphabetical;
+
+    var park;
+    var trip;
+    var parkID;
 
     var ridesData = []
     var rides = []
@@ -26,6 +36,8 @@ function TripsTemplate(tripName)
     const [avgWaitTimes, setAvgWaitTimes] = useState({});
 
     useEffect(() => {
+        fetchParks()
+        //fetchRides()
         const fetchData = async () => {
             const ridesResponse = await fetchRides(); 
             const avgWaitTimes = await fetchAverageWaitTimes(ridesResponse); 
@@ -47,12 +59,65 @@ function TripsTemplate(tripName)
         }
     }
 
+    const fetchParks = async () =>{
+        try{
+            const response = await fetch(buildPath('api/parks'), {
+                method: 'GET' 
+            });
+
+            if (!response.ok){
+                throw new Error('Error fetching parks');
+            }
+            const data = await response.json();
+            const parsedData = extractParkInfo(data);
+            setParks(parsedData);
+        } catch(error){
+            console.error(error);
+        }
+    };
+
+    const extractTripInfo = (jsonData) => {
+        // Ensure 'results' property exists and is an array
+        if (!jsonData || !Array.isArray(jsonData['results']) || !jsonData['results'].length) {
+          return []; // Return empty array if 'results' is missing, not an array, or empty
+        }
+      
+        const trips = [];
+        const tripLength = 4; // Constant for trip info length
+      
+        // Iterate through results, checking for validity within the array
+        for (let i = 0; i < jsonData['results'].length; i += tripLength) {
+          if (i + tripLength <= jsonData['results'].length) {
+            const trip = [
+              jsonData['results'][i],
+              jsonData['results'][i + 1],
+              jsonData['results'][i + 2],
+              jsonData['results'][i + 3],
+            ];
+            trips.push(trip);
+          }
+        }
+      
+        return trips;
+      };
+
+      const extractParkInfo = (jsonData) => {
+        return jsonData.flatMap((company) => company.parks.map((park) =>({
+            id: park.id,
+            name : park.name
+        })));
+    };
+
     const fetchRides = async event => {
-        var obj = {tripName:tripName};
-        var js = JSON.stringify(obj);
-    
         try {    
-            const response = await fetch(buildPath('api/searchTrip'), {headers:{'Content-Type': 'application/json'}, body:js, method: 'POST'});
+            const response = await fetch(buildPath('api/searchTrip'),{
+                method: 'POST',
+                headers: {'Content-Type' : 'application/json'},
+                body: JSON.stringify({
+                    search : "",
+                    userID : userID
+                })
+            });
             console.log(`response status is ${response.status}`);
             const mediaType = response.headers.get('content-type');
             let data;
@@ -61,10 +126,36 @@ function TripsTemplate(tripName)
             } else {
                 data = await response.text();
             }
-            console.log(data);
-            ridesData = data;
-            rides = extractRideInfo(ridesData);
-
+            console.log("tripID: ", tripID)
+            const trips = extractTripInfo(data)
+            trip = await trips.find(object => object[1] === tripID)
+            var rideIDs = trip[3]
+            parkID = trip[2]
+            park = await parks.find(object => object.id === trip[2])
+            var obj = {parkID:trip[2]};
+            var js = JSON.stringify(obj);
+    
+            const response2 = await fetch(buildPath('api/rides'), {headers:{'Content-Type': 'application/json'}, body:js, method: 'POST'});
+            console.log(`response status is ${response.status}`);
+            const mediaType2 = response.headers.get('content-type');
+            let data2;
+            if (mediaType.includes('json')) {
+                data2 = await response2.json();
+            } else {
+                data2 = await response2.text();
+            }
+            console.log(data2);
+            var ridesData2 = data2;
+            var rides2 = extractRideInfo(ridesData2);
+            for (let rideID of rideIDs) {
+                for (let ride of rides2) {
+                    if (ride.id === rideID) {
+                        rides.push(ride);
+                        break;
+                    }
+                }
+            }
+            console.log(rides)
             return rides;
         }
         catch(e) {
@@ -80,7 +171,7 @@ function TripsTemplate(tripName)
 
             for (const ride of rides){
                 //fetch histogram from api 
-                const url = `${buildPath('api/averageWaitTime')}?tripName=${tripName}&rideID=${ride.id}`;
+                const url = `${buildPath('api/averageWaitTime')}?parkID=${parkID}&rideID=${ride.id}`;
                 
                 const response = await fetch(url, {
                     method: 'GET'

@@ -9,6 +9,7 @@ import IOAPage from './pages/IOAPage';
 import USFPage from './pages/USFPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import RidesPage from './pages/RidesPage';
+import TripsPage from './pages/TripsPage';
 
 function App()
 {
@@ -21,9 +22,8 @@ function App()
         <Route path="/login" index element={<LoginPage/>} />
         <Route path="/register" index element={<RegisterPage/>} />
         <Route path='/landing' index element={<LandingPage/>} />
-        <Route path='/parks/64' index element={<IOAPage/>}/>
-        <Route path='/parks/65' index element={<USFPage/>}/>
         <Route path ='/rides/:parkID' index element={<RidesPage/>}/>
+        <Route path ='/trips/:tripID' index element={<TripsPage/>}/>
         <Route path='/forgot-password' index element={<ForgotPasswordPage/>}/>
       </Routes>
     </BrowserRouter>
