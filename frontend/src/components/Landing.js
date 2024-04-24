@@ -242,7 +242,6 @@ function Landing(){
     const addTripSubmit = async () => {
         const userDataString = localStorage.getItem('user_data');
         const userData = JSON.parse(userDataString);
-
         const userID = userData.id;
 
         if (!selectedTripId){
@@ -295,6 +294,42 @@ function Landing(){
             console.error(error);
         }
     };
+
+
+    // addTrip:
+    // 1. html gets userinput, like start/end dates, name of trip, name of park, etc
+    // 2. addtrip is called from this html code, and it creates a json object with the userinput. this represents one visit to a park.
+    // 3. addtrip needs to then add the json object to an array of json objects, where each json object, again,  represents a visit to a particular park.
+    // 4. these array of json objects need to be stored somewhere, maybe on mongodb? 
+    
+    // Trip = array of json objects. One visit to a park = a single json object
+    
+    // editTrip:
+    // 1. everytime a user wants to add more visits to a trip, he would click this button. this is a html step. userinput about an additional trip will be collected here, just like in addTrip
+    // 2. editTrip is called from the the html code and makes a json object with the userinput. It then inserts this json object to the trip (which, if you recall, is an array of json objects).
+    
+    // This guide doesn't include handling how to add individual rides to each trip. Maybe this can be done by having an array within each json object with the list of all the rides the user wants to go to. The user would fill out this array through html as well.
+
+
+    // async function searchTrip(search){
+    //     try{
+    //         console.log('trip to search', search)
+    //         const searchTrip = await 
+            
+    //         const response = await fetch('/api/searchTrip',{
+    //             method: 'POST',
+    //             headers: {'Content-Type': 'application/json'},
+    //             body: JSON.stringify({userID: userID, search: search})
+    //         });
+    //         const data = await response.json();
+    //         console.log(data)
+    //         console.log("searchTrip Function")
+    //         return data;
+            
+    //     }catch(error){
+    //         console.error(error);
+    //     }
+    // }
 
     //delete park endpoint 
     const deletePark = async (parkName) => {
@@ -426,8 +461,10 @@ function Landing(){
     }
 
     // ** Not workig when tested
-    async function addTrip(name, startDate, endDate, userID, parkID){
+    // adding functionality, will work with edit trip
+    async function addTrip(event){
         try{
+            trip_data = document.getElementById
             const response = await fetch('/api/addTrip',{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -442,6 +479,8 @@ function Landing(){
     }
 
     }
+
+
 
     // async function deleteTrip(userID, name){
     //     try{
@@ -459,22 +498,7 @@ function Landing(){
     //     }
     // }
 
-    async function searchTrip(userID, search){
-        try{
-            const response = await fetch('/api/searchTrip',{
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({userID: userID, search: search})
-            });
-            const data = await response.json();
-            console.log(data)
-            console.log("searchTrip Function")
-            return data;
-            
-        }catch(error){
-            console.error(error);
-        }
-    }
+   
 
     async function updateTrip(tripID, name, startDate, endDate){
         const response = await fetch('/api/updateTrip',{
@@ -488,8 +512,26 @@ function Landing(){
         return data;
     }
     
-    
-    
+{/* <style>
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-group select,
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+</style>
+     */}
 
     return(
         <div id = "app">
@@ -522,6 +564,7 @@ function Landing(){
                                                     ))}
                                                 </div>
                                             </div>
+                                        
                                             <div className="addPark">
                                                 <button onClick={addPark}>Add Park</button>
                                                 {showAddPark && (
@@ -540,7 +583,7 @@ function Landing(){
                                             </div>     
                                         </section>
                                         <h3>Your Planned Trips</h3>
-                                        {/* Code here is test */}
+                                        {/* Code here is test api calls */}
                                         <button onClick={addTrip}>Add trip</button>
                                         <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
                                         <button onClick={deleteTrip}>Delete Trip</button>
@@ -548,6 +591,90 @@ function Landing(){
                                         <button onClick={() => addTripSubmit()}>addTripSubmit Trip</button>
                                         <button onClick={() => deleteTrip("Trip Name")}>Delete Trip</button>
                                         <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
+                                        
+                                        
+                                        {/* may not need to be a form, form is for  */}
+                                        {/* <form>
+                                            <div>
+                                                <label for="trip_name">Trip Name:</label>
+                                                <input type="text" id="trip_name" name="trip_name"></input>
+                                            </div>
+                                            <div>
+                                                <label for="trip_startDate">Start Date:</label>
+                                                <input type="date" id="trip_startDate" name="trip_startDate"></input>
+                                            </div>
+                                            <div>
+                                                <label for="trip_endDate">End Date:</label>
+                                                <input type="date" id="trip_endDate" name="trip_endDate"></input>
+                                            </div>
+                                            <input type="submit" value="Create Trip"></input>
+                                        </form> */}
+
+
+                                            <section className = "saved-trips">
+                                            <h2>Your Saved Trips</h2>
+                                            {/* div className= "scrollVert" */}
+                                            <div className="scroll">
+                                                < div className ="parkCardCont">
+                                                    {savedParks.map((park,index) => (
+                                                        <div className ="parkCard" key={index}>
+                                                            <h3>{park}</h3>
+                                                            <button onClick={() => deletePark(park)}>Delete</button>
+                                                            <button onClick={() => seeWaitTimes(park)}>See Wait Times</button>
+
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>   
+                                        </section>
+                                                    
+                                        <div>
+                                            {/* should I make the code below into a form....event listener vs onClick? */}
+                                            <div>
+                                                <label for="trip_name">Trip Name:</label>
+                                                <input type="text" id="trip_name" name="trip_name" placeholder="ThemePark" required></input>
+                                            </div>
+                                            <div>
+                                                <label for="trip_startDate">Start Date:</label>
+                                                <input type="date" id="trip_startDate" name="trip_startDate"></input>
+                                            </div>
+                                            <div>
+                                                <label for="trip_endDate">End Date:</label>
+                                                <input type="date" id="trip_endDate" name="trip_endDate"></input>
+                                            </div>
+
+                                            <div className="addPark">
+                                                <button onClick={addPark}>Add Park</button>
+                                                {showAddPark && (
+                                                    <div>
+                                                        <label>Choose a Park: </label>
+                                                        <select onChange={(e) => setSelectedParkId(e.target.value)}>
+                                                            <option value ="">Select a park... </option>
+                                                            {parks.map((park, index) => (
+                                                                <option key= {index} value={park.id}>{park.name}</option>
+                                                            ))}
+                                                        </select>
+                                                        <button onClick={addParkSubmit}>Add Park</button>
+                                                        <button onClick ={() => setShowAddPark(false)}>Close</button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <button onClick={addPark}>Future Function</button>
+                                            <input id="createTrip" type="submit" onClick={addTrip} value="Create Trip"></input>
+                                        
+                                        </div>
+
+                                        
+
+                                        
+
+                                        {/* <label for="userInput">Please enter something:</label><br>
+                                        <input type="text" id="userInput" name="userInput"><br>
+                                        <input type="submit" value="Submit"> */}
+                                    
+                                        
+
+            
                                     </div>
                                 </div>
                             </main>
