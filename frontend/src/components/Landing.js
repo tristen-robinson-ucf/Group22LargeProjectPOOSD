@@ -685,6 +685,13 @@ const seeTripDetails = async(trip) => {
                                                                     placeholder="Search Trip"
                                                             />
                                                     </div>
+
+//from here                                                )}
+                                                            </div>*/} 
+                                               
+                                        </section>
+                                        {/* Code here is test api calls */}
+
                                                      )} 
                                                 <button onClick={deleteTrip}>Delete Trip</button>
                                                 <button onClick={updateTrip}>Update Trip</button>
@@ -694,6 +701,8 @@ const seeTripDetails = async(trip) => {
                                             </div>
                                             <div className="borderBttm"></div>  
                                         </div>
+/*to here there may be conflicts, I was unsure so I wanted to leave both*/
+
                                         
                                         
                                         {/* may not need to be a form, form is for  */}
@@ -729,6 +738,43 @@ const seeTripDetails = async(trip) => {
                                                     )))}
                                                 </div>
                                             </div>   
+
+                                        </section>
+                                        <button onClick={toggleAddTripDiv}>Add trip</button>
+                                        <div id='trip_form' style={{display: 'none'}}>
+                                            {/* should I make the code below into a form....event listener vs onClick? */}
+                                            <form id='trip_data'>
+                                                <div>
+                                                    <label for="trip_name">Trip Name:</label>
+                                                    <input type="text" id="trip_name" name="trip_name" placeholder="Trip Name" required></input>
+                                                </div>
+                                                <div>
+                                                    <label for="trip_startDate">Start Date:</label>
+                                                    <input type="date" id="trip_startDate" name="trip_startDate"></input>
+                                                </div>
+                                                <div>
+                                                    <label for="trip_endDate">End Date:</label>
+                                                    <input type="date" id="trip_endDate" name="trip_endDate"></input>
+                                                </div>
+                                                    
+                                                <div>
+                                                    <label>Choose a Park: </label>
+                                                    <select id='parkSelect' onChange={(e) => setSelectedParkId(e.target.value)}>
+                                                        <option value ="">Select a park... </option>
+                                                        {parks.map((park, index) => (
+                                                            <option key= {index} value={park.id}>{park.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                
+                                                <button onClick={addTripSubmit}>Create Trip</button>
+                                                {/*<input id="createTrip" type="submit" onClick={addTrip} value="Create Trip"></input>*/}
+
+                                            </form>
+                                        </div>
+                                            
+
+                                     
                                         
                                                     
                                         {/* <label for="userInput">Please enter something:</label><br>

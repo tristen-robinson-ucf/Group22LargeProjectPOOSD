@@ -5,6 +5,10 @@ import { useNavigate} from 'react-router-dom';
 function RidesTemplate(parkID)
 {
 
+    const [selectedTripId, setSelectedTripId] = useState('');
+    const [selectedRideId, setSelectedRideId] = useState('');
+
+
     const navigate = useNavigate();
     console.log('park id within rides template', parkID);
     try
@@ -25,10 +29,13 @@ function RidesTemplate(parkID)
     var ridesData = []
     var rides = []
 
+    var trips;
+
     const app_name = 'group-22-0b4387ea5ed6'
     const [avgWaitTimes, setAvgWaitTimes] = useState({});
 
     useEffect(() => {
+        getTrips()
         const fetchData = async () => {
             const ridesResponse = await fetchRides(); 
             const avgWaitTimes = await fetchAverageWaitTimes(ridesResponse); 
@@ -172,7 +179,114 @@ function RidesTemplate(parkID)
         createRideButtons();
     }
     
-    
+    const getTrips = async event => 
+    {
+        var data = localStorage.getItem('user_data')
+        var parsedData = JSON.parse(data)
+        const userID = parsedData.id
+        try
+        {
+            const response = await fetch(buildPath('api/searchTrip'),{
+                method: 'POST',
+                headers: {'Content-Type' : 'application/json'},
+                body: JSON.stringify({
+                    search : "",
+                    userID : userID
+                })
+            });
+            console.log(`response status is ${response.status}`);
+            const mediaType = response.headers.get('content-type');
+            let data;
+            if (mediaType.includes('json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+            trips = extractTripInfo(data)
+        }
+        catch(e)
+        {
+            alert(e.toString());
+            return;
+        }
+    }
+
+    const extractTripInfo = (jsonData) => {
+        // Ensure 'results' property exists and is an array
+        if (!jsonData || !Array.isArray(jsonData['results']) || !jsonData['results'].length) {
+          return []; // Return empty array if 'results' is missing, not an array, or empty
+        }
+      
+        const trips = [];
+        const tripLength = 4; // Constant for trip info length
+      
+        // Iterate through results, checking for validity within the array
+        for (let i = 0; i < jsonData['results'].length; i += tripLength) {
+          if (i + tripLength <= jsonData['results'].length) {
+            const trip = [
+              jsonData['results'][i],
+              jsonData['results'][i + 1],
+              jsonData['results'][i + 2],
+              jsonData['results'][i + 3],
+            ];
+            trips.push(trip);
+          }
+        }
+      
+        return trips;
+      };
+      var obj = {
+        tripID : 0,
+        rideID : 0
+      }
+
+      useEffect(() => {
+        obj.tripID = parseInt(selectedTripId)
+        console.log(obj)
+        }, [selectedTripId]); // Only re-run the effect if selectedRideId changes
+
+        useEffect(() => {
+            obj.rideID = parseInt(selectedRideId)
+            console.log(obj)
+            }, [selectedRideId]); // Only re-run the effect if selectedRideId changes
+
+      const toggleAddTripDiv = async (id) => {
+        console.log(id)
+        const div = document.getElementById(id);
+        if (div.style.display === 'none') {
+            div.style.display = 'block'; // Or 'flex', 'grid', etc., depending on your layout needs
+        } else {
+            div.style.display = 'none';
+        }
+        await setSelectedRideId(id);
+        await console.log(selectedRideId)
+    }
+
+    const addRideToTrip = async event =>
+    {
+        try
+        {
+            console.log(obj)
+            const response = await fetch(buildPath('api/addRide'),{
+                method: 'POST',
+                headers: {'Content-Type' : 'application/json'},
+                body: obj
+            });
+            console.log(`response status is ${response.status}`);
+            const mediaType = response.headers.get('content-type');
+            let data;
+            if (mediaType.includes('json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+        }
+        catch(e)
+        {
+            alert(e.toString());
+            return;
+        }
+    }
 
     function createRideButtons(avgWaitTimes)
     {
@@ -191,6 +305,20 @@ function RidesTemplate(parkID)
                 <div key={ride.id} className='rideCard'>
                     <div className='rideInfo'>
                         <h3> {ride.name}</h3>
+                   </div>
+                   <div className='addToTripsContainer'>
+                        <button onClick={() => {
+                            toggleAddTripDiv(ride.id);
+                            }}>Add to a trip</button>
+                        <div id={ride.id} style={{display: 'none'}}>
+                            <select id='tripsSelect' onChange={(e) => setSelectedTripId(e.target.value)}>
+                                <option value ="">Select a trip... </option>
+                                {trips.map((trip, index) => (
+                                    <option key= {index} value={trip[1]}>{trip[0]}</option>
+                                ))}
+                            </select>
+                            <button onClick={addRideToTrip}>Add ride to trip</button>
+                        </div>
                    </div>
                     <div className= 'waitTimeContainer'>
                         <span className='waitTimeTitle'>Current Time:</span>
