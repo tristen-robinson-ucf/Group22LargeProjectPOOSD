@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate} from 'react-router-dom';
 import RidesPage from '../pages/RidesPage';
 import AddParkModal from './addParkModal';
+import AddTripModal from './addTripModal';
 import { SketchPicker } from 'react-color';
 import ParkCard from './parkCard';
 import TripCard from './tripCard';
@@ -14,8 +15,10 @@ function Landing(){
     const [savedParks, setSavedParks] = useState([]);
     const [selectedPark, setSelectedPark] = useState('');
     const [showSearchBar, setShowSearchBar] = useState(false);
+    const [showTripSearchBar, setShowTripSearchBar] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [searchInp, setSearchInp] = useState('');
+    const [tripSearchInp, setTripSearchInp] = useState('');
     const [selectedColor, setSelectedColor] = useState('#000000'); 
     const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -64,6 +67,7 @@ function Landing(){
         const clickOutside = (event) => {
             if (inputRef.current && !inputRef.current.contains(event.target)) {
                 setShowSearchBar(false);
+                setShowTripSearchBar(false);
             }
         };
 
@@ -236,11 +240,13 @@ function Landing(){
     //ensure that the dropdown/etc is only displayed when set show is true 
     const addPark = () => {
         setShowAddPark(true);
+        /*
         const div = document.getElementById('trip_form');
         if (div.style.display != 'none') {
             div.style.display = 'none';
         }
         document.getElementById('parkSelect').value = '';
+        */
     };
 
     //add a park 
@@ -299,15 +305,17 @@ function Landing(){
         }
     };
 
-    const toggleAddTripDiv = async () => {
-        const div = document.getElementById('trip_form');
+    const addTrip = () => {
+        setShowAddTrip(!showAddTrip);
+       /* const div = document.getElementById('trip_form');
         if (div.style.display === 'none') {
             div.style.display = 'block'; // Or 'flex', 'grid', etc., depending on your layout needs
         } else {
             div.style.display = 'none';
         }
-        document.getElementById('parkSelect').value = '';
-    }
+        document.getElementById('parkSelect').value = ''; 
+        */
+    };
     
 
     const addTripSubmit = async () => {
@@ -356,7 +364,7 @@ function Landing(){
             //await fetchSavedParks();
 
             //console.log(savedParks);
-            //setShowAddPark(false);
+            //setShowAddTrip(false);
         }catch(error){
             console.error(error);
         }
@@ -549,6 +557,10 @@ const seeTripDetails = async(tripName) => {
     const toggleSearchBar= () => {
         setShowSearchBar(!showSearchBar);
         
+    };
+
+    const toggleTripSearchBar= () => {
+        setShowTripSearchBar(!showTripSearchBar);
     }
 
 
@@ -636,6 +648,11 @@ const seeTripDetails = async(tripName) => {
         setSearchResults(filteredParks);
     }
 
+    const searchTrips = async () => {
+        const filteredTrips = savedTrips.filter(trip => trip.toLowerCase().includes(tripSearchInp.toLowerCase()));
+        setSearchResults(filteredTrips);
+    }
+
     //for the color selector!! (when the user wants to change the park card color )
     const toggleColorPicker = () => {
         setShowColorPicker(!showColorPicker);
@@ -705,39 +722,40 @@ const seeTripDetails = async(tripName) => {
                                                         />
                                                     ))}
                                                 </div>
-                                            </div>
-                                            <div className="addPark">
-                                                    <button onClick={addPark}>Add Park</button>
-                                                    {showAddPark}
-                                                </div>
-
-                                           {/* <div className="addPark">
-                                                <button onClick={addPark}>Add Park</button>
-                                                {showAddPark && (
-                                                    <div>
-                                                        <label>Choose a Park: </label>
-                                                        <select onChange={(e) => setSelectedParkId(e.target.value)}>
-                                                            <option value ="">Select a park... </option>
-                                                            {parks.map((park, index) => (
-                                                                <option key= {index} value={park.id}>{park.name}</option>
-                                                            ))}
-                                                        </select>
-                                                        <button onClick={addParkSubmit}>Add Park</button>
-                                                        <button onClick ={() => setShowAddPark(false)}>Close</button>
-                                                    </div>
-                                                )}
-                                                            </div>*/} 
-                                               
+                                            </div>               
                                         </section>
-                                        <h3>Your Planned Trips</h3>
-                                        {/* Code here is test api calls */}
-                                        <button onClick={toggleAddTripDiv}>Add trip</button>
-                                        <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
-                                        <button onClick={deleteTrip}>Delete Trip</button>
-                                        <button onClick={updateTrip}>Update Trip</button>
-                                        <button onClick={() => addTripSubmit()}>addTripSubmit Trip</button>
-                                        <button onClick={() => deleteTrip("Trip Name")}>Delete Trip</button>
-                                        <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
+
+                                        <section className="saved Trips">
+                                            <div className="saved-section">
+                                                <div id="saved-title">
+                                                     <h3>Planned Trips</h3>
+                                                </div>
+                                                <div id="title-icons">
+                                        
+                                                <button id="addTripBtn" onClick={addTrip}>Add trip</button>
+                                                <button className="searchBtnTrip" onClick={toggleTripSearchBar}>Search</button>
+                                                    {showTripSearchBar && (
+                                                        <div className="searchBar" ref={inputRef}>
+                                                             <input
+                                                                type="text"
+                                                                value={tripSearchInp}
+                                                                onChange={(e) => 
+                                                                    {
+                                                                        setTripSearchInp(e.target.value);
+                                                                        searchTrips();
+                                                                    }}
+                                                                    placeholder="Search Trip"
+                                                            />
+                                                    </div>
+                                                     )} 
+                                                <button onClick={deleteTrip}>Delete Trip</button>
+                                                <button onClick={updateTrip}>Update Trip</button>
+                                                {/*<button onClick={() => addTripSubmit()}>addTripSubmit Trip</button>*/}
+                                                <button onClick={() => deleteTrip("Trip Name")}>Delete Trip</button>
+                                                <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
+                                            </div>
+                                            <div className="borderBttm"></div>  
+                                        </div>
                                         
                                         
                                         {/* may not need to be a form, form is for  */}
@@ -756,10 +774,6 @@ const seeTripDetails = async(tripName) => {
                                             </div>
                                             <input type="submit" value="Create Trip"></input>
                                         </form> */}
-
-
-                                            <section className = "saved-trips">
-                                            <h2>Your Saved Trips</h2>
                                             {/* div className= "scrollVert" */}
                                             <div className="scroll">
                                                 < div className ="parkCardCont">
@@ -773,52 +787,16 @@ const seeTripDetails = async(tripName) => {
                                                     ))}
                                                 </div>
                                             </div>   
-                                        </section>
-                                                    
-                                        <div id='trip_form' style={{display: 'none'}}>
-                                            {/* should I make the code below into a form....event listener vs onClick? */}
-                                            <form id='trip_data'>
-                                                <div>
-                                                    <label for="trip_name">Trip Name:</label>
-                                                    <input type="text" id="trip_name" name="trip_name" placeholder="Trip Name" required></input>
-                                                </div>
-                                                <div>
-                                                    <label for="trip_startDate">Start Date:</label>
-                                                    <input type="date" id="trip_startDate" name="trip_startDate"></input>
-                                                </div>
-                                                <div>
-                                                    <label for="trip_endDate">End Date:</label>
-                                                    <input type="date" id="trip_endDate" name="trip_endDate"></input>
-                                                </div>
-                                                    
-                                                <div>
-                                                    <label>Choose a Park: </label>
-                                                    <select id='parkSelect' onChange={(e) => setSelectedParkId(e.target.value)}>
-                                                        <option value ="">Select a park... </option>
-                                                        {parks.map((park, index) => (
-                                                            <option key= {index} value={park.id}>{park.name}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                
-                                                <button onClick={addTripSubmit}>Create Trip</button>
-                                                {/*<input id="createTrip" type="submit" onClick={addTrip} value="Create Trip"></input>*/}
-
-                                            </form>
-                                        </div>
-                                            
-
                                         
-
-                                        
-
+                                                    
                                         {/* <label for="userInput">Please enter something:</label><br>
                                         <input type="text" id="userInput" name="userInput"><br>
                                         <input type="submit" value="Submit"> */}
                                     
                                         
 
-            
+
+                                        </section>
                                     </div>
                                 </div>
                             </main>
@@ -833,6 +811,13 @@ const seeTripDetails = async(tripName) => {
                     setSelectedParkId={setSelectedParkId}
                     addParkSubmit={addParkSubmit}
                     setShowAddPark={setShowAddPark}
+                />
+            )}
+            {showAddTrip && (
+                <AddTripModal
+                    addTripSubmit={addTripSubmit} 
+                    parks={parks} 
+                    setShowAddTrip={setShowAddTrip}
                 />
             )}
         </div>
