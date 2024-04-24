@@ -177,21 +177,13 @@ function RidesTemplate(parkID)
 
         for (const ride of rides) 
         {
-            let waitTimeText = ride.is_open ? (ride.wait_time > 0 ? ride.wait_time.toString() : 'Open') : 'Closed';
+            //comparison of curr wait time w average wait times (color codes it accrodingly)
             let avgWaitTime = avgWaitTimes[ride.id] !== undefined ? avgWaitTimes[ride.id] : 0;
             let avgWaitTimeText = avgWaitTimes[ride.id] !== undefined ? avgWaitTimes[ride.id].toString() : '';
+            let waitTimeText = ride.is_open ? (ride.wait_time > 0 ? ride.wait_time.toString() : '0') : 'Closed';
+            let waitTimeClass = ride.is_open ? (ride.wait_time > avgWaitTime ? 'red' : (ride.wait_time < avgWaitTime ? 'green' : 'yellow')) : 'orange';
 
-            let waitTimeClass = '';
-            if (ride.wait_time > avgWaitTime) {
-                waitTimeClass = 'red';
-            } else if (ride.wait_time < avgWaitTime) {
-                waitTimeClass = 'green';
-            } else {
-                waitTimeClass = 'yellow';
-            }
-
-
-            // Create button element
+        
             const rideCard = (
                 <div key={ride.id} className='rideCard'>
                     <div className='rideInfo'>
@@ -212,11 +204,10 @@ function RidesTemplate(parkID)
                 </div>
             );
 
-            // Push button to rideCards array
             rideCards.push(rideCard);
         }
 
-        // Update state with rideCards
+        // update state
         setRideContent(rideCards);
     };
 

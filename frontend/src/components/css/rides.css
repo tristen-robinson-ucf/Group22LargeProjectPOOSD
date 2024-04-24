@@ -13,7 +13,7 @@
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     height: 100px;
     width: 700px;
     transition: transform 0.3s ease;
@@ -25,6 +25,10 @@
 
 .rideInfo{
     flex-grow: 1;
+}
+
+.waitTimeContainer{
+    padding-left: 20px;
 }
 
 .waitTimeContainer,
@@ -49,10 +53,6 @@
     border-radius: 5px;
     font-weight: bold;
     border: 1px solid black;
-    /*
-    width: 50px;
-    height: 40px;
-    */
     text-align: center;
 
 }
@@ -68,4 +68,19 @@
 
 .yellow {
     background-color: #ffd700; 
+}
+
+.orange {
+    background-color: #e9994e; 
+}
+
+
+.rideInfo{
+    width: 20%;
+}
+
+.rideInfo h3{
+    width: 100%;
+    font-size: 22px;
+
 }
