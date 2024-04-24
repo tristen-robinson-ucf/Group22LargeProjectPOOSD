@@ -7,7 +7,7 @@ const StartingPage = () =>
 
     return(
       <div>
-       <Navbar/>
+       {/*<Navbar/>*/}
        <Starting/>
       </div>
     );

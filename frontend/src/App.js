@@ -13,7 +13,6 @@ import TripsPage from './pages/TripsPage';
 
 function App()
 {
-  console.log('Rendering App component');
   
   return (
     <BrowserRouter>

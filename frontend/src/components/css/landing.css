@@ -160,7 +160,7 @@
     gap: 20px;
 }
 
-.searchBtn, #addParkBtn, .logoutButton {
+.searchBtn, .searchBtnTrip, #addParkBtn, .logoutButton, #addTripBtn {
     position: relative;
     padding: 5px;
     font-size: 18px;
@@ -178,9 +178,13 @@
     width: 100px;
 }
 
+#addTripBtn{
+    width: 130px;
+}
 
-.searchBtn::after,
-#addParkBtn::after, .logoutButton::after{
+
+.searchBtn::after,.searchBtnTrip::after,
+#addParkBtn::after, .logoutButton::after, #addTripBtn::after{
     align-items: center;
     content: ''; 
     position: absolute;
@@ -192,8 +196,8 @@
     transition: width 0.3s ease; 
 }
 
-.searchBtn:hover::after,
-#addParkBtn:hover::after, .logoutButton:hover::after{
+.searchBtn:hover::after, .searchBtnTrip:hover::after,
+#addParkBtn:hover::after, .logoutButton:hover::after, #addTripBtn:hover::after{
     width: 80%;
     background-color: black;
 }
@@ -337,7 +341,7 @@
     cursor: pointer;
 }
 
-.addParkModalBtn{
+.addParkModalBtn, #createBtn{
     margin-top: 15px;
     width: auto;
     padding: 8px 12px;
@@ -368,9 +372,9 @@
 .modalContent option{
     text-align: center;
     width: 100%;
-    padding: 12px 26px;
-    
+    padding: 12px 26px;  
 }
+
 
 .modalContent label{
     width: 100%;
@@ -382,5 +386,27 @@
     height: 40px;
 }
 
+.tripBtns{
+    display: flex; 
+    flex-direction: column;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#parkSelect{
+    margin-top: 5px;
+    color: rgb(52, 49, 49);
+    height: 40px;
+}
+
+.addBtns{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+}
 
 

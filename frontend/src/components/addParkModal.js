@@ -17,8 +17,10 @@ const AddParkModal = ({ parks, setSelectedParkId, addParkSubmit, setShowAddPark 
                         <option key={index} value={park.id}>{park.name}</option>
                     ))}
                 </select>
-                <button className="addParkModalBtn" onClick={addParkSubmitFunc}>Add Park</button>
-                <button className="cancelParkModal" onClick={() => setShowAddPark(false)}>Close</button>
+                <div className="addBtns">
+                    <button className="addParkModalBtn" onClick={addParkSubmitFunc}>Add Park</button>
+                    <button className="cancelParkModal" onClick={() => setShowAddPark(false)}>Close</button>
+                </div>
             </div>
         </div>
     );

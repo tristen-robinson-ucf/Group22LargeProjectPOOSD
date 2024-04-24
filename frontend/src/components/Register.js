@@ -18,6 +18,7 @@ function Register()
     const [verificationCode, setVerificationCode] = useState('');
     const [enteredCode, setEnteredCode] = useState('');
     const [codeVerified, setCodeVerified] = useState('');
+    const [passMessage, setPassMessage] = useState('');
 
     //regex for the password requirements 
     const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -28,9 +29,9 @@ function Register()
         
         //make sure the password fits the requirements 
         if (!passwordRequirements.test(newPassword)) {
-            setMessage('*Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and a special character.');
+            setPassMessage('* Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and a special character.');
         } else {
-            setMessage('');
+            setPassMessage('');
         }
     };
 
@@ -64,7 +65,7 @@ function Register()
 
             if( res.status != 200 )
             {
-                setMessage('Fix this later, it probably worked :/');
+                setMessage('User Registered!');
             }
             else
             {
@@ -72,7 +73,7 @@ function Register()
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                //window.location.href = '/landing'; //once user registers -> landing
+                window.location.href = '/landing'; //once user registers -> landing
             }
         }
         catch(e)
@@ -192,7 +193,7 @@ function Register()
             
             <div className= "cont">
                 <div class="regBttn">
-                    <input type='submit' class='buttons' value='Register' disabled={message !== ''}/>
+                    <input type='submit' class='buttons' value='Register' disabled={passMessage !== ''}/>
                 </div>
                 
                 <div className="parent">
@@ -202,7 +203,7 @@ function Register()
                      </div>
                 </div>
             </div>
-            <span id='registerResult'>{message}</span>
+            <span id='registerResult' style={{display: 'inline-block', textAlign:'center', verticalAlign: 'middle'}}>{passMessage}</span>
         </form>
       </div>
     ) : (
