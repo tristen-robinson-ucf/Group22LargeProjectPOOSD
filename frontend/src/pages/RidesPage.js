@@ -4,7 +4,6 @@ import RidesTemplate from '../components/RidesTemplate';
 
 function RidesPage() {
   const { parkID } = useParams();
-  console.log('test');
   console.log('park id within rides page:', parkID);
 
   return (
