@@ -71,9 +71,10 @@ html,body{
   background: #f78254;
   color: #fff;
   border: none;
-  padding: 8px 110px;
+  border-radius: 5px;
+  padding: 8px 115px;
   margin-top: 10px;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -162,7 +163,7 @@ html,body{
 
 #sendEmail:hover, #updatePass:hover, #resendCode:hover{
   transform: scale(1.1);
-  background: #ff743d;
+  background: #ff7f4c;
 }
 
 .forgotImg{

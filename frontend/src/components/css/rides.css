@@ -3,6 +3,19 @@
     100% { transform: scale(1); opacity: 1; }
   }
 
+  .ridesTemp{
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    padding-bottom: 20px;
+  }
+
+  #rides{
+    margin-top: 60px;
+  }
+
 .rideCard{
     animation: scaleUp 0.5s ease forwards;
     display: flex;

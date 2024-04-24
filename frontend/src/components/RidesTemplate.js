@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './css/rides.css';
+import { useNavigate} from 'react-router-dom';
 
 function RidesTemplate(parkID)
 {
+
+    const navigate = useNavigate();
     console.log('park id within rides template', parkID);
     try
     {
@@ -211,18 +214,34 @@ function RidesTemplate(parkID)
         setRideContent(rideCards);
     };
 
-    
+    const logOut = async () => {
+        navigate(`/landing`);
+    };
+
 
     return(
+        <>
+        <div className="ridesTemp">
+        <header style = {{background:  '#f78254',  maxWidth: '100vw', userSelect:'none', position: 'fixed', width: '100%'}}>
+             <div class="topbar" style ={{width: '100%', maxWidth: '100vw', height: '32px', opacity: '1', transition: 'opacity 700ms ease 0s, color 700ms ease 0s', position: 'relative', paddingBottom: '20px'}}>
+                 <div style ={{display:'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden', height: '32px', paddingLeft:'12px', paddingRight:'10px'}}>
+                     <div className="logoutCont">
+                         <button className="logoutButton" onClick={() => logOut ()}>Return</button>
+                     </div>
+                 </div>
+            </div>
+        </header>
+        </div>
         <div id='rides'>
-            <label htmlFor="sortBy">Sort by:</label>
+            {/*<label htmlFor="sortBy">Sort by:</label>
             <select id="sortBy" name="sortBy" onChange={() => sortRides()}>
                 <option value={alphabetical}>Alphabetical</option>
                 <option value={waitTime}>Wait Time</option>
-            </select>
+    </select>*/}
             {rideContent}
         </div>
-    )
+    </>
+    );
 }
 
 export default RidesTemplate;

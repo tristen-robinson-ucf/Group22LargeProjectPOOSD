@@ -5,22 +5,34 @@ import './css/starting.css'
 function Starting(){
     return(
         <div className="startDiv">
-         <div className="photoCont"> 
+            
+         {/*<div className="photoCont"> 
              <img src='/images/startingpg.webp' className='parkImg'/>
              <img src='/images/logo.webp' className='logo'/>
-         </div>
+    </div>*/}
 
-         <p className="text"> Track the wait times for all your favorite rides! </p>
+            <div className="navigateDiv">
+                <div className="navigateInfo">
+                    <img src='/images/logo.webp' className='logo'/>
+                    <p className="text"> Plan Your Park Adventure, Instantly Access Wait Times! </p>
+                    <div className="borderBtm"></div>
+                    <div className="startButtons">
+                        <Link to="/login">
+                            <button className="loginButton" >Log in</button>
+                         </Link>  
 
-         <div className="startButtons">
-            <Link to="/login">
-                <button className="loginButton" >Log in</button>
-            </Link>  
+                        <Link to="/register">
+                            <button className="registerButton" >Register</button>
+                        </Link>
+                    </div>
+                </div>
+            </div>
 
-            <Link to="/register">
-                <button className="registerButton" >Register</button>
-            </Link>
-         </div>
+            <div className="imgDiv">
+                <img src='/images/startingImg.webp' className= 'startGraphic'/>
+            </div>
+
+        
         </div>
     );
 };
