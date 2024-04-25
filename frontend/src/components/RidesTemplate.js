@@ -4,11 +4,6 @@ import { useNavigate} from 'react-router-dom';
 
 function RidesTemplate(parkID)
 {
-
-    const [selectedTripId, setSelectedTripId] = useState('');
-    const [selectedRideId, setSelectedRideId] = useState('');
-
-
     const navigate = useNavigate();
     console.log('park id within rides template', parkID);
     try
@@ -235,20 +230,6 @@ function RidesTemplate(parkID)
       
         return trips;
       };
-      var obj = {
-        tripID : 0,
-        rideID : 0
-      }
-
-      useEffect(() => {
-        obj.tripID = parseInt(selectedTripId)
-        console.log(obj)
-        }, [selectedTripId]); // Only re-run the effect if selectedRideId changes
-
-        useEffect(() => {
-            obj.rideID = parseInt(selectedRideId)
-            console.log(obj)
-            }, [selectedRideId]); // Only re-run the effect if selectedRideId changes
 
       const toggleAddTripDiv = async (id) => {
         console.log(id)
@@ -258,19 +239,30 @@ function RidesTemplate(parkID)
         } else {
             div.style.display = 'none';
         }
-        await setSelectedRideId(id);
-        await console.log(selectedRideId)
+        rideID = id;
+        console.log(rideID);
     }
+
+    var tripID;
+    var rideID;
 
     const addRideToTrip = async event =>
     {
         try
         {
-            console.log(obj)
+
+            const obj = {
+                tripID: tripID,
+                rideID: rideID
+            };
+
+            console.log(obj);
+            const requestBody = JSON.stringify(obj);
+            console.log(requestBody)
             const response = await fetch(buildPath('api/addRide'),{
                 method: 'POST',
                 headers: {'Content-Type' : 'application/json'},
-                body: obj
+                body: requestBody
             });
             console.log(`response status is ${response.status}`);
             const mediaType = response.headers.get('content-type');
@@ -311,7 +303,7 @@ function RidesTemplate(parkID)
                             toggleAddTripDiv(ride.id);
                             }}>Add to a trip</button>
                         <div id={ride.id} style={{display: 'none'}}>
-                            <select id='tripsSelect' onChange={(e) => setSelectedTripId(e.target.value)}>
+                            <select id='tripsSelect' onChange={(e) => tripID = parseInt(e.target.value)}>
                                 <option value ="">Select a trip... </option>
                                 {trips.map((trip, index) => (
                                     <option key= {index} value={trip[1]}>{trip[0]}</option>

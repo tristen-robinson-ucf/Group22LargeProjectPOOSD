@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 
-function AddTripModal({ addTripSubmit, parks, setShowAddTrip, handleParkChange }) {
-    const [tripName, setTripName] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [selectedParkId, setSelectedParkId] = useState('');
+function AddTripModal({ addTripSubmit, parks, setShowAddTrip, handleParkChange, handleNameChange }) {
+    // const [tripName, setTripName] = useState('');
+    // const [startDate, setStartDate] = useState('');
+    // const [endDate, setEndDate] = useState('');
+    // const [selectedParkId, setSelectedParkId] = useState('');
+
+    var selectedParkId;
+    var startDate;
+    var endDate;
+    var tripName;
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -16,16 +21,15 @@ function AddTripModal({ addTripSubmit, parks, setShowAddTrip, handleParkChange }
             selectedParkId
         });
         //clear forms 
-        setTripName('');
-        setStartDate('');
-        setEndDate('');
-        setSelectedParkId('');
+        tripName = '';
+        startDate = '';
+        endDate = '';
+        selectedParkId = 0;
     };
 
     const handleParkSelectionChange = (e) => {
-        const parkId = e.target.value;
-        setSelectedParkId(parkId);
-        handleParkChange(parkId); // Pass the selected park ID to the parent component
+        selectedParkId = e.target.value;
+        handleParkChange(selectedParkId); // Pass the selected park ID to the parent component
     };
 
     return (
@@ -37,15 +41,15 @@ function AddTripModal({ addTripSubmit, parks, setShowAddTrip, handleParkChange }
                 <form onSubmit={handleSubmit}>
                     <div className="inputCont">
                         <div id="tripInfo">Trip Name:</div >
-                        <input type="text" id="trip_name" name="trip_name" value={tripName} onChange={(e) => setTripName(e.target.value)} placeholder="Trip Name" required />
+                        <input type="text" id="trip_name" name="trip_name" value={tripName} onChange={(e) => handleNameChange(e.target.value)} placeholder="Trip Name" required />
                     </div>
                     <div className="inputCont">
                         <div id="tripInfo">Start Date:</div>
-                        <input type="date" id="trip_startDate" name="trip_startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                        <input type="date" id="trip_startDate" name="trip_startDate" value={startDate} onChange={(e) => startDate = e.target.value} />
                     </div>
                     <div className="inputCont">
                         <div id="tripInfo">End Date:</div>
-                        <input type="date" id="trip_endDate" name="trip_endDate" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                        <input type="date" id="trip_endDate" name="trip_endDate" value={endDate} onChange={(e) => endDate = e.target.value} />
                     </div>
                     <div>
                         <div id="tripInfo">Choose a Park:</div>

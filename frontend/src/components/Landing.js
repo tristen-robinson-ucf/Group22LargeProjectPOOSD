@@ -301,6 +301,21 @@ function Landing(){
     };
 
     var parkID;
+    var tripID;
+    var tripName;
+
+    const setTripID = async (id) =>
+    {
+        tripID = id
+    }
+    const setParkID = async (id) =>
+    {
+        parkID = parseInt(id)
+    }
+    const setTripName = async (name) =>
+    {
+        tripName = name
+    }
 
     useEffect(() => {
         parkID = parseInt(selectedParkId)
@@ -314,21 +329,21 @@ function Landing(){
         const userID = userData.id;
 
         var addTripObj = {
-            name: ele.name, 
+            name: tripName, 
             startDate: ele.startDate,
             endDate: ele.endDate,
             userID: userID,  
-            parkID: parkID,
-            rides: ele.rides
+            parkID: parkID
         }
         console.log(addTripObj)
+        console.log(JSON.stringify(addTripObj))
         try{
             const response = await fetch(buildPath('api/addTrip'), {
                 method: 'POST', 
                 headers: {
                     'Content-Type' : 'application/json'
                 },
-                body: addTripObj
+                body: JSON.stringify(addTripObj)
             });
 
             if (!response.ok){
@@ -338,19 +353,19 @@ function Landing(){
             const responseData = await response.json();
             //debug 
             console.log("responseData.message: ", responseData.message);
-
-            console.log('Selected Trip ID:', selectedTripId);
+            
+            fetchSavedTrips();
             // console.log('Trips Array:', trip);
             // console.log('Rides Aray', rides);
 
             //uodate saved parks immediately
-            const selectedTrip = savedTrips.find(trip => trip.tripID === parseInt(selectedTripId));
-            if (selectedTrip) {
-                // Update savedParks state to include the newly added park
-                setSavedParks(prevSavedParks => [...prevSavedParks, selectedTrip]);
-            } else {
-                console.error('Selected park not found');
-            }
+            // const selectedTrip = savedTrips.find(trip => trip.tripID === parseInt(selectedTripId));
+            // if (selectedTrip) {
+            //     // Update savedParks state to include the newly added park
+            //     setSavedParks(prevSavedParks => [...prevSavedParks, selectedTrip]);
+            // } else {
+            //     console.error('Selected park not found');
+            // }
             //update park list after adding a new 
             //await fetchSavedParks();
 
@@ -530,8 +545,8 @@ const fetchRides = async event => {
             data = await response.text();
         }
         console.log(data);
-        ridesData = data;
-        rides = extractRideInfo(ridesData);
+        var ridesData = data;
+        var rides = extractRideInfo(ridesData);
 
         return rides;
     }
@@ -828,7 +843,8 @@ const seeTripDetails = async(trip) => {
               addTripSubmit={addTripSubmit}
               parks={parks}
               setShowAddTrip={setShowAddTrip}
-              handleParkChange={setSelectedParkId}
+              handleParkChange={setParkID}
+              handleNameChange={setTripName}
             />
           )}
         </div>

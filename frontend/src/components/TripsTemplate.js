@@ -260,6 +260,41 @@ function TripsTemplate(tripID)
         createRideButtons();
     }
     
+    const deleteFromTrip = async (rideID) => 
+    {
+        try
+        {
+            const obj = {
+                tripID: tripID,
+                rideID: rideID
+            };
+
+            console.log(obj);
+            const requestBody = JSON.stringify(obj);
+            console.log(requestBody)
+            const response = await fetch(buildPath('api/deleteRide'),{
+                method: 'POST',
+                headers: {'Content-Type' : 'application/json'},
+                body: requestBody
+            });
+            console.log(`response status is ${response.status}`);
+            const mediaType = response.headers.get('content-type');
+            let data;
+            if (mediaType.includes('json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+            rides = rides.filter(ride => ride.id !== rideID);
+            const avgWaitTimes = await fetchAverageWaitTimes(rides); 
+            createRideButtons(avgWaitTimes)
+        }
+        catch(e)
+        {
+            alert(e.toString());
+            return;
+        }
+    }
     
 
     function createRideButtons(avgWaitTimes)
@@ -279,6 +314,9 @@ function TripsTemplate(tripID)
                 <div key={ride.id} className='rideCard'>
                     <div className='rideInfo'>
                         <h3> {ride.name}</h3>
+                   </div>
+                   <div>
+                        <button onClick={() => deleteFromTrip(ride.id)}>Delete</button>
                    </div>
                     <div className= 'waitTimeContainer'>
                         <span className='waitTimeTitle'>Current Time:</span>
