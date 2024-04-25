@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function AddTripModal({ addTripSubmit, parks, setShowAddTrip }) {
+function AddTripModal({ addTripSubmit, parks, setShowAddTrip, handleParkChange }) {
     const [tripName, setTripName] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -20,6 +20,12 @@ function AddTripModal({ addTripSubmit, parks, setShowAddTrip }) {
         setStartDate('');
         setEndDate('');
         setSelectedParkId('');
+    };
+
+    const handleParkSelectionChange = (e) => {
+        const parkId = e.target.value;
+        setSelectedParkId(parkId);
+        handleParkChange(parkId); // Pass the selected park ID to the parent component
     };
 
     return (
@@ -43,7 +49,7 @@ function AddTripModal({ addTripSubmit, parks, setShowAddTrip }) {
                     </div>
                     <div>
                         <div id="tripInfo">Choose a Park:</div>
-                        <select id="parkSelect" onChange={(e) => setSelectedParkId(e.target.value)} value={selectedParkId}>
+                        <select id="parkSelect" onChange={handleParkSelectionChange} value={selectedParkId}>
                             <option value="">Select a park...</option>
                             {parks.map((park, index) => (
                                 <option key={index} value={park.id}>{park.name}</option>
@@ -51,8 +57,8 @@ function AddTripModal({ addTripSubmit, parks, setShowAddTrip }) {
                         </select>
                     </div>
                     <div className="tripBtns">
-                     <button id="createBtn" type="submit">Create Trip</button>
-                     <button className="cancelParkModal" onClick={() => setShowAddTrip(false)}>Close</button>
+                        <button id="createBtn" type="submit">Create Trip</button>
+                        <button className="cancelParkModal" onClick={() => setShowAddTrip(false)}>Close</button>
                     </div>
                 </form>
             </div>

@@ -298,7 +298,13 @@ function Landing(){
         document.getElementById('parkSelect').value = ''; 
         */
     };
-    
+
+    var parkID;
+
+    useEffect(() => {
+        parkID = parseInt(selectedParkId)
+        
+        }, [selectedParkId]); // Only re-run the effect if selectedRideId changes
 
     const addTripSubmit = async () => {
         const userDataString = localStorage.getItem('user_data');
@@ -306,20 +312,22 @@ function Landing(){
         console.log("userData: ", userData);
         const userID = userData.id;
 
+        var addTripObj = {
+            name: userData.name, 
+            startDate: userData.startDate,
+            endDate: userData.endDate,
+            userID: userID,  
+            parkID: parkID,
+            rides: userData.rides
+        }
+        console.log(addTripObj)
         try{
             const response = await fetch(buildPath('api/addTrip'), {
                 method: 'POST', 
                 headers: {
                     'Content-Type' : 'application/json'
                 },
-                body: JSON.stringify({
-                    name: userData.name, 
-                    startDate: userData.startDate,
-                    endDate: userData.endDate,
-                    userID: userID,  
-                    parkID: parseInt(selectedTripId),
-                    rides: userData.rides
-                })
+                body: addTripObj
             });
 
             if (!response.ok){
@@ -601,215 +609,159 @@ const seeTripDetails = async(trip) => {
         setShowColorPicker(false); 
     };
 
-
-    return(
-        <div id = "app">
-            <div className="landing">
-                <div style ={{height: '100%'}}>
-                    <div className="inner-landing">
-                        <div class style = {{display: 'flex', flexDirection: 'column', width: '100%', overflow:'hidden'}}>
-                            <header style = {{background:  '#f78254',  maxWidth: '100vw', userSelect:'none'}}>
-                                <div class="topbar" style ={{width: '100%', maxWidth: '100vw', height: '32px', opacity: '1', transition: 'opacity 700ms ease 0s, color 700ms ease 0s', position: 'relative'}}>
-                                    <div style ={{display:'flex', justifyContent: 'space-between', alignItem: 'center', overflow: 'hidden', height: '32px', paddingLeft:'12px', paddingRight:'10px'}}>
-                                    {/* this for the top bar content */}
-                                    <div className="logoutCont">
-                                        <button className="logoutButton" onClick={() => logOut ()}>Logout</button>
-                                    </div>
-                                    </div>
-                                </div>
-                            </header>
-                            <main class ="frame" style={{display: 'flex', flexDirection:'column', height: 'calc(-45px + 100vh)'}}>
-                                <div style= {{flex :'1', overflowY: 'auto'}}>
-                                    <div>
-                                        <section className = "saved-parks">
-                                            <div className="saved-section">
-                                                <div id="saved-title">
-                                                    <h3>Saved Parks</h3> 
-                                                </div>
-                                                <div id="title-icons">
-                                                     <div className="addPark">
-                                                        <button id ="addParkBtn" onClick={addPark}>Add Park</button>
-                                                    </div>   
-                                                    <button className="searchBtn" onClick={toggleSearchBar}>Search</button>
-                                                    {showSearchBar && (
-                                                        <div className="searchBar" ref={inputRef}>
-                                                             <input
-                                                                type="text"
-                                                                value={searchInp}
-                                                                onChange={(e) => 
-                                                                    {
-                                                                        setSearchInp(e.target.value);
-                                                                        searchPark();
-                                                                    }}
-                                                                    placeholder="Search Park"
-                                                            />
-                                                       {/*} <button onClick={searchPark}>Search</button>*/}
-                                                    </div>
-                                                  )}  
-                                                </div> 
-                                                <div className="borderBttm"></div>      
-                                            </div>
-                                            <div className="scroll">
-                                                < div className ="parkCardCont">
-                                                    {(searchInp ? searchResults : savedParks).map((park,index) => (
-                                                        <ParkCard
-                                                            key={index}
-                                                            park={park}
-                                                            deletePark={deletePark}
-                                                            seeWaitTimes={seeWaitTimes}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </div>               
-                                        </section>
-
-                                        <section className="saved Trips">
-                                            <div className="saved-section">
-                                                <div id="saved-title">
-                                                     <h3>Planned Trips</h3>
-                                                </div>
-                                                <div id="title-icons">
-                                        
-                                                <button id="addTripBtn" onClick={addTrip}>Add trip</button>
-                                                <button className="searchBtnTrip" onClick={toggleTripSearchBar}>Search</button>
-                                                    {showTripSearchBar && (
-                                                        <div className="searchBar" ref={inputRef}>
-                                                             <input
-                                                                type="text"
-                                                                value={tripSearchInp}
-                                                                onChange={(e) => 
-                                                                    {
-                                                                        setTripSearchInp(e.target.value);
-                                                                        searchTrips();
-                                                                    }}
-                                                                    placeholder="Search Trip"
-                                                            />
-                                                    </div>
-
-//from here                                                )}
-                                                            </div>*/} 
-                                               
-                                        </section>
-                                        {/* Code here is test api calls */}
-
-                                                     )} 
-                                                <button onClick={deleteTrip}>Delete Trip</button>
-                                                <button onClick={updateTrip}>Update Trip</button>
-                                                {/*<button onClick={() => addTripSubmit()}>addTripSubmit Trip</button>*/}
-                                                <button onClick={() => deleteTrip("Trip Name")}>Delete Trip</button>
-                                                <button onClick={() => searchTrip(65,"Trip Name")}>Search Trip</button>
-                                            </div>
-                                            <div className="borderBttm"></div>  
-                                        </div>
-/*to here there may be conflicts, I was unsure so I wanted to leave both*/
-
-                                        
-                                        
-                                        {/* may not need to be a form, form is for  */}
-                                        {/* <form>
-                                            <div>
-                                                <label for="trip_name">Trip Name:</label>
-                                                <input type="text" id="trip_name" name="trip_name"></input>
-                                            </div>
-                                            <div>
-                                                <label for="trip_startDate">Start Date:</label>
-                                                <input type="date" id="trip_startDate" name="trip_startDate"></input>
-                                            </div>
-                                            <div>
-                                                <label for="trip_endDate">End Date:</label>
-                                                <input type="date" id="trip_endDate" name="trip_endDate"></input>
-                                            </div>
-                                            <input type="submit" value="Create Trip"></input>
-                                        </form> */}
-                                            {/* div className= "scrollVert" */}
-                                            <div className="scroll">
-                                                < div className ="parkCardCont">
-                                                    {isLoading ? (
-                                                        <p>Loading parks...</p>
-                                                    ) : (
-                                                        savedTrips.map((trip,index) => (
-                                                        <TripCard
-                                                            key={index}
-                                                            trip={trip}
-                                                            deleteTrip={deleteTrip}
-                                                            seeTripDetails={seeTripDetails}
-                                                            park={parks.find(park => park.id === trip[2]).name}
-                                                        />
-                                                    )))}
-                                                </div>
-                                            </div>   
-
-                                        </section>
-                                        <button onClick={toggleAddTripDiv}>Add trip</button>
-                                        <div id='trip_form' style={{display: 'none'}}>
-                                            {/* should I make the code below into a form....event listener vs onClick? */}
-                                            <form id='trip_data'>
-                                                <div>
-                                                    <label for="trip_name">Trip Name:</label>
-                                                    <input type="text" id="trip_name" name="trip_name" placeholder="Trip Name" required></input>
-                                                </div>
-                                                <div>
-                                                    <label for="trip_startDate">Start Date:</label>
-                                                    <input type="date" id="trip_startDate" name="trip_startDate"></input>
-                                                </div>
-                                                <div>
-                                                    <label for="trip_endDate">End Date:</label>
-                                                    <input type="date" id="trip_endDate" name="trip_endDate"></input>
-                                                </div>
-                                                    
-                                                <div>
-                                                    <label>Choose a Park: </label>
-                                                    <select id='parkSelect' onChange={(e) => setSelectedParkId(e.target.value)}>
-                                                        <option value ="">Select a park... </option>
-                                                        {parks.map((park, index) => (
-                                                            <option key= {index} value={park.id}>{park.name}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                                
-                                                <button onClick={addTripSubmit}>Create Trip</button>
-                                                {/*<input id="createTrip" type="submit" onClick={addTrip} value="Create Trip"></input>*/}
-
-                                            </form>
-                                        </div>
-                                            
-
-                                     
-                                        
-                                                    
-                                        {/* <label for="userInput">Please enter something:</label><br>
-                                        <input type="text" id="userInput" name="userInput"><br>
-                                        <input type="submit" value="Submit"> */}
-                                    
-                                        
-
-
-                                        </section>
-                                    </div>
-                                </div>
-                            </main>
-                         </div>    
+    return (
+        <div id="app">
+          <div className="landing">
+            <div style={{ height: '100%' }}>
+              <div className="inner-landing">
+                <div style={{ display: 'flex', flexDirection: 'column', width: '100%', overflow: 'hidden' }}>
+                  <header style={{ background: '#f78254', maxWidth: '100vw', userSelect: 'none' }}>
+                    <div className="topbar" style={{ width: '100%', maxWidth: '100vw', height: '32px', opacity: '1', transition: 'opacity 700ms ease 0s, color 700ms ease 0s', position: 'relative' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden', height: '32px', paddingLeft: '12px', paddingRight: '10px' }}>
+                        {/* this for the top bar content */}
+                        <div className="logoutCont">
+                          <button className="logoutButton" onClick={() => logOut()}>Logout</button>
+                        </div>
+                      </div>
                     </div>
+                  </header>
+                  <main className="frame" style={{ display: 'flex', flexDirection: 'column', height: 'calc(-45px + 100vh)' }}>
+                    <div style={{ flex: '1', overflowY: 'auto' }}>
+                      <section className="saved-parks">
+                        <div className="saved-section">
+                          <div id="saved-title">
+                            <h3>Saved Parks</h3>
+                          </div>
+                          <div id="title-icons">
+                            <div className="addPark">
+                              <button id="addParkBtn" onClick={addPark}>Add Park</button>
+                            </div>
+                            <button className="searchBtn" onClick={toggleSearchBar}>Search</button>
+                            {showSearchBar && (
+                              <div className="searchBar" ref={inputRef}>
+                                <input
+                                  type="text"
+                                  value={searchInp}
+                                  onChange={(e) => {
+                                    setSearchInp(e.target.value);
+                                    searchPark();
+                                  }}
+                                  placeholder="Search Park"
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div className="borderBttm"></div>
+                        </div>
+                        <div className="scroll">
+                          <div className="parkCardCont">
+                            {(searchInp ? searchResults : savedParks).map((park, index) => (
+                              <ParkCard
+                                key={index}
+                                park={park}
+                                deletePark={deletePark}
+                                seeWaitTimes={seeWaitTimes}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </section>
+      
+                      <section className="saved Trips">
+                        <div className="saved-section">
+                          <div id="saved-title">
+                            <h3>Planned Trips</h3>
+                          </div>
+                          <div id="title-icons">
+                            <button id="addTripBtn" onClick={addTrip}>Add trip</button>
+                            <button className="searchBtnTrip" onClick={toggleTripSearchBar}>Search</button>
+                            {showTripSearchBar && (
+                              <div className="searchBar" ref={inputRef}>
+                                <input
+                                  type="text"
+                                  value={tripSearchInp}
+                                  onChange={(e) => {
+                                    setTripSearchInp(e.target.value);
+                                    searchTrips();
+                                  }}
+                                  placeholder="Search Trip"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="borderBttm"></div>
+                        <div className="scroll">
+                          <div className="parkCardCont">
+                            {isLoading ? (
+                              <p>Loading parks...</p>
+                            ) : (
+                              savedTrips.map((trip, index) => (
+                                <TripCard
+                                  key={index}
+                                  trip={trip}
+                                  deleteTrip={deleteTrip}
+                                  seeTripDetails={seeTripDetails}
+                                  park={parks.find(park => park.id === trip[2]).name}
+                                />
+                              ))
+                            )}
+                          </div>
+                        </div>
+                        {/*<button onClick={toggleAddTripDiv}>Add trip</button>*/}
+                        <div id='trip_form' style={{ display: 'none' }}>
+                          <form id='trip_data'>
+                            <div>
+                              <label htmlFor="trip_name">Trip Name:</label>
+                              <input type="text" id="trip_name" name="trip_name" placeholder="Trip Name" required></input>
+                            </div>
+                            <div>
+                              <label htmlFor="trip_startDate">Start Date:</label>
+                              <input type="date" id="trip_startDate" name="trip_startDate"></input>
+                            </div>
+                            <div>
+                              <label htmlFor="trip_endDate">End Date:</label>
+                              <input type="date" id="trip_endDate" name="trip_endDate"></input>
+                            </div>
+                            <div>
+                              <label>Choose a Park: </label>
+                              <select id='parkSelect' onChange={(e) => setSelectedParkId(e.target.value)}>
+                                <option value="">Select a park... </option>
+                                {parks.map((park, index) => (
+                                  <option key={index} value={park.id}>{park.name}</option>
+                                ))}
+                              </select>
+                            </div>
+                            <button onClick={addTripSubmit}>Create Trip</button>
+                          </form>
+                        </div>
+                      </section>
+                    </div>
+                  </main>
                 </div>
+              </div>
             </div>
-            {selectedPark && <RidesPage parkID={selectedPark} />}
-            {showAddPark && (
-                <AddParkModal
-                    parks={parks}
-                    setSelectedParkId={setSelectedParkId}
-                    addParkSubmit={addParkSubmit}
-                    setShowAddPark={setShowAddPark}
-                />
-            )}
-            {showAddTrip && (
-                <AddTripModal
-                    addTripSubmit={addTripSubmit} 
-                    parks={parks} 
-                    setShowAddTrip={setShowAddTrip}
-                />
-            )}
+          </div>
+          {selectedPark && <RidesPage parkID={selectedPark} />}
+          {showAddPark && (
+            <AddParkModal
+              parks={parks}
+              setSelectedParkId={setSelectedParkId}
+              addParkSubmit={addParkSubmit}
+              setShowAddPark={setShowAddPark}
+            />
+          )}
+          {showAddTrip && (
+            <AddTripModal
+              addTripSubmit={addTripSubmit}
+              parks={parks}
+              setShowAddTrip={setShowAddTrip}
+              handleParkChange={setSelectedParkId}
+            />
+          )}
         </div>
-    );
+      );
+      
 };
 
 export default Landing;
