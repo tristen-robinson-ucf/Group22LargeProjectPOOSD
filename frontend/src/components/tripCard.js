@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SketchPicker } from 'react-color';
 
 function TripCard({ trip, deleteTrip, seeTripDetails, park }) {
@@ -8,12 +8,27 @@ function TripCard({ trip, deleteTrip, seeTripDetails, park }) {
         return savedColors[trip] || '#9B9B9B'; 
     });
     const [showColorPicker, setShowColorPicker] = useState(false);
+    const colorPickerRef = useRef(null);
+    const buttonRef = useRef(null);
 
     //save the color
     useEffect(() => {
         const savedColors = JSON.parse(localStorage.getItem('tripColors')) || {};
         localStorage.setItem('tripColors', JSON.stringify({ ...savedColors, [trip]: selectedColor }));
     }, [trip, selectedColor]);
+
+    //colorpicker was going off screen (fix)
+    useEffect(() => {
+        if (showColorPicker) {
+            const buttonRect = buttonRef.current.getBoundingClientRect();
+            const colorPickerRect = colorPickerRef.current.getBoundingClientRect();
+            const desiredLeft = buttonRect.left + buttonRect.width;
+            if (colorPickerRect.bottom > window.innerHeight) {
+                colorPickerRef.current.style.left = `${desiredLeft}px`;
+                colorPickerRef.current.style.top = `${window.innerHeight - colorPickerRect.height}px`;
+            }
+        }
+    }, [showColorPicker]);
 
     const toggleColorPicker = () => {
         setShowColorPicker(!showColorPicker);
@@ -26,10 +41,10 @@ function TripCard({ trip, deleteTrip, seeTripDetails, park }) {
     return (
         <div className="parkCard">
             <div className="parkCardTop" style={{ backgroundColor: selectedColor }}>
-                <button onClick={toggleColorPicker}>...</button>
+                <button ref={buttonRef} onClick={toggleColorPicker}>...</button>
             </div>
             {showColorPicker && (
-                <div className="colorPickerWindow">
+                <div className="colorPickerWindow" ref={colorPickerRef}>
                     <SketchPicker
                         color={selectedColor}
                         onChange={changeColor}
