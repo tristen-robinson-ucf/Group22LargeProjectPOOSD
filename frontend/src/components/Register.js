@@ -18,6 +18,24 @@ function Register()
     const [verificationCode, setVerificationCode] = useState('');
     const [enteredCode, setEnteredCode] = useState('');
     const [codeVerified, setCodeVerified] = useState('');
+    const [passMessage, setPassMessage] = useState('');
+
+    //regex for the password requirements 
+    const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    const handlePasswordInput = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+        
+        //make sure the password fits the requirements 
+        if (!passwordRequirements.test(newPassword)) {
+            setPassMessage('* Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and a special character.');
+        } else {
+            setPassMessage('');
+        }
+    };
+
+
 
     const doRegister = async event => 
     {
@@ -28,8 +46,9 @@ function Register()
          username, 
          password, 
          firstname: firstName,
+         lastname : lastName,
          email : regEmail, 
-         phonenumber: phoneNumber
+         phone: phoneNumber
        };
 
         //var obj = {username,password,firstname:firstName,lastname:lastName,email,phonenumber:phoneNumber};
@@ -46,7 +65,7 @@ function Register()
 
             if( res.status != 200 )
             {
-                setMessage('Fix this later, it probably worked :/');
+                setMessage('User Registered!');
             }
             else
             {
@@ -54,7 +73,7 @@ function Register()
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
-                //window.location.href = '/register';
+                window.location.href = '/landing'; //once user registers -> landing
             }
         }
         catch(e)
@@ -164,7 +183,7 @@ function Register()
                 </div>
                 <div>
                     <span class="details">Password</span>
-                    <input type='password' id='registerPassword' placeholder='Password'  value = {password} onChange={(e) => setPassword(e.target.value)}required /><br />
+                    <input type='password' id='registerPassword' placeholder='Password'  value = {password} onChange={handlePasswordInput}required /><br />
                 </div>
                 <div className= "centered">
                     <span class="centDetails">Confirm Password</span>
@@ -174,7 +193,7 @@ function Register()
             
             <div className= "cont">
                 <div class="regBttn">
-                    <input type='submit' class='buttons' value='Register' />
+                    <input type='submit' class='buttons' value='Register' disabled={passMessage !== ''}/>
                 </div>
                 
                 <div className="parent">
@@ -184,7 +203,7 @@ function Register()
                      </div>
                 </div>
             </div>
-            <span id='registerResult'>{message}</span>
+            <span id='registerResult' style={{display: 'inline-block', textAlign:'center', verticalAlign: 'middle'}}>{passMessage}</span>
         </form>
       </div>
     ) : (

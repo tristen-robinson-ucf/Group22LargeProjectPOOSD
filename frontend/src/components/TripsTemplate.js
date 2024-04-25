@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './css/rides.css';
-import { useNavigate} from 'react-router-dom';
 
-function RidesTemplate(parkID)
+function TripsTemplate(tripID)
 {
-    const navigate = useNavigate();
-    console.log('park id within rides template', parkID);
+    const [parks, setParks] = useState([]);
+
+    //console.log('park id within rides template', tripID);
     try
     {
-        parkID = parkID.parkID
+        tripID = parseInt(tripID.tripID)
     }
     catch(e)
     {
@@ -19,18 +19,25 @@ function RidesTemplate(parkID)
     const alphabetical = 0;
     const waitTime = 1;
 
+    var data = localStorage.getItem('user_data')
+    var parsedData = JSON.parse(data)
+    const userID = parsedData.id
+
     var sortBy = alphabetical;
+
+    var park;
+    var trip;
+    var parkID;
 
     var ridesData = []
     var rides = []
-
-    var trips;
 
     const app_name = 'group-22-0b4387ea5ed6'
     const [avgWaitTimes, setAvgWaitTimes] = useState({});
 
     useEffect(() => {
-        getTrips()
+        fetchParks()
+        //fetchRides()
         const fetchData = async () => {
             const ridesResponse = await fetchRides(); 
             const avgWaitTimes = await fetchAverageWaitTimes(ridesResponse); 
@@ -52,12 +59,65 @@ function RidesTemplate(parkID)
         }
     }
 
+    const fetchParks = async () =>{
+        try{
+            const response = await fetch(buildPath('api/parks'), {
+                method: 'GET' 
+            });
+
+            if (!response.ok){
+                throw new Error('Error fetching parks');
+            }
+            const data = await response.json();
+            const parsedData = extractParkInfo(data);
+            setParks(parsedData);
+        } catch(error){
+            console.error(error);
+        }
+    };
+
+    const extractTripInfo = (jsonData) => {
+        // Ensure 'results' property exists and is an array
+        if (!jsonData || !Array.isArray(jsonData['results']) || !jsonData['results'].length) {
+          return []; // Return empty array if 'results' is missing, not an array, or empty
+        }
+      
+        const trips = [];
+        const tripLength = 4; // Constant for trip info length
+      
+        // Iterate through results, checking for validity within the array
+        for (let i = 0; i < jsonData['results'].length; i += tripLength) {
+          if (i + tripLength <= jsonData['results'].length) {
+            const trip = [
+              jsonData['results'][i],
+              jsonData['results'][i + 1],
+              jsonData['results'][i + 2],
+              jsonData['results'][i + 3],
+            ];
+            trips.push(trip);
+          }
+        }
+      
+        return trips;
+      };
+
+      const extractParkInfo = (jsonData) => {
+        return jsonData.flatMap((company) => company.parks.map((park) =>({
+            id: park.id,
+            name : park.name
+        })));
+    };
+
     const fetchRides = async event => {
-        var obj = {parkID:parkID};
-        var js = JSON.stringify(obj);
-    
         try {    
-            const response = await fetch(buildPath('api/rides'), {headers:{'Content-Type': 'application/json'}, body:js, method: 'POST'});
+            const response = await fetch(buildPath('api/searchTrip'),{
+                method: 'POST',
+                headers: {'Content-Type' : 'application/json'},
+                body: JSON.stringify({
+                    search : "",
+                    userID : userID
+                })
+            });
             console.log(`response status is ${response.status}`);
             const mediaType = response.headers.get('content-type');
             let data;
@@ -66,10 +126,36 @@ function RidesTemplate(parkID)
             } else {
                 data = await response.text();
             }
-            console.log(data);
-            ridesData = data;
-            rides = extractRideInfo(ridesData);
-
+            console.log("tripID: ", tripID)
+            const trips = extractTripInfo(data)
+            trip = await trips.find(object => object[1] === tripID)
+            var rideIDs = trip[3]
+            parkID = trip[2]
+            park = await parks.find(object => object.id === trip[2])
+            var obj = {parkID:trip[2]};
+            var js = JSON.stringify(obj);
+    
+            const response2 = await fetch(buildPath('api/rides'), {headers:{'Content-Type': 'application/json'}, body:js, method: 'POST'});
+            console.log(`response status is ${response.status}`);
+            const mediaType2 = response.headers.get('content-type');
+            let data2;
+            if (mediaType.includes('json')) {
+                data2 = await response2.json();
+            } else {
+                data2 = await response2.text();
+            }
+            console.log(data2);
+            var ridesData2 = data2;
+            var rides2 = extractRideInfo(ridesData2);
+            for (let rideID of rideIDs) {
+                for (let ride of rides2) {
+                    if (ride.id === rideID && !rides.some(existingRide => existingRide.id === rideID)) {
+                        rides.push(ride);
+                        break;
+                    }
+                }
+            }
+            console.log(rides)
             return rides;
         }
         catch(e) {
@@ -174,83 +260,10 @@ function RidesTemplate(parkID)
         createRideButtons();
     }
     
-    const getTrips = async event => 
-    {
-        var data = localStorage.getItem('user_data')
-        var parsedData = JSON.parse(data)
-        const userID = parsedData.id
-        try
-        {
-            const response = await fetch(buildPath('api/searchTrip'),{
-                method: 'POST',
-                headers: {'Content-Type' : 'application/json'},
-                body: JSON.stringify({
-                    search : "",
-                    userID : userID
-                })
-            });
-            console.log(`response status is ${response.status}`);
-            const mediaType = response.headers.get('content-type');
-            let data;
-            if (mediaType.includes('json')) {
-                data = await response.json();
-            } else {
-                data = await response.text();
-            }
-            trips = extractTripInfo(data)
-        }
-        catch(e)
-        {
-            alert(e.toString());
-            return;
-        }
-    }
-
-    const extractTripInfo = (jsonData) => {
-        // Ensure 'results' property exists and is an array
-        if (!jsonData || !Array.isArray(jsonData['results']) || !jsonData['results'].length) {
-          return []; // Return empty array if 'results' is missing, not an array, or empty
-        }
-      
-        const trips = [];
-        const tripLength = 4; // Constant for trip info length
-      
-        // Iterate through results, checking for validity within the array
-        for (let i = 0; i < jsonData['results'].length; i += tripLength) {
-          if (i + tripLength <= jsonData['results'].length) {
-            const trip = [
-              jsonData['results'][i],
-              jsonData['results'][i + 1],
-              jsonData['results'][i + 2],
-              jsonData['results'][i + 3],
-            ];
-            trips.push(trip);
-          }
-        }
-      
-        return trips;
-      };
-
-      const toggleAddTripDiv = async (id) => {
-        console.log(id)
-        const div = document.getElementById(id);
-        if (div.style.display === 'none') {
-            div.style.display = 'block'; // Or 'flex', 'grid', etc., depending on your layout needs
-        } else {
-            div.style.display = 'none';
-        }
-        rideID = id;
-        console.log(rideID);
-    }
-
-    var tripID;
-    var rideID;
-
-    const addRideToTrip = async event =>
+    const deleteFromTrip = async (rideID) => 
     {
         try
         {
-
             const obj = {
                 tripID: tripID,
                 rideID: rideID
@@ -259,7 +272,7 @@ function RidesTemplate(parkID)
             console.log(obj);
             const requestBody = JSON.stringify(obj);
             console.log(requestBody)
-            const response = await fetch(buildPath('api/addRide'),{
+            const response = await fetch(buildPath('api/deleteRide'),{
                 method: 'POST',
                 headers: {'Content-Type' : 'application/json'},
                 body: requestBody
@@ -272,6 +285,9 @@ function RidesTemplate(parkID)
             } else {
                 data = await response.text();
             }
+            rides = rides.filter(ride => ride.id !== rideID);
+            const avgWaitTimes = await fetchAverageWaitTimes(rides); 
+            createRideButtons(avgWaitTimes)
         }
         catch(e)
         {
@@ -279,6 +295,7 @@ function RidesTemplate(parkID)
             return;
         }
     }
+    
 
     function createRideButtons(avgWaitTimes)
     {
@@ -298,19 +315,8 @@ function RidesTemplate(parkID)
                     <div className='rideInfo'>
                         <h3> {ride.name}</h3>
                    </div>
-                   <div className='addToTripsContainer'>
-                        <button onClick={() => {
-                            toggleAddTripDiv(ride.id);
-                            }}>Add to a trip</button>
-                        <div id={ride.id} style={{display: 'none'}}>
-                            <select id='tripsSelect' onChange={(e) => tripID = parseInt(e.target.value)}>
-                                <option value ="">Select a trip... </option>
-                                {trips.map((trip, index) => (
-                                    <option key= {index} value={trip[1]}>{trip[0]}</option>
-                                ))}
-                            </select>
-                            <button onClick={addRideToTrip}>Add ride to trip</button>
-                        </div>
+                   <div>
+                        <button onClick={() => deleteFromTrip(ride.id)}>Delete</button>
                    </div>
                     <div className= 'waitTimeContainer'>
                         <span className='waitTimeTitle'>Current Time:</span>
@@ -334,34 +340,18 @@ function RidesTemplate(parkID)
         setRideContent(rideCards);
     };
 
-    const logOut = async () => {
-        navigate(`/landing`);
-    };
-
+    
 
     return(
-        <>
-        <div className="ridesTemp">
-        <header style = {{background:  '#f78254',  maxWidth: '100vw', userSelect:'none', position: 'fixed', width: '100%'}}>
-             <div class="topbar" style ={{width: '100%', maxWidth: '100vw', height: '32px', opacity: '1', transition: 'opacity 700ms ease 0s, color 700ms ease 0s', position: 'relative', paddingBottom: '20px'}}>
-                 <div style ={{display:'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden', height: '32px', paddingLeft:'12px', paddingRight:'10px'}}>
-                     <div className="logoutCont">
-                         <button className="logoutButton" onClick={() => logOut ()}>Return</button>
-                     </div>
-                 </div>
-            </div>
-        </header>
-        </div>
         <div id='rides'>
             {/*<label htmlFor="sortBy">Sort by:</label>
             <select id="sortBy" name="sortBy" onChange={() => sortRides()}>
                 <option value={alphabetical}>Alphabetical</option>
                 <option value={waitTime}>Wait Time</option>
-    </select>*/}
+            </select>*/}
             {rideContent}
         </div>
-    </>
-    );
+    )
 }
 
-export default RidesTemplate;
+export default TripsTemplate;

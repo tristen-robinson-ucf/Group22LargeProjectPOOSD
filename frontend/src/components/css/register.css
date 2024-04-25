@@ -118,7 +118,8 @@
 
 form .regBttn{
   height: 45px;
-  margin: 35px 0
+  margin: 35px 0;
+  transition: all 0.3s ease;
 }
 
 form .regBttn input{
@@ -132,7 +133,7 @@ form .regBttn input{
   font-weight: 500;
   letter-spacing: 1px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
 }
 
 .regBttn:hover{
