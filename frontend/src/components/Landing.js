@@ -95,7 +95,11 @@ function Landing(){
     const fetchParks = async () =>{
         try{
             const response = await fetch(buildPath('api/parks'), {
-                method: 'GET' 
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
             });
 
             if (!response.ok){
