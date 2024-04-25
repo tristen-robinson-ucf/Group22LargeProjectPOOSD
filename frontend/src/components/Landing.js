@@ -741,7 +741,7 @@ const seeTripDetails = async(trip) => {
                             <h3>Planned Trips</h3>
                           </div>
                           <div id="title-icons">
-                            <button id="addTripBtn" onClick={addTrip}>Add trip</button>
+                            <button id="addTripBtn" onClick={addTrip}>Add Trip</button>
                             <button className="searchBtnTrip" onClick={toggleTripSearchBar}>Search</button>
                             {showTripSearchBar && (
                               <div className="searchBar" ref={inputRef}>
@@ -757,8 +757,8 @@ const seeTripDetails = async(trip) => {
                               </div>
                             )}
                           </div>
+                         <div className="borderBttm"></div>
                         </div>
-                        <div className="borderBttm"></div>
                         <div className="scroll">
                           <div className="parkCardCont">
                             {isLoading ? (

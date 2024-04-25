@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './css/rides.css';
 import { useNavigate} from 'react-router-dom';
+import './css/landing.css';
 
 function RidesTemplate(parkID)
 {
@@ -15,6 +16,7 @@ function RidesTemplate(parkID)
         console.log(e)
     }
     const [rideContent, setRideContent] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const alphabetical = 0;
     const waitTime = 1;
@@ -232,15 +234,16 @@ function RidesTemplate(parkID)
       };
 
       const toggleAddTripDiv = async (id) => {
+        setIsModalVisible(!isModalVisible);
         console.log(id)
         const div = document.getElementById(id);
         if (div.style.display === 'none') {
-            div.style.display = 'block'; // Or 'flex', 'grid', etc., depending on your layout needs
+            div.style.display = 'block'; 
         } else {
             div.style.display = 'none';
         }
         rideID = id;
-        console.log(rideID);
+        
     }
 
     var tripID;
@@ -298,20 +301,7 @@ function RidesTemplate(parkID)
                     <div className='rideInfo'>
                         <h3> {ride.name}</h3>
                    </div>
-                   <div className='addToTripsContainer'>
-                        <button onClick={() => {
-                            toggleAddTripDiv(ride.id);
-                            }}>Add to a trip</button>
-                        <div id={ride.id} style={{display: 'none'}}>
-                            <select id='tripsSelect' onChange={(e) => tripID = parseInt(e.target.value)}>
-                                <option value ="">Select a trip... </option>
-                                {trips.map((trip, index) => (
-                                    <option key= {index} value={trip[1]}>{trip[0]}</option>
-                                ))}
-                            </select>
-                            <button onClick={addRideToTrip}>Add ride to trip</button>
-                        </div>
-                   </div>
+                   
                     <div className= 'waitTimeContainer'>
                         <span className='waitTimeTitle'>Current Time:</span>
                         <span className={`waitTime ${waitTimeClass}`}>
@@ -324,6 +314,20 @@ function RidesTemplate(parkID)
                             {avgWaitTimeText}
                          </span>
                     </div>
+                    <div className='addToTripsContainer'>
+                    <button id="addTrip" onClick={() => toggleAddTripDiv(ride.id)}>
+                         {isModalVisible  ? 'Cancel' : 'Add to a trip'}
+                    </button>
+                        <div id={ride.id} style={{display: 'none'}}>
+                            <select id='tripsSelect' onChange={(e) => tripID = parseInt(e.target.value)}>
+                                <option value ="">Select a trip... </option>
+                                {trips.map((trip, index) => (
+                                    <option key= {index} value={trip[1]}>{trip[0]}</option>
+                                ))}
+                            </select>
+                            <button id="add" onClick={addRideToTrip}>Add</button>
+                        </div>
+                   </div>
                 </div>
             );
 
@@ -352,6 +356,7 @@ function RidesTemplate(parkID)
             </div>
         </header>
         </div>
+        
         <div id='rides'>
             {/*<label htmlFor="sortBy">Sort by:</label>
             <select id="sortBy" name="sortBy" onChange={() => sortRides()}>
