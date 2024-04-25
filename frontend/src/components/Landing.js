@@ -33,7 +33,7 @@ function Landing(){
     const [selectedDelTripId, setSelectedDelTripId] = useState([]);
     const [selectedTrip, setSelectedTrip] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-
+    var response;
 
     const inputRef = useRef(null);
     const navigate = useNavigate();
@@ -94,7 +94,7 @@ function Landing(){
     //fetching all the parks from the api
     const fetchParks = async () =>{
         try{
-            const response = [
+            response = [
                 {
                     "id": 11,
                     "name": "Cedar Fair Entertainment Company",
@@ -1297,15 +1297,9 @@ function Landing(){
             const savedParks = userData.saved_parks || [];
             //console.log('savedPark IDS:', userData.saved_parks);
 
-            const response = await fetch(buildPath('api/parks'),{
-                method: 'GET'
-            });
+            
 
-            if(!response.ok){
-                throw new Error('error fetching parks');
-            }
-
-            const data = await response.json();
+            const data = await response;
             const parsedData = extractParkInfo(data);
 
             //match the ids with their corresponding park names! 
