@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path')
 const PORT = process.env.PORT || 5000
 const axios = require('axios');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 
 const app = express();
@@ -526,20 +527,25 @@ app.post('/api/searchRide', async (req, res, next) =>
 	res.status(200).json(ret);
 });
 
-app.get('/api/parks', async (req, res) => {
-	try {
-	  const response = await fetch('https://queue-times.com/parks.json');
-	  if (!response.ok) {
-		throw new Error('Error fetching parks');
-	  }
-	  const data = await response.json();
-	  res.setHeader('Content-Type', 'application/json');
-	  res.json(data);
-	} catch (error) {
-	  console.error(error);
-	  res.status(500).json({ error: 'Internal Server Error' });
-	}
-  });
+// app.get('/api/parks', async (req, res) => {
+// 	try {
+// 	  const response = await fetch('https://queue-times.com/parks.json');
+// 	  if (!response.ok) {
+// 		throw new Error('Error fetching parks');
+// 	  }
+// 	  const data = await response.json();
+// 	  res.setHeader('Content-Type', 'application/json');
+// 	  res.json(data);
+// 	} catch (error) {
+// 	  console.error(error);
+// 	  res.status(500).json({ error: 'Internal Server Error' });
+// 	}
+//   });
+
+  app.use('/api/parks', createProxyMiddleware({
+  target: 'https://queue-times.com/parks.json', // Target URL of your backend API
+  changeOrigin: true, // Ensures CORS headers are adjusted for the proxy
+}))
   
 
 app.post('/api/rides', async (req, res) => {
