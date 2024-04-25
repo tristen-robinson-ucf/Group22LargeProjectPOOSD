@@ -95,7 +95,7 @@ function Landing(){
     const fetchParks = async () =>{
         try{
             const response = await fetch(buildPath('api/parks'), {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -128,7 +128,7 @@ function Landing(){
             //console.log('savedPark IDS:', userData.saved_parks);
 
             const response = await fetch(buildPath('api/parks'),{
-                method: 'GET'
+                method: 'POST'
             });
 
             if(!response.ok){
