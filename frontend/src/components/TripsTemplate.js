@@ -367,7 +367,7 @@ function TripsTemplate(tripID)
              <div style={{ flex: '1', overflowY: 'auto' }}>
                  <div className="saved-section">
                      <div id="saved-title">
-                        <h3>Planned Trips</h3>
+                        <h3>Saved Rides</h3>
                       </div>
                       <div className="borderBttmTrip"></div>
                     </div>
