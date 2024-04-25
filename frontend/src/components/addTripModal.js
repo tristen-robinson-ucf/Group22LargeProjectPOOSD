@@ -56,6 +56,19 @@ function AddTripModal({ addTripSubmit, parks, setShowAddTrip, handleParkChange }
                             ))}
                         </select>
                     </div>
+                    {/* Ride can be stored to a Json array for the parks selected, 
+                    they would need to have the park ID, can use rides fetch rides and extract json from rides templates and 
+                    how we process the rides and park to create a map for the rides and display it after the park has been selected*/}
+                    {/* <div>
+                        <div id="tripInfo">Choose a Ride:</div>
+                        <select id="parkSelect" onChange={handleRideSelectionChange} value={selectedRideId}>
+                            <option value="">Select a park...</option>
+                            {ride.map((ride, index) => (
+                                <option key={index} value={ride.id}>{ride.name}</option>
+                            ))}
+                        </select>
+                    </div> */}
+
                     <div className="tripBtns">
                         <button id="createBtn" type="submit">Create Trip</button>
                         <button className="cancelParkModal" onClick={() => setShowAddTrip(false)}>Close</button>

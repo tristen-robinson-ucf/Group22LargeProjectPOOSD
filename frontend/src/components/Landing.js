@@ -6,6 +6,7 @@ import AddTripModal from './addTripModal';
 import { SketchPicker } from 'react-color';
 import ParkCard from './parkCard';
 import TripCard from './tripCard';
+import RidesTemplate from './RidesTemplate';
 
 
 function Landing(){
@@ -306,19 +307,19 @@ function Landing(){
         
         }, [selectedParkId]); // Only re-run the effect if selectedRideId changes
 
-    const addTripSubmit = async () => {
+    const addTripSubmit = async (ele) => {
         const userDataString = localStorage.getItem('user_data');
         const userData = JSON.parse(userDataString);
         console.log("userData: ", userData);
         const userID = userData.id;
 
         var addTripObj = {
-            name: userData.name, 
-            startDate: userData.startDate,
-            endDate: userData.endDate,
+            name: ele.name, 
+            startDate: ele.startDate,
+            endDate: ele.endDate,
             userID: userID,  
             parkID: parkID,
-            rides: userData.rides
+            rides: ele.rides
         }
         console.log(addTripObj)
         try{
@@ -513,6 +514,54 @@ function Landing(){
         console.error(error);
     }
 };
+
+const fetchRides = async event => {
+    var obj = {parkID:parkID};
+    var js = JSON.stringify(obj);
+
+    try {    
+        const response = await fetch(buildPath('api/rides'), {headers:{'Content-Type': 'application/json'}, body:js, method: 'POST'});
+        console.log(`response status is ${response.status}`);
+        const mediaType = response.headers.get('content-type');
+        let data;
+        if (mediaType.includes('json')) {
+            data = await response.json();
+        } else {
+            data = await response.text();
+        }
+        console.log(data);
+        ridesData = data;
+        rides = extractRideInfo(ridesData);
+
+        return rides;
+    }
+    catch(e) {
+        alert(e.toString());
+        return;
+    }    
+};
+
+
+function extractRideInfo(jsonData) 
+{
+    const rideInfo = [];
+    // Iterate over each land
+    for (const land of jsonData.lands) 
+    {
+        // Iterate over rides in each land
+        for (const ride of land.rides) 
+        {
+            // Extract ride name and wait time
+            const rideName = ride.name;
+            const waitTime = ride.wait_time;
+            const isOpen = ride.is_open;
+            const id = ride.id
+            // Add ride info to rideInfo array
+            rideInfo.push({ id: id, name: rideName, wait_time: waitTime, is_open:isOpen });
+        }
+    }
+    return rideInfo;
+}
 
 const seeTripDetails = async(trip) => {
     navigate(`/trips/${trip[1]}`); 
@@ -726,11 +775,34 @@ const seeTripDetails = async(trip) => {
                             <div>
                               <label>Choose a Park: </label>
                               <select id='parkSelect' onChange={(e) => setSelectedParkId(e.target.value)}>
-                                <option value="">Select a park... </option>
+                                <option id='trip_park' value="">Select a park... </option>
                                 {parks.map((park, index) => (
                                   <option key={index} value={park.id}>{park.name}</option>
                                 ))}
                               </select>
+                              <div>
+                            {/* store ride in a json object and than display it */}
+                              <label>Choose a Ride: </label>
+                              <select id='rideSelect' onChange={(e) => setSelectedParkId(e.target.value)}>
+                                <option id='trip_rides' value="">Select a ride... </option>
+                                {parks.map((park, index) => (
+                                  <option key={index} value={park.id}>{park.name}</option>
+                                ))}
+                              </select>
+
+
+
+
+                              {/* <div className="parkCardCont">
+                                {(searchInp ? searchResults : savedParks).map((park, index) => (
+                                <ParkCard
+                                    key={index}
+                                    park={park}
+                                    deletePark={deletePark}
+                                    seeWaitTimes={seeWaitTimes}
+                                />
+                                ))} */}
+                            </div>
                             </div>
                             <button onClick={addTripSubmit}>Create Trip</button>
                           </form>
