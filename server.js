@@ -565,7 +565,7 @@ app.post('/api/rides', async (req, res) => {
     }
 });
 
-app.get('/api/averageWaitTime', async (req, res) => {
+app.post('/api/averageWaitTime', async (req, res) => {
 	//incoming: park id, ride id
 	//outgoing: avg wait time
 	const {parkID, rideID} = req.query;
