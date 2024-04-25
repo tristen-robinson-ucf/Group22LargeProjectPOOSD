@@ -533,6 +533,7 @@ app.get('/api/parks', async (req, res) => {
 		throw new Error('Error fetching parks');
 	  }
 	  const data = await response.json();
+	  res.setHeader('Content-Type', 'application/json');
 	  res.json(data);
 	} catch (error) {
 	  console.error(error);
