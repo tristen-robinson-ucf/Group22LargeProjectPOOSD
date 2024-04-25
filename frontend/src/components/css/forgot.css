@@ -51,6 +51,7 @@ html,body{
 
 
 .forgot  form .inpCont input, .forgot form .passInp input{
+  text-align: center;
   height: 100%;
   width: 100%;
   outline: none;
@@ -70,47 +71,44 @@ html,body{
   background: #f78254;
   color: #fff;
   border: none;
-  padding-left: 80px;
-  padding-right: 96px;
+  border-radius: 5px;
+  padding: 8px 115px;
   margin-top: 10px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  transition: transform 0.2s;
 }
 
 .forgot form .passInp #updatePass{
   background: #f78254;
   color: #fff;
   border: none;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 10px 30px;
   margin-top: 10px;
   margin-left: 30px;
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  transition: transform 0.2s;
 }
 
 .forgot form #resendCode{
   background: #f78254;
   color: #fff;
   border: none;
-  padding-left: 40px;
-  padding-right: 55px;
+  padding: 10px 47px;
   margin-top: 10px;
   margin-left: 30px;
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
  .returnLogin{
   display: flex;
-  margin: -10px auto;
+  margin: -15px auto;
 }
 
 .retLogin a, .returnLogin a{
@@ -145,6 +143,11 @@ html,body{
   cursor: pointer;
 }
 
+.retLogin{
+  text-align: center;
+  padding-right: 90px;
+}
+
 .forgot #text{
   text-align: center;
 }
@@ -158,9 +161,9 @@ html,body{
   margin-left: 20px;
 }
 
-#sendEmail:hover, #updatePass:hover{
+#sendEmail:hover, #updatePass:hover, #resendCode:hover{
   transform: scale(1.1);
-  background: #ff743d;
+  background: #ff7f4c;
 }
 
 .forgotImg{

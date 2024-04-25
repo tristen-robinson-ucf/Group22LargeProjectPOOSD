@@ -174,7 +174,7 @@ function ForgotPassword() {
             </form>
            ): (
             <form className="updatePassForm" onSubmit={sendVerificationEmail}>
-                <p div id= "text">Enter your email and we'll send you a code to reset your password.</p>
+                <p div id= "text">Enter your username and we'll send you a code to reset your password.</p>
                 <div className="inpCont">
                  <input type="text" placeholder="Enter your username" value={username} onChange={(e) => setUsername(e.target.value)} required />
                  {userMessage && <p style={{ marginTop: '0px', marginBottom: '0px', textAlign: 'center' }}>{userMessage}</p>}

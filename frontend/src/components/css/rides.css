@@ -1,0 +1,99 @@
+@keyframes scaleUp {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .ridesTemp{
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    padding-bottom: 20px;
+  }
+
+  #rides{
+    margin-top: 60px;
+  }
+
+.rideCard{
+    animation: scaleUp 0.5s ease forwards;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    height: 100px;
+    width: 700px;
+    transition: transform 0.3s ease;
+}
+
+.rideCard:hover {
+    transform: scale(1.1); 
+}
+
+.rideInfo{
+    flex-grow: 1;
+}
+
+.waitTimeContainer{
+    padding-left: 20px;
+}
+
+.waitTimeContainer,
+.avgWaitTimeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.waitTimeTitle,
+.avgWaitTimeTitle {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: inline;
+    margin-right: 10px;
+}
+
+.waitTime,
+.avgWaitTime {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    border: 1px solid black;
+    text-align: center;
+
+}
+
+.red {
+    background-color: #ff6961;
+}
+
+
+.green {
+    background-color: #77dd77; 
+}
+
+.yellow {
+    background-color: #ffd700; 
+}
+
+.orange {
+    background-color: #e9994e; 
+}
+
+
+.rideInfo{
+    width: 20%;
+}
+
+.rideInfo h3{
+    width: 100%;
+    font-size: 22px;
+
+}

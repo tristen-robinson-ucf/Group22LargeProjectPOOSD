@@ -276,7 +276,7 @@ app.post('/api/addTrip', async (req, res, next) =>
 				var sdate = new Date(startDate);
 				var edate = new Date(endDate);
 
-		        db.collection('Trips').insertOne( { tripID:tripID,name:name,startDate:sdate,endDate:edate,userID:userID,parkID:parkID,rides:rides });
+		        db.collection('Trips').insertOne( { tripID:tripID,name:name,startDate:startdate,endDate:enddate,userID:userID,parkID:parkID,rides:rides });
 	        }
 	        catch(e)
 	        {
@@ -404,7 +404,7 @@ app.post('/api/deletePark', async (req, res, next) =>
 	// outgoing: message, error
 
 	var error = '';
-	var message = "Park has been deleted from user's saved_parks";
+	var message = "Park has been deleted from user's saved parks";
 
 	const { userID,parkID } = req.body;
 
@@ -556,6 +556,20 @@ app.post('/api/rides', async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+app.get('/api/averageWaitTime', async (req, res) => {
+	//incoming: park id, ride id
+	//outgoing: avg wait time
+	const {parkID, rideID} = req.query;
+
+	try{
+		const response = await axios.get(`https://queue-times.com/parks/${parkID}/rides/${rideID}/average_histogram.json`);
+		res.json(response.data);
+	} catch (error){
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
 });
 
 app.listen(PORT, () =>{

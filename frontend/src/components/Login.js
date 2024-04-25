@@ -24,14 +24,15 @@ function Login()
                 {method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
             console.log(response)
             var res = JSON.parse(await response.text());
-            console.log(res)
+            console.log(res);
+            console.log('saved_parks', res.saved_parks);
             if( res.id <= 0 )
             {
                 setMessage('User/Password combination incorrect');
             }
             else
             {
-                var user = {firstname:res.firstname,lastname:res.lastname,id:res.id}
+                var user = {firstname:res.firstname,lastname:res.lastname,id:res.id, saved_parks:res.saved_parks}
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
