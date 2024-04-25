@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './css/rides.css';
 import { useNavigate} from 'react-router-dom';
+import './css/landing.css';
 
 function RidesTemplate(parkID)
 {
@@ -352,6 +353,7 @@ function RidesTemplate(parkID)
             </div>
         </header>
         </div>
+        
         <div id='rides'>
             {/*<label htmlFor="sortBy">Sort by:</label>
             <select id="sortBy" name="sortBy" onChange={() => sortRides()}>

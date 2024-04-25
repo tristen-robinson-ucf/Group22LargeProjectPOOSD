@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './css/rides.css';
+import { useNavigate} from 'react-router-dom';
 
 function TripsTemplate(tripID)
 {
+    const navigate = useNavigate();
+
     const [parks, setParks] = useState([]);
 
     //console.log('park id within rides template', tripID);
@@ -340,18 +343,48 @@ function TripsTemplate(tripID)
         setRideContent(rideCards);
     };
 
-    
+    const logOut = async () => {
+        navigate(`/landing`);
+    };
+
 
     return(
-        <div id='rides'>
-            {/*<label htmlFor="sortBy">Sort by:</label>
-            <select id="sortBy" name="sortBy" onChange={() => sortRides()}>
-                <option value={alphabetical}>Alphabetical</option>
-                <option value={waitTime}>Wait Time</option>
-            </select>*/}
-            {rideContent}
+        <>
+        <div className="ridesTemp">
+        <header style = {{background:  '#f78254',  maxWidth: '100vw', userSelect:'none', position: 'fixed', width: '100%'}}>
+             <div class="topbar" style ={{width: '100%', maxWidth: '100vw', height: '32px', opacity: '1', transition: 'opacity 700ms ease 0s, color 700ms ease 0s', position: 'relative', paddingBottom: '20px'}}>
+                 <div style ={{display:'flex', justifyContent: 'space-between', alignItems: 'center', overflow: 'hidden', height: '32px', paddingLeft:'12px', paddingRight:'10px'}}>
+                     <div className="logoutCont">
+                         <button className="logoutButton" onClick={() => logOut ()}>Return</button>
+                     </div>
+                 </div>
+            </div>
+        </header>
         </div>
-    )
+
+
+        <main className="frame" style={{ display: 'flex', flexDirection: 'column', height: 'calc(-45px + 100vh)', width: '100vw'}}>
+             <div style={{ flex: '1', overflowY: 'auto' }}>
+                 <div className="saved-section">
+                     <div id="saved-title">
+                        <h3>Planned Trips</h3>
+                      </div>
+                      <div className="borderBttmTrip"></div>
+                    </div>
+           
+
+                 <div id='rides'>
+                    {/*<label htmlFor="sortBy">Sort by:</label>
+                    <select id="sortBy" name="sortBy" onChange={() => sortRides()}>
+                          <option value={alphabetical}>Alphabetical</option>
+                         <option value={waitTime}>Wait Time</option>
+                      </select>*/}
+                    {rideContent}
+                    </div>
+                </div>
+            </main>
+     </>
+    );
 }
 
 export default TripsTemplate;

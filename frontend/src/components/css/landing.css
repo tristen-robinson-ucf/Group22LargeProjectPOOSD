@@ -131,6 +131,13 @@
     text-align: center;
 }
 
+.parkCard h2{
+    margin-top: 10px;
+    margin-bottom: -10px;
+    font-size: 25px; 
+    text-align: center;
+}
+
 .saved-section{
     display: flex;
     justify-content: space-between;
@@ -184,7 +191,7 @@
 
 
 .searchBtn::after,.searchBtnTrip::after,
-#addParkBtn::after, .logoutButton::after, #addTripBtn::after{
+#addParkBtn::after, .logoutButton::after{
     align-items: center;
     content: ''; 
     position: absolute;
@@ -196,13 +203,41 @@
     transition: width 0.3s ease; 
 }
 
+#addTripBtn::after{
+    align-items: center;
+    content: ''; 
+    position: absolute;
+    left: 30px;
+    bottom: 3px;
+    width: 5%; 
+    height: 1px;
+    background-color: transparent;
+    transition: width 0.3s ease; 
+}
+
 .searchBtn:hover::after, .searchBtnTrip:hover::after,
-#addParkBtn:hover::after, .logoutButton:hover::after, #addTripBtn:hover::after{
+#addParkBtn:hover::after, .logoutButton:hover::after{
     width: 80%;
     background-color: black;
 }
 
+#addTripBtn:hover::after{
+    width: 50%;
+    background-color: black;
+
+}
+
 .borderBttm{
+    position: absolute;
+    bottom: 0;
+    left: 20px; 
+    width: calc(100% - 20px); 
+    height: 1px;
+    background-color: grey;
+}
+
+.borderBttmTrip{
+    margin-bottom: 8px;
     position: absolute;
     bottom: 0;
     left: 20px; 
@@ -273,6 +308,7 @@
 .colorPickerWindow{
     position: absolute;
     visibility: visible;
+    z-index: 999;
     
 }
 
@@ -325,7 +361,22 @@
     transition: background-color 0.3s;
 }
 
-.deleteButton:hover {
+.deleteButtonTrip{
+    margin-top: 5px;
+    margin-bottom: -5px;
+    width: auto;
+    padding: 4px 12px;
+    justify-content: center;
+    text-align: center;
+    background-color: #e07777;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.deleteButton:hover,.deleteButtonTrip:hover {
     background-color: #f09595;
 }
 

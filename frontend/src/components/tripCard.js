@@ -41,7 +41,7 @@ function TripCard({ trip, deleteTrip, seeTripDetails, park }) {
                 <h2>{trip[0]}</h2>
                 {<h3>{park}</h3>}
                 <button className="waitTimeButton" onClick={() => seeTripDetails(trip)}>See Trip Details</button>
-                <button className="deleteButton" onClick={() => deleteTrip(trip)}>Delete</button>
+                <button className="deleteButtonTrip" onClick={() => deleteTrip(trip)}>Delete</button>
             </div>
         </div>
     );
