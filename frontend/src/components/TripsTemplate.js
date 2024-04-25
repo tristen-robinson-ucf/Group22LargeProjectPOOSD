@@ -62,7 +62,7 @@ function TripsTemplate(tripID)
     const fetchParks = async () =>{
         try{
             const response = await fetch(buildPath('api/parks'), {
-                method: 'GET' 
+                method: 'POST' 
             });
 
             if (!response.ok){
@@ -174,7 +174,7 @@ function TripsTemplate(tripID)
                 const url = `${buildPath('api/averageWaitTime')}?parkID=${parkID}&rideID=${ride.id}`;
                 
                 const response = await fetch(url, {
-                    method: 'GET'
+                    method: 'POST'
                 });
 
                 if (response.ok){
