@@ -527,19 +527,19 @@ app.post('/api/searchRide', async (req, res, next) =>
 });
 
 app.get('/api/parks', async (req, res) => {
-	// incoming:
-	// outgoing: results[], error
-    try 
-	{
-        const response = await axios.get('https://queue-times.com/parks.json');
-        res.json(response.data);
-    } 
-	catch (error) 
-	{
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+	try {
+	  const response = await fetch('https://queue-times.com/parks.json');
+	  if (!response.ok) {
+		throw new Error('Error fetching parks');
+	  }
+	  const data = await response.json();
+	  res.json(data);
+	} catch (error) {
+	  console.error(error);
+	  res.status(500).json({ error: 'Internal Server Error' });
+	}
+  });
+  
 
 app.post('/api/rides', async (req, res) => {
 	// incoming: parkID
