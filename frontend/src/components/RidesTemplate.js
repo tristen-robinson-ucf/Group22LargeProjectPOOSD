@@ -88,7 +88,7 @@ function RidesTemplate(parkID)
                 const url = `${buildPath('api/averageWaitTime')}?parkID=${parkID}&rideID=${ride.id}`;
                 
                 const response = await fetch(url, {
-                    method: 'GET'
+                    method: 'POST'
                 });
 
                 if (response.ok){
