@@ -1648,11 +1648,10 @@ function Landing(){
  const deleteTrip = async (tripName) => {
     //debug
     console.log('trip to delete:', tripName);
-    const savedTrips = await fetchSavedParks();
     console.log('savedTrips before del:', savedTrips);
 
     //find the trip to del! 
-    const trip = trips.find(trip => trip.name === tripName);
+    const trip = savedTrips.find(trip => trip[0] === tripName[0]);
     console.log('Trip info to del:', trip);
     if (!trip){
         console.log('Trip not found');
