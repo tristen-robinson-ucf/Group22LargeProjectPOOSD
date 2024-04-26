@@ -480,59 +480,119 @@ function Landing(){
 
 
 
+    const deleteTrip = async (tripName) => {
+      console.log('trip to delete:', tripName);
+      const savedTrips = await fetchSavedTrips(); // Make sure this correctly fetches the current list of saved trips
+  
+      // Find the trip to delete
+      const trip = savedTrips.find(trip => trip[0] === tripName[0]);
+      console.log('Trip info to delete:', trip);
+      if (!trip) {
+          console.log('Trip not found');
+          return;
+      }
+  
+      const updatedSaved = savedTrips.filter(savedTrip => savedTrip !== tripName);
+      console.log('updated list:', updatedSaved);
+  
+      const userDataString = localStorage.getItem('user_data');
+      const userData = JSON.parse(userDataString);
+  
+      const tripID = trip.id; // Ensure trip object has 'id' property
+      const updatedIDs = userData.saved_trips.filter(savedTripID => savedTripID !== tripID);
+      userData.saved_trips = updatedIDs;
+      localStorage.setItem('user_data', JSON.stringify(userData));
+  
+      try {
+          // Fetching and actual deletion from the endpoint
+          const response = await fetch(buildPath('api/deleteTrip'), {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  userID: userData.id,
+                  tripID: tripID
+              })
+          });
+  
+          if (!response.ok) {
+              throw new Error('Failed to delete trip');
+          }
+  
+          setSavedTrips(updatedSaved);
+          console.log('saved trips after deletion', updatedSaved);
+  
+          // Get message from response
+          const responseData = await response.json();
+          console.log(responseData.message);
+      } catch (error) {
+          console.error(error);
+      }
+  };
+  
+  
+  //   const fetchSavedTrips = async () => {
+  //     // existing fetch logic...
+  //     console.log("Fetched saved trips:", extractedTripInfo);
+  //     setSavedTrips(extractedTripInfo);
+  //     return extractedTripInfo;
+  // };
+
  //delete trip endpoint 
- const deleteTrip = async (tripName) => {
-    //debug
-    console.log('trip to delete:', tripName);
-    const savedTrips = await fetchSavedParks();
-    console.log('savedTrips before del:', savedTrips);
+//  const deleteTrip = async (tripName) => {
+//     //debug
+//     console.log('trip to delete:', tripName);
+//     const savedTrips = await fetchSavedParks();
+//     console.log('savedTrips before del:', savedTrips);
 
-    //find the trip to del! 
-    const trip = trips.find(trip => trip.name === tripName);
-    console.log('Trip info to del:', trip);
-    if (!trip){
-        console.log('Trip not found');
-        return;
-    }
+//     //find the trip to del! 
+//     const trip = savedTrips.find(trip => trip[0] === tripName[0]);
+//     //const trip = savedTrips.find(trip => trip.name.toLowerCase() === tripName.toLowerCase());
+//     console.log('Trip info to del:', trip);
+//     if (!trip){
+//         console.log('Trip not found');
+//         return;
+//     }
 
-    const updatedSaved = savedTrips.filter(savedTrip => savedTrip !== tripName);
-    console.log('updatedlist:', updatedSaved);
+//     const updatedSaved = savedTrips.filter(savedTrip => savedTrip !== tripName);
+//     console.log('updatedlist:', updatedSaved);
 
-    const userDataString = localStorage.getItem('user_data');
-    const userData = JSON.parse(userDataString);
+//     const userDataString = localStorage.getItem('user_data');
+//     const userData = JSON.parse(userDataString);
    
-    const tripID = trip.id;
-    const updatedIDs = userData.saved_trips.filter(savedTrip => savedTrip != tripID)
-    userData.saved_trips = updatedIDs;
-    console.log(JSON.stringify(userData))
-    localStorage.setItem('user_data', JSON.stringify(userData));
+//     const tripID = trip.id;
+//     const updatedIDs = userData.saved_trips.filter(savedTrip => savedTrip != tripID)
+//     userData.saved_trips = updatedIDs;
+//     console.log(JSON.stringify(userData))
+//     localStorage.setItem('user_data', JSON.stringify(userData));
 
-    try {
-        //fetching and actual deletion from the endpoint 
-        const response = await fetch(buildPath('api/deletePark'),{
-            method: 'POST',
-            headers: {
-                'Content-Type' : 'application/json'
-            },
-            body: JSON.stringify({
-                userID : userData.id,
-                name: userData.name
-            })
-        });
+//     try {
+//         //fetching and actual deletion from the endpoint 
+//         const response = await fetch(buildPath('api/deletePark'),{
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type' : 'application/json'
+//             },
+//             body: JSON.stringify({
+//                 userID : userData.id,
+//                 name: userData.name
+//             })
+//         });
 
-        if (!response.ok){
-            throw new Error('Failed to delete trip');
-        }
+//         if (!response.ok){
+//             throw new Error('Failed to delete trip');
+//         }
 
-        setSavedParks(updatedSaved);
-        console.log('saved trip afterDel',updatedSaved);
-        //get message from response
-        const responseData = await response.json();
-        console.log(responseData.message);
-    } catch(error){
-        console.error(error);
-    }
-};
+//         setSavedParks(updatedSaved);
+//         console.log('saved trip afterDel',updatedSaved);
+//         //get message from response
+//         const responseData = await response.json();
+//         console.log(responseData.message);
+//     } catch(error){
+//         console.error(error);
+//     }
+// };
 
 const fetchRides = async event => {
     var obj = {parkID:parkID};
